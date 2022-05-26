@@ -14,7 +14,7 @@ class ThemeViewModel {
 
   Future<String> get currentTheme => sharedPreferencesService.theme();
 
-  void setTheme(SimpleAACTheme appTheme){
+  void setTheme(SimpleAACTheme appTheme) {
     sharedPreferencesService.setTheme(theme: appTheme.name);
   }
 }

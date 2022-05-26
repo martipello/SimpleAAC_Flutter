@@ -76,19 +76,19 @@ class _AppShellState extends State<AppShell> {
 
   Widget _buildHeroHolder() {
     return Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SentenceWidget(),
-              StreamBuilder<List<Word>>(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SentenceWidget(),
+            StreamBuilder<List<Word>>(
                 stream: selectedWordsViewModel.selectedWordsStream,
                 builder: (context, snapshot) {
                   final _word = snapshot.data?.first;
                   return SizedBox(
                     height: 48,
                     child: PredictionsWidget(
-                      onDelete: (word){
+                      onDelete: (word) {
                         log('tag').d('DELETE $word');
                       },
                       onSelected: (bool) {
@@ -97,21 +97,20 @@ class _AppShellState extends State<AppShell> {
                       word: _word,
                     ),
                   );
-                }
-              ),
-            ],
-          ),
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: _buildPlaySentenceActionButton(),
-              ),
+                }),
+          ],
+        ),
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: _buildPlaySentenceActionButton(),
             ),
           ),
-        ],
-      );
+        ),
+      ],
+    );
   }
 
   Widget _buildPlaySentenceActionButton() {

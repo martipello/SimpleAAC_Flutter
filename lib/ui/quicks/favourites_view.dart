@@ -58,9 +58,7 @@ class FavouritesView extends StatelessWidget {
     return Word((b) => b
       ..wordId = id
       ..word = 'hello ${id.substring(0, 3)}'
-      ..imageList = [
-        'assets/images/simple_aac.png'
-      ].toBuiltList().toBuilder()
+      ..imageList = ['assets/images/simple_aac.png'].toBuiltList().toBuilder()
       ..subType = WordSubType.abverb
       ..usageCount = 5
       ..type = WordType.quicks
@@ -69,8 +67,10 @@ class FavouritesView extends StatelessWidget {
       ..sound = 'hello '
       ..keyStage = 3
       ..createdDate = DateTime.now()
-      ..predictionList = addPredictions ? BuiltList.of(<Word>[
-        _buildWord('123', false),
-      ]).toBuilder() : BuiltList.of(<Word>[]).toBuilder());
+      ..predictionList = addPredictions
+          ? BuiltList.of(<Word>[
+              _buildWord('123', false),
+            ]).toBuilder()
+          : BuiltList.of(<Word>[]).toBuilder());
   }
 }

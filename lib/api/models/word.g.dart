@@ -15,95 +15,80 @@ class _$WordSerializer implements StructuredSerializer<Word> {
   final String wireName = 'Word';
 
   @override
-  Iterable<Object?> serialize(Serializers serializers, Word object,
-      {FullType specifiedType = FullType.unspecified}) {
+  Iterable<Object?> serialize(Serializers serializers, Word object, {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[
       'imageList',
-      serializers.serialize(object.imageList,
-          specifiedType:
-              const FullType(BuiltList, const [const FullType(String)])),
+      serializers.serialize(object.imageList, specifiedType: const FullType(BuiltList, const [const FullType(String)])),
       'predictionList',
       serializers.serialize(object.predictionList,
-          specifiedType:
-              const FullType(BuiltList, const [const FullType.nullable(Word)])),
+          specifiedType: const FullType(BuiltList, const [const FullType.nullable(Word)])),
     ];
     Object? value;
     value = object.wordId;
     if (value != null) {
       result
         ..add('wordId')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(String)));
+        ..add(serializers.serialize(value, specifiedType: const FullType(String)));
     }
     value = object.createdDate;
     if (value != null) {
       result
         ..add('createdDate')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(DateTime)));
+        ..add(serializers.serialize(value, specifiedType: const FullType(DateTime)));
     }
     value = object.type;
     if (value != null) {
       result
         ..add('type')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(WordType)));
+        ..add(serializers.serialize(value, specifiedType: const FullType(WordType)));
     }
     value = object.subType;
     if (value != null) {
       result
         ..add('subType')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(WordSubType)));
+        ..add(serializers.serialize(value, specifiedType: const FullType(WordSubType)));
     }
     value = object.word;
     if (value != null) {
       result
         ..add('word')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(String)));
+        ..add(serializers.serialize(value, specifiedType: const FullType(String)));
     }
     value = object.sound;
     if (value != null) {
       result
         ..add('sound')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(String)));
+        ..add(serializers.serialize(value, specifiedType: const FullType(String)));
     }
     value = object.isFavourite;
     if (value != null) {
       result
         ..add('isFavourite')
-        ..add(
-            serializers.serialize(value, specifiedType: const FullType(bool)));
+        ..add(serializers.serialize(value, specifiedType: const FullType(bool)));
     }
     value = object.usageCount;
     if (value != null) {
       result
         ..add('usageCount')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(double)));
+        ..add(serializers.serialize(value, specifiedType: const FullType(double)));
     }
     value = object.keyStage;
     if (value != null) {
       result
         ..add('keyStage')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(double)));
+        ..add(serializers.serialize(value, specifiedType: const FullType(double)));
     }
     value = object.isUserAdded;
     if (value != null) {
       result
         ..add('isUserAdded')
-        ..add(
-            serializers.serialize(value, specifiedType: const FullType(bool)));
+        ..add(serializers.serialize(value, specifiedType: const FullType(bool)));
     }
     value = object.isBackedUp;
     if (value != null) {
       result
         ..add('isBackedUp')
-        ..add(
-            serializers.serialize(value, specifiedType: const FullType(bool)));
+        ..add(serializers.serialize(value, specifiedType: const FullType(bool)));
     }
     return result;
   }
@@ -115,65 +100,50 @@ class _$WordSerializer implements StructuredSerializer<Word> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'wordId':
-          result.wordId = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String?;
+          result.wordId = serializers.deserialize(value, specifiedType: const FullType(String)) as String?;
           break;
         case 'createdDate':
-          result.createdDate = serializers.deserialize(value,
-              specifiedType: const FullType(DateTime)) as DateTime?;
+          result.createdDate = serializers.deserialize(value, specifiedType: const FullType(DateTime)) as DateTime?;
           break;
         case 'type':
-          result.type = serializers.deserialize(value,
-              specifiedType: const FullType(WordType)) as WordType?;
+          result.type = serializers.deserialize(value, specifiedType: const FullType(WordType)) as WordType?;
           break;
         case 'subType':
-          result.subType = serializers.deserialize(value,
-              specifiedType: const FullType(WordSubType)) as WordSubType?;
+          result.subType = serializers.deserialize(value, specifiedType: const FullType(WordSubType)) as WordSubType?;
           break;
         case 'word':
-          result.word = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String?;
+          result.word = serializers.deserialize(value, specifiedType: const FullType(String)) as String?;
           break;
         case 'imageList':
           result.imageList.replace(serializers.deserialize(value,
-                  specifiedType: const FullType(
-                      BuiltList, const [const FullType(String)]))!
-              as BuiltList<Object?>);
+              specifiedType: const FullType(BuiltList, const [const FullType(String)]))! as BuiltList<Object?>);
           break;
         case 'sound':
-          result.sound = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String?;
+          result.sound = serializers.deserialize(value, specifiedType: const FullType(String)) as String?;
           break;
         case 'isFavourite':
-          result.isFavourite = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool?;
+          result.isFavourite = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool?;
           break;
         case 'usageCount':
-          result.usageCount = serializers.deserialize(value,
-              specifiedType: const FullType(double)) as double?;
+          result.usageCount = serializers.deserialize(value, specifiedType: const FullType(double)) as double?;
           break;
         case 'keyStage':
-          result.keyStage = serializers.deserialize(value,
-              specifiedType: const FullType(double)) as double?;
+          result.keyStage = serializers.deserialize(value, specifiedType: const FullType(double)) as double?;
           break;
         case 'isUserAdded':
-          result.isUserAdded = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool?;
+          result.isUserAdded = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool?;
           break;
         case 'isBackedUp':
-          result.isBackedUp = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool?;
+          result.isBackedUp = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool?;
           break;
         case 'predictionList':
           result.predictionList.replace(serializers.deserialize(value,
-                  specifiedType: const FullType(
-                      BuiltList, const [const FullType.nullable(Word)]))!
-              as BuiltList<Object?>);
+              specifiedType: const FullType(BuiltList, const [const FullType.nullable(Word)]))! as BuiltList<Object?>);
           break;
       }
     }
@@ -210,8 +180,7 @@ class _$Word extends Word {
   @override
   final BuiltList<Word?> predictionList;
 
-  factory _$Word([void Function(WordBuilder)? updates]) =>
-      (new WordBuilder()..update(updates)).build();
+  factory _$Word([void Function(WordBuilder)? updates]) => (new WordBuilder()..update(updates))._build();
 
   _$Word._(
       {this.wordId,
@@ -228,14 +197,12 @@ class _$Word extends Word {
       this.isBackedUp,
       required this.predictionList})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(imageList, 'Word', 'imageList');
-    BuiltValueNullFieldError.checkNotNull(
-        predictionList, 'Word', 'predictionList');
+    BuiltValueNullFieldError.checkNotNull(imageList, r'Word', 'imageList');
+    BuiltValueNullFieldError.checkNotNull(predictionList, r'Word', 'predictionList');
   }
 
   @override
-  Word rebuild(void Function(WordBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
+  Word rebuild(void Function(WordBuilder) updates) => (toBuilder()..update(updates)).build();
 
   @override
   WordBuilder toBuilder() => new WordBuilder()..replace(this);
@@ -270,11 +237,7 @@ class _$Word extends Word {
                             $jc(
                                 $jc(
                                     $jc(
-                                        $jc(
-                                            $jc(
-                                                $jc($jc(0, wordId.hashCode),
-                                                    createdDate.hashCode),
-                                                type.hashCode),
+                                        $jc($jc($jc($jc(0, wordId.hashCode), createdDate.hashCode), type.hashCode),
                                             subType.hashCode),
                                         word.hashCode),
                                     imageList.hashCode),
@@ -289,7 +252,7 @@ class _$Word extends Word {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('Word')
+    return (newBuiltValueToStringHelper(r'Word')
           ..add('wordId', wordId)
           ..add('createdDate', createdDate)
           ..add('type', type)
@@ -331,10 +294,8 @@ class WordBuilder implements Builder<Word, WordBuilder> {
   set word(String? word) => _$this._word = word;
 
   ListBuilder<String>? _imageList;
-  ListBuilder<String> get imageList =>
-      _$this._imageList ??= new ListBuilder<String>();
-  set imageList(ListBuilder<String>? imageList) =>
-      _$this._imageList = imageList;
+  ListBuilder<String> get imageList => _$this._imageList ??= new ListBuilder<String>();
+  set imageList(ListBuilder<String>? imageList) => _$this._imageList = imageList;
 
   String? _sound;
   String? get sound => _$this._sound;
@@ -361,10 +322,8 @@ class WordBuilder implements Builder<Word, WordBuilder> {
   set isBackedUp(bool? isBackedUp) => _$this._isBackedUp = isBackedUp;
 
   ListBuilder<Word?>? _predictionList;
-  ListBuilder<Word?> get predictionList =>
-      _$this._predictionList ??= new ListBuilder<Word?>();
-  set predictionList(ListBuilder<Word?>? predictionList) =>
-      _$this._predictionList = predictionList;
+  ListBuilder<Word?> get predictionList => _$this._predictionList ??= new ListBuilder<Word?>();
+  set predictionList(ListBuilder<Word?>? predictionList) => _$this._predictionList = predictionList;
 
   WordBuilder();
 
@@ -401,7 +360,9 @@ class WordBuilder implements Builder<Word, WordBuilder> {
   }
 
   @override
-  _$Word build() {
+  Word build() => _build();
+
+  _$Word _build() {
     _$Word _$result;
     try {
       _$result = _$v ??
@@ -428,8 +389,7 @@ class WordBuilder implements Builder<Word, WordBuilder> {
         _$failedField = 'predictionList';
         predictionList.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'Word', _$failedField, e.toString());
+        throw new BuiltValueNestedFieldError(r'Word', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -438,4 +398,4 @@ class WordBuilder implements Builder<Word, WordBuilder> {
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,no_leading_underscores_for_local_identifiers,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new,unnecessary_lambdas

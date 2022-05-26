@@ -48,7 +48,7 @@ class SimpleAACTile extends StatelessWidget {
             buildReOrderButton(
               context,
               Alignment.topLeft,
-              (){},
+              () {},
             ),
         ],
       ),
@@ -56,11 +56,7 @@ class SimpleAACTile extends StatelessWidget {
   }
 
   Widget buildCloseButton(
-    BuildContext context,
-    Alignment alignment,
-    VoidCallback closeButtonOnTap,
-      VoidCallback? closeButtonOnLongPress
-  ) {
+      BuildContext context, Alignment alignment, VoidCallback closeButtonOnTap, VoidCallback? closeButtonOnLongPress) {
     return _buildTileOverlapButton(
       context,
       alignment,
@@ -89,7 +85,7 @@ class SimpleAACTile extends StatelessWidget {
     Alignment alignment,
     IconData iconData,
     VoidCallback closeButtonOnTap,
-      VoidCallback? closeButtonOnLongPress,
+    VoidCallback? closeButtonOnLongPress,
   ) {
     return Positioned.fill(
       child: Align(

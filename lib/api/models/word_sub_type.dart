@@ -7,7 +7,6 @@ import '../serializers/serializers.dart';
 part 'word_sub_type.g.dart';
 
 class WordSubType extends EnumClass {
-
   const WordSubType._(String name) : super(name);
 
   static const WordSubType people = _$people;

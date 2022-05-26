@@ -180,7 +180,7 @@ class _WordDetailViewState extends State<WordDetailView> {
   Widget _buildMenuButton(Word? word) {
     return PopupMenuButton(
       onSelected: (result) async {
-        if(result == 0){
+        if (result == 0) {
           Navigator.of(context).pushReplacementNamed(
             CreateWordView.routeName,
             arguments: CreateWordViewArguments(
@@ -188,7 +188,7 @@ class _WordDetailViewState extends State<WordDetailView> {
             ),
           );
         }
-        if(result == 1){
+        if (result == 1) {
           final delete = await SimpleAACDialog(
             title: 'Delete',
             content: const Padding(

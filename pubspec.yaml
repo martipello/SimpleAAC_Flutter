@@ -56,9 +56,9 @@ dependencies:
   smooth_page_indicator: ^0.3.0-nullsafety.0
   flutter_speed_dial: ^5.0.0+1
   settings_ui: ^2.0.0
-  hive_built_value: ^2.0.6
+  hive_built_value: ^2.0.7
   hive_built_value_flutter: ^1.1.0
-  hive_built_value_generator: ^1.1.2
+  hive_built_value_generator: ^1.1.6
 
 
 dev_dependencies:

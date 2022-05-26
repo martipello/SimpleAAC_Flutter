@@ -1,4 +1,3 @@
-
 extension StringExtension on String? {
   bool isNotNullOrEmpty() {
     return this?.isNotEmpty == true;

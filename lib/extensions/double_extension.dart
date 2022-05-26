@@ -1,7 +1,6 @@
 import 'package:intl/intl.dart';
 
 extension DoubleExtension on double? {
-
   bool isNotNullNotEmptyAndNotNegative() {
     final value = this;
     if (value != null) {

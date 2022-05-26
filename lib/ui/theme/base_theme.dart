@@ -151,7 +151,6 @@ class BaseThemeColors {
     this.black = const Color(0xFF000000),
     this.white = const Color(0xFFFFFFFF),
     this.background = const Color(0xFFEEEEEE),
-
     this.wordTypeQuicks = const Color(0xFFF44336),
     this.wordTypeNouns = const Color(0xFF2196F3),
     this.wordTypeVerbs = const Color(0xFFFFEB3B),

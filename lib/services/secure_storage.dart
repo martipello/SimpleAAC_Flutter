@@ -23,5 +23,4 @@ class SecureStorage {
   Future<void> writeValue(String key, String value) {
     return storage.write(key: key, value: value);
   }
-
 }

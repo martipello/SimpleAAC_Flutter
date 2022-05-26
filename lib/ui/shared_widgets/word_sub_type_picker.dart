@@ -55,16 +55,18 @@ class WordSubTypePicker extends StatelessWidget {
   }
 
   List<DropdownMenuItem<WordSubType>> _getDropdownMenuItems() {
-    return wordType?.getSubTypes()
-        .map(
-          (e) => DropdownMenuItem<WordSubType>(
-            value: e,
-            child: Text(
-              e.name.toUpperCase(),
-              style: SimpleAACText.body4Style,
-            ),
-          ),
-        )
-        .toList() ?? [];
+    return wordType
+            ?.getSubTypes()
+            .map(
+              (e) => DropdownMenuItem<WordSubType>(
+                value: e,
+                child: Text(
+                  e.name.toUpperCase(),
+                  style: SimpleAACText.body4Style,
+                ),
+              ),
+            )
+            .toList() ??
+        [];
   }
 }

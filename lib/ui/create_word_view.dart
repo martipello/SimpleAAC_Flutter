@@ -325,13 +325,12 @@ class _CreateWordViewState extends State<CreateWordView> {
             height: 32,
             child: word?.predictionList.isNotEmpty == true
                 ? PredictionsWidget(
-                    word : word,
-                    onDelete:(word){
-                      if(word != null) {
+                    word: word,
+                    onDelete: (word) {
+                      if (word != null) {
                         _wordViewModel.removeWordPrediction(word);
                       }
-                    }
-                  )
+                    })
                 : null,
           ),
         ),

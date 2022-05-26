@@ -8,10 +8,11 @@ class SimpleAACAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.label,
     this.bottom,
     this.leadingIcon,
-    this.actions, this.color,
+    this.actions,
+    this.color,
   }) : preferredSize = Size.fromHeight(
-    kToolbarHeight + (bottom?.preferredSize.height ?? 0.0),
-  );
+          kToolbarHeight + (bottom?.preferredSize.height ?? 0.0),
+        );
 
   final String label;
   final PreferredSizeWidget? bottom;
