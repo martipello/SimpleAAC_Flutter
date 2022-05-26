@@ -1,0 +1,6 @@
+#include "Generated.xcconfig"
+
+FLUTTER_TARGET=lib/main-uat.dart
+
+ASSET_PREFIX=uat
+BUNDLE_NAME=Simple AAC UAT

@@ -1,0 +1,29 @@
+include: analysis_options_effective_dart_1.3.0.yaml
+
+analyzer:
+  exclude:
+    - android/**
+    - lib/generated/*.pb.dart
+    - lib/generated/*.pbenum.dart
+    - lib/generated/*.pbjson.dart
+    - lib/generated/*.pbserver.dart
+    - lib/*.g.dart
+    - lib/**/*.g.dart
+    - lib/**/**/*.g.dart
+    - lib/**/**/**/*.g.dart
+#    - test/**
+  enable-experiment:
+    - non-nullable
+
+linter:
+  rules:
+    avoid_catches_without_on_clauses: false
+    lines_longer_than_80_chars: false
+    public_member_api_docs: false
+    sized_box_for_whitespace: true
+    sort_child_properties_last: true
+    sort_constructors_first: true
+    sort_unnamed_constructors_first: true
+    prefer_single_quotes: true
+    prefer_const_declarations: true
+    prefer_const_constructors: true

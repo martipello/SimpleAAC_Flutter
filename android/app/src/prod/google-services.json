@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "997985384352",
+    "firebase_url": "https://simpleaac-460e6.firebaseio.com",
+    "project_id": "simpleaac-460e6",
+    "storage_bucket": "simpleaac-460e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997985384352:android:747f808f59bc2f61e956c5",
+        "android_client_info": {
+          "package_name": "com.sealstudios.simpleaac.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmCr6eOqqXt41McT1I3g447yybMNCRSOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997985384352:android:e3338caf351ccfd4e956c5",
+        "android_client_info": {
+          "package_name": "com.sealstudios.simpleaac.prod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmCr6eOqqXt41McT1I3g447yybMNCRSOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997985384352:android:d3f54281f1f161d5e956c5",
+        "android_client_info": {
+          "package_name": "com.sealstudios.simpleaac.uat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmCr6eOqqXt41McT1I3g447yybMNCRSOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

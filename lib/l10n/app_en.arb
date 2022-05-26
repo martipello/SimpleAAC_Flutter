@@ -1,0 +1,5 @@
+{
+    "app_name" : "Simple AAC",
+    "use_biometrics_message" : "Would you like to enable fingerprint / facial recognition for fast sign in?",
+    "welcome" : "Welcome"
+}
