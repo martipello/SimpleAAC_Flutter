@@ -1,7 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_built_value/hive_built_value.dart';
 
 import '../serializers/serializers.dart';
 import 'word_sub_type.dart';
