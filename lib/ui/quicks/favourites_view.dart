@@ -1,12 +1,12 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:simple_aac/view_models/selected_words_view_model.dart';
 
 import '../../api/models/word.dart';
 import '../../api/models/word_sub_type.dart';
 import '../../api/models/word_type.dart';
 import '../../dependency_injection_container.dart';
+import '../../view_models/selected_words_view_model.dart';
 import '../shared_widgets/word_tile.dart';
 
 class FavouritesView extends StatelessWidget {
@@ -24,34 +24,28 @@ class FavouritesView extends StatelessWidget {
         mainAxisSpacing: 4,
         crossAxisSpacing: 4,
         childAspectRatio: 0.86,
-        children: [
-          WordTile(
-            word: _buildWord('12423423', true),
-            wordTapCallBack: selectedWordsViewModel.addSelectedWord,
-          ),
-          WordTile(
-            word: _buildWord('12523424', true),
-            wordTapCallBack: selectedWordsViewModel.addSelectedWord,
-          ),
-          WordTile(
-            word: _buildWord('12623425', true),
-            wordTapCallBack: selectedWordsViewModel.addSelectedWord,
-          ),
-          WordTile(
-            word: _buildWord('12723426', true),
-            wordTapCallBack: selectedWordsViewModel.addSelectedWord,
-          ),
-          WordTile(
-            word: _buildWord('12823427', true),
-            wordTapCallBack: selectedWordsViewModel.addSelectedWord,
-          ),
-          WordTile(
-            word: _buildWord('12923428', true),
-            wordTapCallBack: selectedWordsViewModel.addSelectedWord,
-          ),
-        ],
+        children: _buildWordList()
+            .map(
+              (word) => WordTile(
+                word: word,
+                key: ValueKey(word.wordId),
+                wordTapCallBack: selectedWordsViewModel.addSelectedWord,
+              ),
+            )
+            .toList(),
       ),
     );
+  }
+
+  BuiltList<Word> _buildWordList() {
+    return BuiltList([
+      _buildWord('12423423', true),
+      _buildWord('12523424', true),
+      _buildWord('12623425', true),
+      _buildWord('12723426', true),
+      _buildWord('12823427', true),
+      _buildWord('12923428', true),
+    ]);
   }
 
   Word _buildWord(String id, bool addPredictions) {

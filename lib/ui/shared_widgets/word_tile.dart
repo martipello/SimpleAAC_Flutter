@@ -7,26 +7,26 @@ import '../theme/simple_aac_text.dart';
 import '../word_detail_view.dart';
 import 'simple_aac_tile.dart';
 
-typedef WordTileTapCallBack = void Function(Word? word);
+typedef WordTileTapCallBack = void Function(Word word);
 
 class WordTile extends StatelessWidget {
   const WordTile({
     required this.word,
+    required this.key,
     this.wordTapCallBack,
     this.hasReOrderButton = false,
     this.isSelected = false,
     this.closeButtonOnTap,
     this.closeButtonOnLongPress,
-    this.key,
   });
 
-  final Key? key;
-  final Word? word;
+  final Word word;
   final WordTileTapCallBack? wordTapCallBack;
   final WordTileTapCallBack? closeButtonOnTap;
   final WordTileTapCallBack? closeButtonOnLongPress;
   final bool hasReOrderButton;
   final bool isSelected;
+  final Key key;
 
   @override
   Widget build(BuildContext context) {
@@ -81,14 +81,14 @@ class WordTile extends StatelessWidget {
         children: [
           Flexible(
             child: Hero(
-              tag: word?.wordId ?? '',
+              tag: word.wordId ?? '',
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(
                   Radius.circular(4),
                 ),
                 clipBehavior: Clip.hardEdge,
                 child: Image.asset(
-                  word?.imageList.firstOrNull() ?? 'assets/images/sealstudioslogocenter.png',
+                  word.imageList.firstOrNull() ?? 'assets/images/sealstudioslogocenter.png',
                   fit: BoxFit.contain,
                 ),
               ),
@@ -98,7 +98,7 @@ class WordTile extends StatelessWidget {
             height: 4,
           ),
           Text(
-            word?.word ?? '',
+            word.word ?? '',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: SimpleAACText.body4Style,

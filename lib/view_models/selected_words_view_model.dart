@@ -1,3 +1,4 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../api/models/word.dart';
@@ -7,41 +8,52 @@ import '../api/models/word.dart';
 // }
 
 class SelectedWordsViewModel {
-  final selectedWordsStream = BehaviorSubject<List<Word>>();
-  final predictionsForSelectedWord = BehaviorSubject<List<Word>>();
+  final selectedWordsStream = BehaviorSubject<BuiltList<Word>>.seeded(
+    BuiltList<Word>.of([]),
+  );
+
+  final predictionsForSelectedWord = BehaviorSubject<BuiltList<Word>>.seeded(
+    BuiltList<Word>.of([]),
+  );
 
   void dispose() {
     selectedWordsStream.close();
     predictionsForSelectedWord.close();
   }
 
-  void addSelectedWord(Word? word) {
-    if (word != null) {
-      final words = selectedWordsStream.value ?? [];
-      words.add(word);
-      selectedWordsStream.add(words);
-    }
+  void addSelectedWord(Word word) {
+    final words = selectedWordsStream.value;
+    selectedWordsStream.add(
+      words.rebuild(
+        (wb) => wb.add(word),
+      ),
+    );
   }
 
   void removeSelectedWord(Word? word) {
-    if (word != null) {
-      final words = selectedWordsStream.value ?? [];
-      words.remove(word);
-      selectedWordsStream.add(words);
-    }
+    final words = selectedWordsStream.value;
+    selectedWordsStream.add(
+      words.rebuild(
+        (wb) => wb.remove(word),
+      ),
+    );
   }
 
   void updatePositionSelectedWordList(int oldIndex, int newIndex) {
-    final words = selectedWordsStream.value ?? [];
+    final words = selectedWordsStream.value;
     if (oldIndex < words.length && newIndex < words.length - 1) {
       final word = words[oldIndex];
-      words.remove(word);
-      words.insert(newIndex, word);
-      selectedWordsStream.add(words);
+      selectedWordsStream.add(
+        words.rebuild(
+          (wb) => wb
+            ..remove(word)
+            ..insert(newIndex, word),
+        ),
+      );
     }
   }
 
   void clearSelectedWordList() {
-    selectedWordsStream.add([]);
+    selectedWordsStream.add(BuiltList<Word>());
   }
 }

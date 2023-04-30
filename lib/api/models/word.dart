@@ -15,25 +15,25 @@ abstract class Word implements Built<Word, WordBuilder> {
   Word._();
 
   @HiveField(0)
-  String? get wordId;
+  String get wordId;
 
   @HiveField(1)
   DateTime? get createdDate;
 
   @HiveField(2)
-  WordType? get type;
+  WordType get type;
 
   @HiveField(3)
-  WordSubType? get subType;
+  WordSubType get subType;
 
   @HiveField(4)
-  String? get word;
+  String get word;
 
   @HiveField(5)
   BuiltList<String> get imageList;
 
   @HiveField(6)
-  String? get sound;
+  String get sound;
 
   @HiveField(7)
   bool? get isFavourite;

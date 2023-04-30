@@ -1,12 +1,14 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:simple_aac/api/models/word.dart';
-import 'package:simple_aac/utils/console_output.dart';
-import '../../view_models/selected_words_view_model.dart';
 
+import '../../api/models/word.dart';
 import '../../dependency_injection_container.dart';
+import '../../extensions/iterable_extension.dart';
 import '../../flavors.dart';
 import '../../services/shared_preferences_service.dart';
+import '../../utils/console_output.dart';
+import '../../view_models/selected_words_view_model.dart';
 import '../create_word_view.dart';
 import '../intro/intro_page.dart';
 import '../quicks/quicks_view.dart';
@@ -81,23 +83,7 @@ class _AppShellState extends State<AppShell> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SentenceWidget(),
-            StreamBuilder<List<Word>>(
-                stream: selectedWordsViewModel.selectedWordsStream,
-                builder: (context, snapshot) {
-                  final _word = snapshot.data?.first;
-                  return SizedBox(
-                    height: 48,
-                    child: PredictionsWidget(
-                      onDelete: (word) {
-                        log('tag').d('DELETE $word');
-                      },
-                      onSelected: (bool) {
-                        log('tag').d('BOOL $bool');
-                      },
-                      word: _word,
-                    ),
-                  );
-                }),
+            _buildPredictions(),
           ],
         ),
         Positioned.fill(
@@ -110,6 +96,30 @@ class _AppShellState extends State<AppShell> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildPredictions() {
+    return StreamBuilder<BuiltList<Word>>(
+      stream: selectedWordsViewModel.selectedWordsStream,
+      builder: (context, snapshot) {
+        final word = snapshot.data?.firstOrNull();
+        if(word != null) {
+          return SizedBox(
+            height: 48,
+            child: PredictionsWidget(
+              onDelete: (word) {
+                log('tag').d('DELETE $word');
+              },
+              onSelected: (bool) {
+                log('tag').d('BOOL $bool');
+              },
+              word: word,
+            ),
+          );
+        }
+        return const SizedBox();
+      },
     );
   }
 

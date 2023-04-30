@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 
 import '../../api/models/word.dart';
@@ -14,13 +15,44 @@ class SentenceWidget extends StatefulWidget {
 
 class _SentenceWidgetState extends State<SentenceWidget> {
   final selectedWordsViewModel = getIt.get<SelectedWordsViewModel>();
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+          (_) {
+        _addSelectedFilterListener();
+      },
+    );
+  }
+
+  void _addSelectedFilterListener() {
+    const duration = Duration(milliseconds: 200);
+    selectedWordsViewModel.selectedWordsStream.listen(
+          (selectedTypes) {
+        Future.delayed(duration).then(
+              (value) {
+            if (scrollController.hasClients) {
+              scrollController.animateTo(
+                scrollController.position.maxScrollExtent,
+                duration: duration,
+                curve: Curves.fastOutSlowIn,
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Word>>(
+    return StreamBuilder<BuiltList<Word>>(
       stream: selectedWordsViewModel.selectedWordsStream,
       builder: (context, snapshot) {
-        final words = snapshot.data ?? [];
+        final words = snapshot.data ?? BuiltList<Word>();
         return SizedBox(
           height: 150,
           child: words.isEmpty
@@ -36,7 +68,7 @@ class _SentenceWidgetState extends State<SentenceWidget> {
   }
 
   Widget _buildListView(
-    List<Word> words,
+    BuiltList<Word> words,
   ) {
     return Theme(
       data: ThemeData(
@@ -47,7 +79,8 @@ class _SentenceWidgetState extends State<SentenceWidget> {
         proxyDecorator: _proxyDecorator,
         itemCount: words.length,
         onReorder: selectedWordsViewModel.updatePositionSelectedWordList,
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.fromLTRB(8, 8, 64, 8),
+        scrollController: scrollController,
         itemBuilder: (context, index) {
           return _buildWord(
             words[index],
