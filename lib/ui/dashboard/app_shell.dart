@@ -9,15 +9,18 @@ import '../../flavors.dart';
 import '../../services/shared_preferences_service.dart';
 import '../../utils/console_output.dart';
 import '../../view_models/selected_words_view_model.dart';
-import '../create_word_view.dart';
 import '../intro/intro_page.dart';
+import '../manage_word_view.dart';
 import '../quicks/quicks_view.dart';
 import '../settings_view.dart';
 import '../shared_widgets/app_bar.dart';
+import '../shared_widgets/simple_aac_loading_widget.dart';
 import '../theme/base_theme.dart';
 import '../theme/simple_aac_text.dart';
 import 'predictions_widget.dart';
 import 'sentence_widget.dart';
+
+const kPlayButtonHeroTag = 'play-button';
 
 class AppShell extends StatefulWidget {
   static const routeName = '/dashboard';
@@ -44,20 +47,23 @@ class _AppShellState extends State<AppShell> {
       future: sharedPreferences.isFirstTime(),
       builder: (context, snapshot) {
         final isFirstTime = snapshot.data;
-        if (isFirstTime != null && isFirstTime) {
+        if(isFirstTime == null) {
+          return const SimpleAACLoadingWidget();
+        }
+        if (isFirstTime == true) {
           return IntroPage();
         }
-        return _buildAppShell(context);
+        return _buildAppShell();
       },
     );
   }
 
-  Widget _buildAppShell(BuildContext context) {
+  Widget _buildAppShell() {
     return Scaffold(
       appBar: _buildSimpleAACAppBar(),
       body: _buildAppBody(),
-      floatingActionButton: _buildAddWordActionButton(context),
-      bottomNavigationBar: _buildBottomNavigationBar(context),
+      floatingActionButton: _buildAddWordActionButton(),
+      bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
@@ -124,15 +130,20 @@ class _AppShellState extends State<AppShell> {
   }
 
   Widget _buildPlaySentenceActionButton() {
-    return FloatingActionButton(
-      onPressed: () {},
-      child: const Icon(
-        Icons.play_arrow,
+    return Hero(
+      tag: kPlayButtonHeroTag,
+      transitionOnUserGestures: true,
+      child: FloatingActionButton(
+        heroTag: null,
+        onPressed: () {},
+        child: const Icon(
+          Icons.play_arrow,
+        ),
       ),
     );
   }
 
-  Widget _buildAddWordActionButton(BuildContext context) {
+  Widget _buildAddWordActionButton() {
     return SpeedDial(
       spaceBetweenChildren: 4,
       buttonSize: const Size(48, 48),
@@ -142,28 +153,28 @@ class _AppShellState extends State<AppShell> {
         SpeedDialChild(
           onTap: () {
             Navigator.of(context).pushNamed(
-              CreateWordView.routeName,
-              arguments: CreateWordViewArguments(
-                word: null,
-              ),
+              ManageWordView.routeName,
+              arguments: ManageWordViewArguments(),
             );
           },
           child: const FloatingActionButton(
             onPressed: null,
+            heroTag: null,
             child: Icon(Icons.add),
           ),
         ),
         SpeedDialChild(
           onTap: () {
             Navigator.of(context).pushNamed(
-              CreateWordView.routeName,
-              arguments: CreateWordViewArguments(
+              ManageWordView.routeName,
+              arguments: ManageWordViewArguments(
                 word: null,
               ),
             );
           },
           child: const FloatingActionButton(
             onPressed: null,
+            heroTag: null,
             child: Icon(Icons.group_add_rounded),
           ),
         ),
@@ -178,25 +189,33 @@ class _AppShellState extends State<AppShell> {
     return SimpleAACAppBar(
       label: F.title,
       actions: [
-        IconButton(
-          padding: EdgeInsets.zero,
-          visualDensity: VisualDensity.compact,
-          onPressed: () {},
-          icon: const Icon(
-            Icons.search_rounded,
-          ),
-        ),
-        IconButton(
-          padding: EdgeInsets.zero,
-          visualDensity: VisualDensity.compact,
-          onPressed: () {},
-          icon: _buildMenuButton(),
-        ),
+        _buildSearchAppBarAction(),
+        _buildMenuAppBarAction(),
       ],
     );
   }
 
-  Widget _buildBottomNavigationBar(BuildContext context) {
+  Widget _buildMenuAppBarAction() {
+    return IconButton(
+        padding: EdgeInsets.zero,
+        visualDensity: VisualDensity.compact,
+        onPressed: () {},
+        icon: _buildMenuButton(),
+      );
+  }
+
+  Widget _buildSearchAppBarAction() {
+    return IconButton(
+        padding: EdgeInsets.zero,
+        visualDensity: VisualDensity.compact,
+        onPressed: () {},
+        icon: const Icon(
+          Icons.search_rounded,
+        ),
+      );
+  }
+
+  Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       selectedIconTheme: IconThemeData(

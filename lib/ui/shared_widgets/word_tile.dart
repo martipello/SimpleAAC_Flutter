@@ -13,6 +13,7 @@ class WordTile extends StatelessWidget {
   const WordTile({
     required this.word,
     required this.key,
+    required this.heroTag,
     this.wordTapCallBack,
     this.hasReOrderButton = false,
     this.isSelected = false,
@@ -21,17 +22,32 @@ class WordTile extends StatelessWidget {
   });
 
   final Word word;
+  final Key key;
+  final String heroTag;
+
   final WordTileTapCallBack? wordTapCallBack;
   final WordTileTapCallBack? closeButtonOnTap;
   final WordTileTapCallBack? closeButtonOnLongPress;
+
   final bool hasReOrderButton;
   final bool isSelected;
-  final Key key;
 
   @override
   Widget build(BuildContext context) {
     return SimpleAACTile(
       key: key,
+      tapCallBack: () {
+        wordTapCallBack?.call(word);
+      },
+      longTapCallBack: () {
+        Navigator.of(context).pushNamed(
+          WordDetailView.routeName,
+          arguments: WordDetailViewArguments(
+            word: word,
+            heroTag: heroTag
+          ),
+        );
+      },
       border: RoundedRectangleBorder(
         side: BorderSide(
           color: colors(context).primary,
@@ -52,23 +68,7 @@ class WordTile extends StatelessWidget {
       hasReOrderButton: hasReOrderButton,
       child: AspectRatio(
         aspectRatio: 1.0 / 1.3,
-        child: Material(
-          type: MaterialType.transparency,
-          child: InkWell(
-            onTap: () {
-              wordTapCallBack?.call(word);
-            },
-            onLongPress: () {
-              Navigator.of(context).pushNamed(
-                WordDetailView.routeName,
-                arguments: WordDetailViewArguments(
-                  word: word,
-                ),
-              );
-            },
-            child: _buildWordTileContent(),
-          ),
-        ),
+        child: _buildWordTileContent(),
       ),
     );
   }
@@ -81,7 +81,7 @@ class WordTile extends StatelessWidget {
         children: [
           Flexible(
             child: Hero(
-              tag: word.wordId ?? '',
+              tag: heroTag,
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(
                   Radius.circular(4),
@@ -98,7 +98,7 @@ class WordTile extends StatelessWidget {
             height: 4,
           ),
           Text(
-            word.word ?? '',
+            word.word,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: SimpleAACText.body4Style,

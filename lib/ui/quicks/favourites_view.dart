@@ -2,6 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../api/models/extensions/word_extension.dart';
 import '../../api/models/word.dart';
 import '../../api/models/word_sub_type.dart';
 import '../../api/models/word_type.dart';
@@ -29,6 +30,7 @@ class FavouritesView extends StatelessWidget {
               (word) => WordTile(
                 word: word,
                 key: ValueKey(word.wordId),
+                heroTag: word.getHeroTag('favourites-'),
                 wordTapCallBack: selectedWordsViewModel.addSelectedWord,
               ),
             )

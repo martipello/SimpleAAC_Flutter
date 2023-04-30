@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 
+import '../../api/models/extensions/word_extension.dart';
 import '../../api/models/word.dart';
 import '../../dependency_injection_container.dart';
 import '../../view_models/selected_words_view_model.dart';
@@ -127,6 +128,7 @@ class _SentenceWidgetState extends State<SentenceWidget> {
     return WordTile(
       key: ValueKey(index),
       word: word,
+      heroTag: word.getHeroTag('sentence-'),
       closeButtonOnTap: selectedWordsViewModel.removeSelectedWord,
       closeButtonOnLongPress: (_) {
         selectedWordsViewModel.clearSelectedWordList();

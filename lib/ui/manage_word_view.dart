@@ -6,6 +6,7 @@ import '../dependency_injection_container.dart';
 import '../extensions/build_context_extension.dart';
 import '../extensions/iterable_extension.dart';
 import '../view_models/create_word/create_word_view_model.dart';
+import 'dashboard/app_shell.dart';
 import 'dashboard/predictions_widget.dart';
 import 'pick_image_dialog.dart';
 import 'shared_widgets/app_bar.dart';
@@ -17,23 +18,27 @@ import 'shared_widgets/word_sub_type_picker.dart';
 import 'shared_widgets/word_type_picker.dart';
 import 'theme/base_theme.dart';
 
-class CreateWordViewArguments {
-  CreateWordViewArguments({
-    required this.word,
+class ManageWordViewArguments {
+  ManageWordViewArguments({
+    this.word,
+    this.heroTag,
   });
 
   final Word? word;
+  final String? heroTag;
 }
 
-class CreateWordView extends StatefulWidget {
+class ManageWordView extends StatefulWidget {
   static const String routeName = '/create-word';
 
   @override
-  State<CreateWordView> createState() => _CreateWordViewState();
+  State<ManageWordView> createState() => _ManageWordViewState();
 }
 
-class _CreateWordViewState extends State<CreateWordView> {
-  CreateWordViewArguments get _createWordViewArguments => context.routeArguments as CreateWordViewArguments;
+class _ManageWordViewState extends State<ManageWordView> {
+  ManageWordViewArguments get _createWordViewArguments => context.routeArguments as ManageWordViewArguments;
+  String? get heroTag => _createWordViewArguments.heroTag;
+  bool get isEditing => _createWordViewArguments.word != null;
 
   final _formKey = GlobalKey<FormState>();
   final _wordViewModel = getIt.get<CreateWordViewModel>();
@@ -87,7 +92,7 @@ class _CreateWordViewState extends State<CreateWordView> {
         final _word = snapshot.data;
         return Scaffold(
           appBar: SimpleAACAppBar(
-            label: _word?.word != null ? 'Edit ${_word?.word ?? ''}' : 'Create',
+            label: isEditing ? 'Edit ${_word?.word ?? ''}' : 'Create',
           ),
           body: _buildCreateWordViewBody(
             _word,
@@ -165,7 +170,7 @@ class _CreateWordViewState extends State<CreateWordView> {
             SimpleAACTile(
               border: RoundedRectangleBorder(
                 side: BorderSide(
-                  color: _word?.type?.getColor(context) ?? colors(context).primary,
+                  color: _word?.type.getColor(context) ?? colors(context).primary,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(4),
@@ -225,9 +230,14 @@ class _CreateWordViewState extends State<CreateWordView> {
   }
 
   Widget _buildSpeechButton() {
-    return FloatingActionButton(
-      onPressed: () {},
-      child: const Icon(Icons.play_arrow),
+    return Hero(
+      tag: kPlayButtonHeroTag,
+      transitionOnUserGestures: true,
+      child: FloatingActionButton(
+        heroTag: null,
+        onPressed: () {},
+        child: const Icon(Icons.play_arrow),
+      ),
     );
   }
 
@@ -290,7 +300,8 @@ class _CreateWordViewState extends State<CreateWordView> {
               },
               child: imageUri.isNotEmpty
                   ? Hero(
-                      tag: _word?.wordId ?? '',
+                      tag: heroTag ?? '',
+                      transitionOnUserGestures: true,
                       child: Image.asset(
                         imageUri,
                         fit: BoxFit.contain,
@@ -326,11 +337,7 @@ class _CreateWordViewState extends State<CreateWordView> {
             child: word?.predictionList.isNotEmpty == true
                 ? PredictionsWidget(
                     word: word,
-                    onDelete: (word) {
-                      if (word != null) {
-                        _wordViewModel.removeWordPrediction(word);
-                      }
-                    })
+                    onDelete: _wordViewModel.removeWordPrediction)
                 : null,
           ),
         ),
@@ -344,6 +351,7 @@ class _CreateWordViewState extends State<CreateWordView> {
 
   Widget _buildAddPredictionButton() {
     return FloatingActionButton.small(
+      heroTag: null,
       onPressed: () {},
       child: const Icon(Icons.add),
     );

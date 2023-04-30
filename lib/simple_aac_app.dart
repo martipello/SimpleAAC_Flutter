@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'dependency_injection_container.dart';
 import 'services/navigation_service.dart';
-import 'ui/create_word_view.dart';
+import 'ui/manage_word_view.dart';
 import 'ui/dashboard/app_shell.dart';
 import 'ui/settings_view.dart';
 import 'ui/theme/base_theme.dart';
@@ -68,7 +68,7 @@ class _SimpleAACAppState extends State<SimpleAACApp> {
       routes: {
         AppShell.routeName: (context) => AppShell(),
         WordDetailView.routeName: (context) => WordDetailView(),
-        CreateWordView.routeName: (context) => CreateWordView(),
+        ManageWordView.routeName: (context) => ManageWordView(),
         SettingsView.routeName: (context) => SettingsView(),
       },
     );

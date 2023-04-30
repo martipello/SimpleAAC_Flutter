@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../extensions/build_context_extension.dart';
 import '../api/models/word.dart';
 import '../extensions/iterable_extension.dart';
-import 'create_word_view.dart';
+import 'dashboard/app_shell.dart';
+import 'manage_word_view.dart';
 import 'shared_widgets/app_bar.dart';
 import 'shared_widgets/simple_aac_dialog.dart';
 import 'shared_widgets/simple_aac_table.dart';
@@ -13,9 +14,11 @@ import 'theme/simple_aac_text.dart';
 class WordDetailViewArguments {
   WordDetailViewArguments({
     required this.word,
+    required this.heroTag,
   });
 
-  final Word? word;
+  final Word word;
+  final String heroTag;
 }
 
 class WordDetailView extends StatefulWidget {
@@ -28,12 +31,15 @@ class WordDetailView extends StatefulWidget {
 class _WordDetailViewState extends State<WordDetailView> {
   WordDetailViewArguments get _wordDetailViewArguments => context.routeArguments as WordDetailViewArguments;
 
+  Word get _word => _wordDetailViewArguments.word;
+
+  String get heroTag => _wordDetailViewArguments.heroTag;
+
   @override
   Widget build(BuildContext context) {
-    final _word = _wordDetailViewArguments.word;
     return Scaffold(
       appBar: SimpleAACAppBar(
-        label: _word?.word ?? '',
+        label: _word.word,
         actions: _buildWordDetailActions(_word),
       ),
       body: Column(
@@ -42,20 +48,7 @@ class _WordDetailViewState extends State<WordDetailView> {
           Stack(
             children: [
               _buildWordDetailImage(_word),
-              Positioned.fill(
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: FloatingActionButton(
-                      onPressed: () {},
-                      child: const Icon(
-                        Icons.play_arrow,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              _buildPositionedFloatingActionButton(),
             ],
           ),
           Padding(
@@ -65,27 +58,27 @@ class _WordDetailViewState extends State<WordDetailView> {
             child: SimpleAACTable(
               wordskiiTableRowInfoList: [
                 SimpleAACTableRowInfo(
-                  _word?.word ?? '',
+                  _word.word,
                   Icons.title,
                   'Word : ',
                 ),
                 SimpleAACTableRowInfo(
-                  _word?.sound ?? '',
+                  _word.sound,
                   Icons.volume_up,
                   'Speak : ',
                 ),
                 SimpleAACTableRowInfo(
-                  _word?.subType?.name ?? '',
+                  _word.subType.name,
                   Icons.title,
                   'Description : ',
                 ),
                 SimpleAACTableRowInfo(
-                  _word?.type?.name ?? '',
+                  _word.type.name,
                   Icons.title,
                   'Type : ',
                 ),
                 SimpleAACTableRowInfo(
-                  _word?.usageCount != null ? '${_word?.usageCount?.toString()} times' : '0 times',
+                  _word.usageCount != null ? '${_word.usageCount?.toString()} times' : '0 times',
                   Icons.title,
                   'Used : ',
                 ),
@@ -139,33 +132,54 @@ class _WordDetailViewState extends State<WordDetailView> {
     );
   }
 
-  Widget _buildWordDetailImage(Word? _word) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Hero(
-          tag: _word?.wordId ?? '',
-          child: Image.asset(
-            _word?.imageList.firstOrNull() ?? 'assets/images/sealstudioslogocenter.png',
-            fit: BoxFit.cover,
-            height: 250,
+  Widget _buildPositionedFloatingActionButton() {
+    return Positioned.fill(
+      child: Align(
+        alignment: Alignment.bottomRight,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: Hero(
+            tag: kPlayButtonHeroTag,
+            transitionOnUserGestures: true,
+            child: FloatingActionButton(
+              heroTag: null,
+              onPressed: () {},
+              child: const Icon(
+                Icons.play_arrow,
+              ),
+            ),
           ),
         ),
-        const SizedBox(
-          height: 24,
-        ),
-      ],
+      ),
     );
   }
 
-  List<Widget> _buildWordDetailActions(Word? _word) {
+  Widget _buildWordDetailImage(Word _word) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: 24,
+      ),
+      child: Hero(
+        tag: heroTag,
+        transitionOnUserGestures: true,
+        child: Image.asset(
+          _word.imageList.firstOrNull() ?? 'assets/images/sealstudioslogocenter.png',
+          fit: BoxFit.cover,
+          height: 250,
+          width: context.screenWidth,
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildWordDetailActions(Word _word) {
     return [
       IconButton(
         padding: EdgeInsets.zero,
         visualDensity: VisualDensity.compact,
         onPressed: () {},
         icon: Icon(
-          _word?.isFavourite == true ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+          _word.isFavourite == true ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
         ),
       ),
       IconButton(
@@ -177,14 +191,15 @@ class _WordDetailViewState extends State<WordDetailView> {
     ];
   }
 
-  Widget _buildMenuButton(Word? word) {
+  Widget _buildMenuButton(Word word) {
     return PopupMenuButton(
       onSelected: (result) async {
         if (result == 0) {
           Navigator.of(context).pushReplacementNamed(
-            CreateWordView.routeName,
-            arguments: CreateWordViewArguments(
+            ManageWordView.routeName,
+            arguments: ManageWordViewArguments(
               word: word,
+              heroTag: heroTag,
             ),
           );
         }

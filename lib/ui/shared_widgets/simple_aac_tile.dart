@@ -11,12 +11,16 @@ class SimpleAACTile extends StatelessWidget {
     this.closeButtonOnTap,
     this.closeButtonOnLongPress,
     this.hasReOrderButton = false,
+    this.tapCallBack,
+    this.longTapCallBack,
   }) : super(key: key);
 
   final Widget child;
   final bool isSelected;
   final VoidCallback? closeButtonOnTap;
   final VoidCallback? closeButtonOnLongPress;
+  final VoidCallback? tapCallBack;
+  final VoidCallback? longTapCallBack;
   final bool hasReOrderButton;
   final RoundedRectangleBorder? border;
 
@@ -34,23 +38,30 @@ class SimpleAACTile extends StatelessWidget {
             ),
           ),
       clipBehavior: Clip.hardEdge,
-      child: Stack(
-        children: [
-          child,
-          if (_closeButtonOnTap != null)
-            buildCloseButton(
-              context,
-              Alignment.topRight,
-              _closeButtonOnTap,
-              closeButtonOnLongPress,
-            ),
-          if (hasReOrderButton)
-            buildReOrderButton(
-              context,
-              Alignment.topLeft,
-              () {},
-            ),
-        ],
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: tapCallBack,
+          onLongPress: longTapCallBack,
+          child: Stack(
+            children: [
+              child,
+              if (_closeButtonOnTap != null)
+                buildCloseButton(
+                  context,
+                  Alignment.topRight,
+                  _closeButtonOnTap,
+                  closeButtonOnLongPress,
+                ),
+              if (hasReOrderButton)
+                buildReOrderButton(
+                  context,
+                  Alignment.topLeft,
+                  () {},
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
