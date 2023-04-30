@@ -15,62 +15,96 @@ class CreateWordViewModel {
   void setWordSubType(WordSubType? wordSubType) {
     final word = wordStream.value;
     if (word != null) {
-      wordStream.add(word.rebuild((p0) => p0.subType = wordSubType));
+      wordStream.add(
+        word.rebuild((p0) => p0.subType = wordSubType),
+      );
     } else {
-      wordStream.add(Word((p0) => p0.subType = wordSubType));
+      wordStream.add(
+        Word((p0) => p0.subType = wordSubType),
+      );
     }
   }
 
   void setWordType(WordType? wordType) {
-    final word = wordStream.value;
+    final word = wordStream.valueOrNull;
     if (word != null) {
-      wordStream.add(word.rebuild((p0) => p0.type = wordType));
+      wordStream.add(
+        word.rebuild((p0) => p0.type = wordType),
+      );
     } else {
-      wordStream.add(Word((p0) => p0.type = wordType));
+      wordStream.add(
+        Word((p0) => p0.type = wordType),
+      );
     }
   }
 
   void setWordWord(String? wordWord) {
-    final word = wordStream.value;
+    final word = wordStream.valueOrNull;
     if (word != null) {
-      wordStream.add(word.rebuild((p0) => p0.word = wordWord));
+      wordStream.add(
+        word.rebuild((p0) => p0.word = wordWord),
+      );
     } else {
-      wordStream.add(Word((p0) => p0.word = wordWord));
+      wordStream.add(
+        Word((p0) => p0.word = wordWord),
+      );
     }
   }
 
   void setWordDescription(String? wordWord) {
-    final word = wordStream.value;
+    final word = wordStream.valueOrNull;
     if (word != null) {
-      wordStream.add(word.rebuild((p0) => p0.word = wordWord));
+      wordStream.add(
+        word.rebuild((p0) => p0.word = wordWord),
+      );
     } else {
-      wordStream.add(Word((p0) => p0.word = wordWord));
+      wordStream.add(
+        Word((p0) => p0.word = wordWord),
+      );
     }
   }
 
   void setWordSound(String? sound) {
-    final word = wordStream.value;
+    final word = wordStream.valueOrNull;
     if (word != null) {
-      wordStream.add(word.rebuild((p0) => p0.sound = sound));
+      wordStream.add(
+        word.rebuild((p0) => p0.sound = sound),
+      );
     } else {
-      wordStream.add(Word((p0) => p0.sound = sound));
+      wordStream.add(
+        Word((p0) => p0.sound = sound),
+      );
     }
   }
 
   void addWordPrediction(Word word) {
-    final predictions = wordStream.value?.predictionList.toList() ?? <Word?>[];
-    predictions.add(word);
-    setWordPredictions(predictions);
+    final predictions = wordStream.valueOrNull?.predictionList;
+    if (predictions != null) {
+      setWordPredictions(
+        predictions.rebuild(
+          (pb) => pb.add(word),
+        ),
+      );
+    } else {
+      setWordPredictions(
+        [word].toBuiltList(),
+      );
+    }
   }
 
   void removeWordPrediction(Word word) {
-    final predictions = wordStream.value?.predictionList.toList() ?? <Word?>[];
-    predictions.remove(word);
-    setWordPredictions(predictions);
+    final predictions = wordStream.valueOrNull?.predictionList;
+    if (predictions != null) {
+      setWordPredictions(
+        predictions.rebuild(
+          (pb) => pb.remove(word),
+        ),
+      );
+    }
   }
 
-  void setWordPredictions(List<Word?> predictions) {
-    final word = wordStream.value;
+  void setWordPredictions(BuiltList<Word?> predictions) {
+    final word = wordStream.valueOrNull;
     if (word != null) {
       wordStream.add(
         word.rebuild(

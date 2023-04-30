@@ -46,6 +46,12 @@ class WordSubTypePicker extends StatelessWidget {
             width: 2.0,
           ),
         ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: wordType.getColor(context),
+            width: 2.0,
+          ),
+        ),
       ),
       value: wordType?.getSubTypes().first,
       validator: wordSubTypePickerValidator,

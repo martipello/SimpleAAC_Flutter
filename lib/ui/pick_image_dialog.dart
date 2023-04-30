@@ -42,17 +42,14 @@ class _PickImageDialogState extends State<PickImageDialog> {
           Row(
             children: [
               _buildIconButton(
-                context: context,
                 iconData: Icons.camera_alt,
                 label: 'Camera',
               ),
               _buildIconButton(
-                context: context,
                 iconData: Icons.image_rounded,
                 label: 'Gallery',
               ),
               _buildIconButton(
-                context: context,
                 iconData: Icons.brush_rounded,
                 label: 'Draw',
               ),
@@ -64,7 +61,6 @@ class _PickImageDialogState extends State<PickImageDialog> {
   }
 
   Widget _buildIconButton({
-    required BuildContext context,
     required IconData iconData,
     required String label,
   }) {
@@ -89,7 +85,9 @@ class _PickImageDialogState extends State<PickImageDialog> {
               ),
             ],
           ),
-          onPressed: () {},
+          onPressed: () {
+
+          },
         ),
       ),
     );

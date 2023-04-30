@@ -40,6 +40,12 @@ class WordTypePicker extends StatelessWidget {
             width: 2.0,
           ),
         ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: wordType.getColor(context),
+            width: 2.0,
+          ),
+        ),
       ),
       isExpanded: true,
       validator: wordTypePickerValidator,

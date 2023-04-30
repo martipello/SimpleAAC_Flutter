@@ -37,7 +37,9 @@ class ManageWordView extends StatefulWidget {
 
 class _ManageWordViewState extends State<ManageWordView> {
   ManageWordViewArguments get _createWordViewArguments => context.routeArguments as ManageWordViewArguments;
+
   String? get heroTag => _createWordViewArguments.heroTag;
+
   bool get isEditing => _createWordViewArguments.word != null;
 
   final _formKey = GlobalKey<FormState>();
@@ -50,6 +52,9 @@ class _ManageWordViewState extends State<ManageWordView> {
   void initState() {
     super.initState();
     _addTextListeners();
+    Future.delayed(Duration.zero).then(
+      (value) => _wordViewModel.setWord(_createWordViewArguments.word),
+    );
   }
 
   @override
@@ -87,7 +92,6 @@ class _ManageWordViewState extends State<ManageWordView> {
   Widget build(BuildContext context) {
     return StreamBuilder<Word?>(
       stream: _wordViewModel.wordStream,
-      initialData: _createWordViewArguments.word,
       builder: (context, snapshot) {
         final _word = snapshot.data;
         return Scaffold(
@@ -120,7 +124,9 @@ class _ManageWordViewState extends State<ManageWordView> {
               _word,
             ),
           ),
-          _buildMediumMargin(),
+          const SizedBox(
+            height: 12,
+          ),
           Expanded(
             child: _buildSimpleAACTile(
               context,
@@ -136,7 +142,6 @@ class _ManageWordViewState extends State<ManageWordView> {
     Word? _word,
   ) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
           child: WordTypePicker(
@@ -161,27 +166,25 @@ class _ManageWordViewState extends State<ManageWordView> {
     Word? _word,
   ) {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12.0,
-        ),
-        child: Column(
-          children: [
-            SimpleAACTile(
-              border: RoundedRectangleBorder(
-                side: BorderSide(
-                  color: _word?.type.getColor(context) ?? colors(context).primary,
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12.0,
+      ),
+      child: Column(
+        children: [
+          SimpleAACTile(
+            border: RoundedRectangleBorder(
+              side: BorderSide(
+                color: _word?.type.getColor(context) ?? colors(context).primary,
+                width: 2,
               ),
-              child: _buildWordTileContent(
-                _word,
-              ),
+              borderRadius: BorderRadius.circular(4),
             ),
-            _buildMediumMargin(),
-          ],
-        ),
+            child: _buildWordTileContent(
+              _word,
+            ),
+          ),
+          _buildMediumMargin(),
+        ],
       ),
     );
   }
@@ -236,7 +239,9 @@ class _ManageWordViewState extends State<ManageWordView> {
       child: FloatingActionButton(
         heroTag: null,
         onPressed: () {},
-        child: const Icon(Icons.play_arrow),
+        child: const Icon(
+          Icons.play_arrow,
+        ),
       ),
     );
   }
@@ -335,9 +340,7 @@ class _ManageWordViewState extends State<ManageWordView> {
           child: SizedBox(
             height: 32,
             child: word?.predictionList.isNotEmpty == true
-                ? PredictionsWidget(
-                    word: word,
-                    onDelete: _wordViewModel.removeWordPrediction)
+                ? PredictionsWidget(word: word, onDelete: _wordViewModel.removeWordPrediction)
                 : null,
           ),
         ),
