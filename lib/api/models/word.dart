@@ -51,7 +51,7 @@ abstract class Word implements Built<Word, WordBuilder> {
   bool? get isBackedUp;
 
   @HiveField(12)
-  BuiltList<Word?> get predictionList;
+  BuiltList<Word> get predictionList;
 
   Map<String, dynamic> toJson() {
     return serializers.serializeWith(Word.serializer, this) as Map<String, dynamic>;

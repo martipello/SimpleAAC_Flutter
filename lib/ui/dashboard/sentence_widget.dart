@@ -30,7 +30,7 @@ class _SentenceWidgetState extends State<SentenceWidget> {
 
   void _addSelectedFilterListener() {
     const duration = Duration(milliseconds: 200);
-    selectedWordsViewModel.selectedWordsStream.listen(
+    selectedWordsViewModel.selectedWords.listen(
           (selectedTypes) {
         Future.delayed(duration).then(
               (value) {
@@ -51,7 +51,7 @@ class _SentenceWidgetState extends State<SentenceWidget> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<BuiltList<Word>>(
-      stream: selectedWordsViewModel.selectedWordsStream,
+      stream: selectedWordsViewModel.selectedWords,
       builder: (context, snapshot) {
         final words = snapshot.data ?? BuiltList<Word>();
         return SizedBox(

@@ -39,7 +39,7 @@ class _$WordSerializer implements StructuredSerializer<Word> {
       'predictionList',
       serializers.serialize(object.predictionList,
           specifiedType:
-              const FullType(BuiltList, const [const FullType.nullable(Word)])),
+              const FullType(BuiltList, const [const FullType(Word)])),
     ];
     Object? value;
     value = object.createdDate;
@@ -150,8 +150,8 @@ class _$WordSerializer implements StructuredSerializer<Word> {
           break;
         case 'predictionList':
           result.predictionList.replace(serializers.deserialize(value,
-                  specifiedType: const FullType(
-                      BuiltList, const [const FullType.nullable(Word)]))!
+                  specifiedType:
+                      const FullType(BuiltList, const [const FullType(Word)]))!
               as BuiltList<Object?>);
           break;
       }
@@ -187,7 +187,7 @@ class _$Word extends Word {
   @override
   final bool? isBackedUp;
   @override
-  final BuiltList<Word?> predictionList;
+  final BuiltList<Word> predictionList;
 
   factory _$Word([void Function(WordBuilder)? updates]) =>
       (new WordBuilder()..update(updates))._build();
@@ -336,10 +336,10 @@ class WordBuilder implements Builder<Word, WordBuilder> {
   bool? get isBackedUp => _$this._isBackedUp;
   set isBackedUp(bool? isBackedUp) => _$this._isBackedUp = isBackedUp;
 
-  ListBuilder<Word?>? _predictionList;
-  ListBuilder<Word?> get predictionList =>
-      _$this._predictionList ??= new ListBuilder<Word?>();
-  set predictionList(ListBuilder<Word?>? predictionList) =>
+  ListBuilder<Word>? _predictionList;
+  ListBuilder<Word> get predictionList =>
+      _$this._predictionList ??= new ListBuilder<Word>();
+  set predictionList(ListBuilder<Word>? predictionList) =>
       _$this._predictionList = predictionList;
 
   WordBuilder();

@@ -14,8 +14,8 @@ Serializers _$serializers = (new Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(String)]),
           () => new ListBuilder<String>())
       ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType.nullable(Word)]),
-          () => new ListBuilder<Word?>()))
+          const FullType(BuiltList, const [const FullType(Word)]),
+          () => new ListBuilder<Word>()))
     .build();
 
 // ignore_for_file: deprecated_member_use_from_same_package,type=lint

@@ -1,3 +1,4 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 
 import '../api/models/extensions/word_type_extension.dart';
@@ -5,7 +6,7 @@ import '../api/models/word.dart';
 import '../dependency_injection_container.dart';
 import '../extensions/build_context_extension.dart';
 import '../extensions/iterable_extension.dart';
-import '../view_models/create_word/create_word_view_model.dart';
+import '../view_models/create_word/manage_word_view_model.dart';
 import 'dashboard/app_shell.dart';
 import 'dashboard/predictions_widget.dart';
 import 'pick_image_dialog.dart';
@@ -43,7 +44,7 @@ class _ManageWordViewState extends State<ManageWordView> {
   bool get isEditing => _createWordViewArguments.word != null;
 
   final _formKey = GlobalKey<FormState>();
-  final _wordViewModel = getIt.get<CreateWordViewModel>();
+  final _wordViewModel = getIt.get<ManageWordViewModel>();
 
   final _wordWordController = TextEditingController();
   final _wordSoundController = TextEditingController();
@@ -53,7 +54,9 @@ class _ManageWordViewState extends State<ManageWordView> {
     super.initState();
     _addTextListeners();
     Future.delayed(Duration.zero).then(
-      (value) => _wordViewModel.setWord(_createWordViewArguments.word),
+      (value) => _wordViewModel.setWord(
+        _createWordViewArguments.word,
+      ),
     );
   }
 
@@ -340,7 +343,11 @@ class _ManageWordViewState extends State<ManageWordView> {
           child: SizedBox(
             height: 32,
             child: word?.predictionList.isNotEmpty == true
-                ? PredictionsWidget(word: word, onDelete: _wordViewModel.removeWordPrediction)
+                ? PredictionsWidget(
+                    predictions: word?.predictionList ?? BuiltList(),
+                    onPredictionsChanged: _wordViewModel.setWordPredictions,
+                    isExpanded: true,
+                  )
                 : null,
           ),
         ),

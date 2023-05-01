@@ -4,6 +4,7 @@ import '../../extensions/build_context_extension.dart';
 import '../api/models/word.dart';
 import '../extensions/iterable_extension.dart';
 import 'dashboard/app_shell.dart';
+import 'dashboard/predictions_widget.dart';
 import 'manage_word_view.dart';
 import 'shared_widgets/app_bar.dart';
 import 'shared_widgets/simple_aac_dialog.dart';
@@ -107,21 +108,9 @@ class _WordDetailViewState extends State<WordDetailView> {
                   '',
                   Icons.star_rounded,
                   'Predictions : ',
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.star_rounded,
-                        color: colors(context).textOnForeground,
-                      ),
-                      Icon(
-                        Icons.star_rounded,
-                        color: colors(context).textOnForeground,
-                      ),
-                      Icon(
-                        Icons.star_rounded,
-                        color: colors(context).textOnForeground,
-                      ),
-                    ],
+                  child: PredictionsWidget(
+                    predictions: _word.predictionList,
+                    isExpanded: true,
                   ),
                 ),
               ],

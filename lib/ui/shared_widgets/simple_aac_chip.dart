@@ -16,14 +16,18 @@ class SimpleAACChip extends StatelessWidget {
     this.onSelected,
     this.onDelete,
     this.icon,
+    this.onTap,
   });
 
   final String label;
   final ChipType chipType;
   final bool isSelected;
   final OnSelected? onSelected;
+  final VoidCallback? onTap;
   final VoidCallback? onDelete;
   final Widget? icon;
+
+  bool get isRemovable => onDelete != null;
 
   @override
   Widget build(BuildContext context) {
@@ -48,19 +52,20 @@ class SimpleAACChip extends StatelessWidget {
     } else {
       return SizedBox(
         height: 32,
-        child: Chip(
+        child: InputChip(
           label: Text(label),
           padding: EdgeInsets.zero,
           backgroundColor: colors(context).foreground,
           labelStyle: SimpleAACText.body4Style.copyWith(
             color: colors(context).textOnForeground,
           ),
-          useDeleteButtonTooltip: isSelected,
+          onPressed: onTap,
+          deleteButtonTooltipMessage: 'Remove',
           deleteIconColor: colors(context).textOnForeground,
-          onDeleted: isSelected ? onDelete : null,
-          deleteIcon: const Icon(
+          onDeleted: onDelete,
+          deleteIcon: isRemovable ? const Icon(
             Icons.close,
-          ),
+          ) : null,
         ),
       );
     }

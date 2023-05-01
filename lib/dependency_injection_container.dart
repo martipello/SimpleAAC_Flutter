@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'services/navigation_service.dart';
 import 'services/shared_preferences_service.dart';
-import 'view_models/create_word/create_word_view_model.dart';
+import 'view_models/create_word/manage_word_view_model.dart';
 import 'view_models/file_picker/file_picker_view_model.dart';
 import 'view_models/intro/intro_view_model.dart';
 import 'view_models/selected_words_view_model.dart';
@@ -27,5 +27,5 @@ Future<void> init() async {
   getIt.registerFactory(IntroViewModel.new);
   getIt.registerFactory(TabBarViewModel.new);
   getIt.registerFactory(() => FilePickerViewModel(getIt()));
-  getIt.registerFactory(CreateWordViewModel.new);
+  getIt.registerFactory(ManageWordViewModel.new);
 }

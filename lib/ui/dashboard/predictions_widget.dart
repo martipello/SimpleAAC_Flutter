@@ -1,26 +1,27 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 
 import '../../api/models/word.dart';
 import '../../dependency_injection_container.dart';
 import '../../services/shared_preferences_service.dart';
-import '../../view_models/selected_words_view_model.dart';
+import '../shared_widgets/chip_group.dart';
 import '../shared_widgets/simple_aac_chip.dart';
-import '../shared_widgets/word_tile.dart';
+
+typedef WordListCallBack = void Function(BuiltList<Word> word);
 
 class PredictionsWidget extends StatelessWidget {
   PredictionsWidget({
     Key? key,
-    this.word,
-    this.onDelete,
-    this.onSelected,
+    required this.predictions,
+    this.onPredictionsChanged,
+    this.isExpanded = false,
   }) : super(key: key);
 
-  final Word? word;
-  final WordTileTapCallBack? onDelete;
-  final OnSelected? onSelected;
+  final BuiltList<Word> predictions;
+  final WordListCallBack? onPredictionsChanged;
+  final bool isExpanded;
 
   final sharedPreferences = getIt.get<SharedPreferencesService>();
-  final selectedWordsViewModel = getIt.get<SelectedWordsViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,19 +32,19 @@ class PredictionsWidget extends StatelessWidget {
           initialData: initialStateSnapshot.data,
           stream: sharedPreferences.hasPredictionsEnabledStream,
           builder: (context, snapshot) {
-            final predictions = word?.predictionList.toList() ?? [];
-            final chips = _buildPredictionChips(predictions);
-            final _hasPredictionsEnabled = snapshot.data ?? initialStateSnapshot.data ?? true;
-            return _hasPredictionsEnabled ? _buildPredictionListView(chips) : const SizedBox();
+            final hasPredictionsEnabled = snapshot.data ?? initialStateSnapshot.data ?? true;
+            if (hasPredictionsEnabled) {
+              return isExpanded ? _buildExpandedChipGroup() : _buildPredictionListView();
+            } else {
+              return const SizedBox();
+            }
           },
         );
       },
     );
   }
 
-  Widget _buildPredictionListView(
-    List<Widget> chips,
-  ) {
+  Widget _buildPredictionListView() {
     return ListView.separated(
       shrinkWrap: true,
       padding: const EdgeInsets.only(
@@ -51,9 +52,14 @@ class PredictionsWidget extends StatelessWidget {
         right: 56,
       ),
       scrollDirection: Axis.horizontal,
-      itemCount: chips.length,
+      itemCount: predictions.length,
       itemBuilder: (context, index) {
-        return chips[index];
+        final word = predictions[index];
+        return _buildPredictionChip(
+          word.word,
+          _getAddPredictionFunction(word),
+          _getRemovePredictionFunction(word),
+        );
       },
       separatorBuilder: (context, index) {
         return const SizedBox(
@@ -63,35 +69,62 @@ class PredictionsWidget extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildPredictionChips(
-    List<Word?> predictions,
+  VoidCallback? _getAddPredictionFunction(
+    Word word,
   ) {
-    return predictions
-        .whereType<Word>()
-        .where((element) => element.word != null)
-        .map(
-          (e) => _buildPredictionChip(
-            e.word ?? '',
-            () {
-              onDelete?.call(e);
-            },
-            onSelected,
+    if (onPredictionsChanged != null) {
+      return () {
+        onPredictionsChanged?.call(
+          predictions.rebuild(
+            (pb) => pb.add(word),
           ),
-        )
-        .toList();
+        );
+      };
+    } else {
+      return null;
+    }
+  }
+
+  VoidCallback? _getRemovePredictionFunction(
+    Word word,
+  ) {
+    if (onPredictionsChanged != null) {
+      return () {
+        onPredictionsChanged?.call(
+          predictions.rebuild(
+            (pb) => pb.remove(word),
+          ),
+        );
+      };
+    } else {
+      return null;
+    }
+  }
+
+  Widget _buildExpandedChipGroup() {
+    return ChipGroup(
+      chips: predictions
+          .map(
+            (word) => _buildPredictionChip(
+              word.word,
+              _getAddPredictionFunction(word),
+              _getRemovePredictionFunction(word),
+            ),
+          )
+          .toList(),
+    );
   }
 
   Widget _buildPredictionChip(
     String label,
-    VoidCallback onDelete,
-    OnSelected? onSelected,
+    VoidCallback? onTap,
+    VoidCallback? onDelete,
   ) {
     return SimpleAACChip(
       label: label,
-      isSelected: true,
       chipType: ChipType.normal,
+      onTap: onTap,
       onDelete: onDelete,
-      onSelected: onSelected,
     );
   }
 }

@@ -7,7 +7,6 @@ import '../../dependency_injection_container.dart';
 import '../../extensions/iterable_extension.dart';
 import '../../flavors.dart';
 import '../../services/shared_preferences_service.dart';
-import '../../utils/console_output.dart';
 import '../../view_models/selected_words_view_model.dart';
 import '../intro/intro_page.dart';
 import '../manage_word_view.dart';
@@ -34,6 +33,17 @@ class _AppShellState extends State<AppShell> {
   final selectedWordsViewModel = getIt.get<SelectedWordsViewModel>();
 
   var _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedWordsViewModel.selectedWords.listen((value) {
+      print('selectedWordsStream WORD $value');
+    });
+    selectedWordsViewModel.predictions.listen((value) {
+      print('predictionsForSelectedWord WORD $value');
+    });
+  }
 
   @override
   void dispose() {
@@ -107,24 +117,16 @@ class _AppShellState extends State<AppShell> {
 
   Widget _buildPredictions() {
     return StreamBuilder<BuiltList<Word>>(
-      stream: selectedWordsViewModel.selectedWordsStream,
+      stream: selectedWordsViewModel.predictions,
       builder: (context, snapshot) {
-        final word = snapshot.data?.firstOrNull();
-        if(word != null) {
-          return SizedBox(
-            height: 48,
-            child: PredictionsWidget(
-              onDelete: (word) {
-                log('tag').d('DELETE $word');
-              },
-              onSelected: (bool) {
-                log('tag').d('BOOL $bool');
-              },
-              word: word,
-            ),
-          );
-        }
-        return const SizedBox();
+        final predictions = snapshot.data ?? BuiltList();
+        return SizedBox(
+          height: 48,
+          child: PredictionsWidget(
+            predictions: predictions,
+            onPredictionsChanged: selectedWordsViewModel.setPredictions,
+          ),
+        );
       },
     );
   }

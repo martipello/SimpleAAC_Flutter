@@ -8,52 +8,65 @@ import '../api/models/word.dart';
 // }
 
 class SelectedWordsViewModel {
-  final selectedWordsStream = BehaviorSubject<BuiltList<Word>>.seeded(
+  final selectedWords = BehaviorSubject<BuiltList<Word>>.seeded(
     BuiltList<Word>.of([]),
   );
 
-  final predictionsForSelectedWord = BehaviorSubject<BuiltList<Word>>.seeded(
+  final predictions = BehaviorSubject<BuiltList<Word>>.seeded(
     BuiltList<Word>.of([]),
   );
 
   void dispose() {
-    selectedWordsStream.close();
-    predictionsForSelectedWord.close();
+    selectedWords.close();
+    predictions.close();
   }
 
   void addSelectedWord(Word word) {
-    final words = selectedWordsStream.value;
-    selectedWordsStream.add(
-      words.rebuild(
-        (wb) => wb.add(word),
-      ),
-    );
-  }
-
-  void removeSelectedWord(Word? word) {
-    final words = selectedWordsStream.value;
-    selectedWordsStream.add(
-      words.rebuild(
-        (wb) => wb.remove(word),
-      ),
-    );
-  }
-
-  void updatePositionSelectedWordList(int oldIndex, int newIndex) {
-    final words = selectedWordsStream.value;
-    if (oldIndex < words.length && newIndex < words.length - 1) {
-      final word = words[oldIndex];
-      selectedWordsStream.add(
+    final words = selectedWords.valueOrNull;
+    if (words != null) {
+      selectedWords.add(
         words.rebuild(
-          (wb) => wb
-            ..remove(word)
-            ..insert(newIndex, word),
+          (wb) => wb.add(word),
+        ),
+      );
+      setPredictions(word.predictionList);
+    }
+  }
+
+  void removeSelectedWord(Word word) {
+    final words = selectedWords.valueOrNull;
+    if (words != null) {
+      selectedWords.add(
+        words.rebuild(
+          (wb) => wb.remove(word),
         ),
       );
     }
   }
 
+  void setPredictions(BuiltList<Word> predictions) {
+    this.predictions.add(
+      predictions,
+    );
+  }
+
+  void updatePositionSelectedWordList(int oldIndex, int newIndex) {
+    final words = selectedWords.valueOrNull;
+    if (words != null) {
+      if (oldIndex < words.length && newIndex < words.length - 1) {
+        final word = words[oldIndex];
+        selectedWords.add(
+          words.rebuild(
+            (wb) => wb
+              ..remove(word)
+              ..insert(newIndex, word),
+          ),
+        );
+      }
+    }
+  }
+
   void clearSelectedWordList() {
-    selectedWordsStream.add(BuiltList<Word>());
+    selectedWords.add(BuiltList<Word>());
   }
 }

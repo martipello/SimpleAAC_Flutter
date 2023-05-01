@@ -5,7 +5,7 @@ import '../../api/models/word.dart';
 import '../../api/models/word_sub_type.dart';
 import '../../api/models/word_type.dart';
 
-class CreateWordViewModel {
+class ManageWordViewModel {
   final wordStream = BehaviorSubject<Word?>();
 
   void setWord(Word? word) {
@@ -77,44 +77,18 @@ class CreateWordViewModel {
     }
   }
 
-  void addWordPrediction(Word word) {
-    final predictions = wordStream.valueOrNull?.predictionList;
-    if (predictions != null) {
-      setWordPredictions(
-        predictions.rebuild(
-          (pb) => pb.add(word),
-        ),
-      );
-    } else {
-      setWordPredictions(
-        [word].toBuiltList(),
-      );
-    }
-  }
-
-  void removeWordPrediction(Word word) {
-    final predictions = wordStream.valueOrNull?.predictionList;
-    if (predictions != null) {
-      setWordPredictions(
-        predictions.rebuild(
-          (pb) => pb.remove(word),
-        ),
-      );
-    }
-  }
-
-  void setWordPredictions(BuiltList<Word?> predictions) {
+  void setWordPredictions(BuiltList<Word> predictions) {
     final word = wordStream.valueOrNull;
     if (word != null) {
       wordStream.add(
         word.rebuild(
-          (p0) => p0.predictionList = predictions.toBuiltList().toBuilder(),
+          (p0) => p0.predictionList.replace(predictions),
         ),
       );
     } else {
       wordStream.add(
         Word(
-          (p0) => p0.predictionList = predictions.toBuiltList().toBuilder(),
+          (p0) => p0.predictionList.replace(predictions),
         ),
       );
     }

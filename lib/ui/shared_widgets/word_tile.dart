@@ -7,7 +7,7 @@ import '../theme/simple_aac_text.dart';
 import '../word_detail_view.dart';
 import 'simple_aac_tile.dart';
 
-typedef WordTileTapCallBack = void Function(Word word);
+typedef WordCallBack = void Function(Word word);
 
 class WordTile extends StatelessWidget {
   const WordTile({
@@ -25,9 +25,9 @@ class WordTile extends StatelessWidget {
   final Key key;
   final String heroTag;
 
-  final WordTileTapCallBack? wordTapCallBack;
-  final WordTileTapCallBack? closeButtonOnTap;
-  final WordTileTapCallBack? closeButtonOnLongPress;
+  final WordCallBack? wordTapCallBack;
+  final WordCallBack? closeButtonOnTap;
+  final WordCallBack? closeButtonOnLongPress;
 
   final bool hasReOrderButton;
   final bool isSelected;
