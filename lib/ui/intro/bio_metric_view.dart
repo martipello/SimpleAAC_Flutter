@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../dependency_injection_container.dart';
 import '../../extensions/build_context_extension.dart';
 import '../../services/shared_preferences_service.dart';
-import '../../ui/theme/base_theme.dart';
 import 'intro_view.dart';
 
 class BioMetricView extends StatefulWidget {
@@ -28,7 +27,7 @@ class _BioMetricViewState extends State<BioMetricView> {
             isFingerprintEnabled: isFingerprintEnabled,
           ),
           actionButtonLabel: isFingerprintEnabled ? 'Disable' : 'Enable',
-          actionButtonFillColor: isFingerprintEnabled ? colors(context).chromeLighter : colors(context).secondary,
+          actionButtonFillColor: isFingerprintEnabled ? context.themeColors.background : context.themeColors.secondary,
           actionButtonCallback: () {
             _sharedPreferences.setBiometrics(useBiometrics: !isFingerprintEnabled);
             setState(() {});
@@ -48,14 +47,14 @@ class _BioMetricViewState extends State<BioMetricView> {
         aspectRatio: 1 / 1,
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: colors(context).positive),
+            border: Border.all(color: context.themeColors.primary),
             borderRadius: BorderRadius.circular(360.0),
           ),
           padding: const EdgeInsets.all(8),
           child: FittedBox(
             child: Icon(
               Icons.fingerprint_rounded,
-              color: colors(context).positive,
+              color: context.themeColors.primary,
             ),
           ),
         ),

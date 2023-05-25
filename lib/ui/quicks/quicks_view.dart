@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../dependency_injection_container.dart';
+import '../../extensions/build_context_extension.dart';
 import '../../view_models/utils/tab_bar_view_model.dart';
-import '../theme/base_theme.dart';
 import 'favourites_view.dart';
 
 class QuicksView extends StatefulWidget {
@@ -43,7 +43,7 @@ class _QuicksViewState extends State<QuicksView> with SingleTickerProviderStateM
               Container(
                 child: TabBar(
                   controller: _tabController,
-                  indicatorColor: colors(context).secondary,
+                  indicatorColor: context.themeColors.secondary,
                   tabs: [
                     _buildTab(
                       'FAVOURITES',

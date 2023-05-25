@@ -6,12 +6,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_built_value/hive_built_value.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:simple_aac/ui/theme/theme_builder_widget.dart';
 
+import 'api/models/word.dart';
+import 'api/models/word_sub_type.dart';
+import 'api/models/word_type.dart';
 import 'dependency_injection_container.dart' as di;
-import 'extensions/enum_extension.dart';
+import 'api/models/theme_service_hive_adapters.dart';
 import 'simple_aac_app.dart';
-import 'ui/theme/base_theme.dart';
-import 'ui/theme/simple_aac_theme.dart';
 import 'view_models/theme_view_model.dart';
 
 // ignore: avoid_classes_with_only_static_members
@@ -26,76 +28,50 @@ class SimpleAACAppWrapper {
           await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
         }
         await di.init();
+        await di.allReady();
         final appDocumentDir = await getApplicationDocumentsDirectory();
         Hive.init(appDocumentDir.path);
-        // Hive
-        //   ..registerAdapter<Timesheet>(TimesheetAdapter())
-        //   ..registerAdapter<FileEntry>(FileEntryAdapter())
-        //   ..registerAdapter<TimesheetStatus>(TimesheetStatusAdapter())
-        //   ..registerAdapter<BookingStatus>(BookingStatusAdapter())
-        //   ..registerAdapter<Attendee>(AttendeeAdapter())
-        //   ..registerAdapter<HiveFileModel>(HiveFileModelAdapter());
+        Hive
+          ..registerAdapter<Word>(WordAdapter())
+          ..registerAdapter<WordSubType>(WordSubTypeAdapter())
+          ..registerAdapter<WordType>(WordTypeAdapter())
+          ..registerAdapter(ThemeModeAdapter())
+          ..registerAdapter(ColorAdapter())
+          ..registerAdapter(FlexSchemeAdapter())
+          ..registerAdapter(FlexSurfaceModeAdapter())
+          ..registerAdapter(FlexInputBorderTypeAdapter())
+          ..registerAdapter(FlexTabBarStyleAdapter())
+          ..registerAdapter(FlexAppBarStyleAdapter())
+          ..registerAdapter(FlexSystemNavBarStyleAdapter())
+          ..registerAdapter(FlexSchemeColorAdapter())
+          ..registerAdapter(NavigationDestinationLabelBehaviorAdapter())
+          ..registerAdapter(NavigationRailLabelTypeAdapter())
+          ..registerAdapter(FlexSliderIndicatorTypeAdapter())
+          ..registerAdapter(ShowValueIndicatorAdapter())
+          ..registerAdapter(TabBarIndicatorSizeAdapter())
+          ..registerAdapter(AdaptiveThemeAdapter());
 
+        final themeViewModel = di.getIt.get<ThemeViewModel>();
+        await themeViewModel.init();
         runApp(
-          _buildTheme(),
+          _buildThemeWrapper(),
         );
       },
       (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, reason: 'Zoned Error'),
     );
   }
 
-  static Widget _buildTheme() {
-    return ThemeBuilder();
-  }
-
-  static Future<void> initializeFirebase() async {
-    await Firebase.initializeApp();
-  }
-}
-
-class ThemeBuilder extends StatelessWidget {
-  ThemeBuilder({
-    Key? key,
-  }) : super(key: key);
-
-  final themeViewModel = di.getIt.get<ThemeViewModel>();
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-      future: themeViewModel.currentTheme,
-      builder: (context, initialThemeSnapshot) {
-        if (initialThemeSnapshot.hasData) {
-          return StreamBuilder<String>(
-            initialData: initialThemeSnapshot.data,
-            stream: themeViewModel.currentThemeStream,
-            builder: (context, snapshot) {
-              final _simpleAACTheme = enumFromString(
-                snapshot.data ?? '',
-                SimpleAACTheme.values,
-              );
-              return _buildBaseTheme(_simpleAACTheme);
-            },
-          );
-        } else {
-          return _buildBaseTheme(null);
-        }
+  static Widget _buildThemeWrapper() {
+    return ThemeBuilderWidget(
+      themeBuilder: (themeController) {
+        return SimpleAACApp(
+          themeController: themeController,
+        );
       },
     );
   }
 
-  Widget _buildBaseTheme(
-    SimpleAACTheme? _simpleAACTheme,
-  ) {
-    return BaseTheme(
-      appTheme: simpleAACTheme(_simpleAACTheme),
-      child: Builder(
-        builder: (context) {
-          return SimpleAACApp(
-            theme: BaseTheme.of(context),
-          );
-        },
-      ),
-    );
+  static Future<void> initializeFirebase() async {
+    await Firebase.initializeApp();
   }
 }

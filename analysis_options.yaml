@@ -12,8 +12,6 @@ analyzer:
     - lib/**/**/*.g.dart
     - lib/**/**/**/*.g.dart
 #    - test/**
-  enable-experiment:
-    - non-nullable
 
 linter:
   rules:

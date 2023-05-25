@@ -33,11 +33,6 @@ class SharedPreferencesService {
     return sharedPreferences.getString(Constants.USER_FIRST_NAME) ?? '';
   }
 
-  Future<String> theme() async {
-    final sharedPreferences = await _sharedPreferences;
-    return sharedPreferences.getString(Constants.THEME) ?? '';
-  }
-
   Future<String> lastName() async {
     final sharedPreferences = await _sharedPreferences;
     return sharedPreferences.getString(Constants.USER_LAST_NAME) ?? '';
@@ -56,11 +51,6 @@ class SharedPreferencesService {
   Future<void> setFirstTime({required bool isFirstTime}) async {
     final sharedPreferences = await _sharedPreferences;
     sharedPreferences.setBool(Constants.FIRST_TIME, isFirstTime);
-  }
-
-  Future<void> setTheme({required String theme}) async {
-    final sharedPreferences = await _sharedPreferences;
-    sharedPreferences.setString(Constants.THEME, theme);
   }
 
   //ignore: avoid_positional_boolean_parameters

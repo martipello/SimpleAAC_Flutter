@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../extensions/build_context_extension.dart';
-import '../theme/base_theme.dart';
 import '../theme/simple_aac_text.dart';
 import 'simple_aac_loading_widget.dart';
 
@@ -78,7 +77,7 @@ class SimpleAACTextField extends StatelessWidget {
       prefixIcon: prefixIcon != null
           ? Icon(
               prefixIcon,
-              color: colors(context).textOnForeground,
+              color: context.themeColors.onBackground,
             )
           : null,
       suffixIcon: loading
@@ -96,7 +95,7 @@ class SimpleAACTextField extends StatelessWidget {
                   icon: Icon(
                     Icons.close,
                     size: 20,
-                    color: colors(context).textOnForeground,
+                    color: context.themeColors.onBackground,
                   ),
                   onPressed: () {
                     FocusScope.of(context).unfocus();

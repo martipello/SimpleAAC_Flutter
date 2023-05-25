@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/base_theme.dart';
+import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 
 class SimpleAACAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -9,7 +9,6 @@ class SimpleAACAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.bottom,
     this.leadingIcon,
     this.actions,
-    this.color,
   }) : preferredSize = Size.fromHeight(
           kToolbarHeight + (bottom?.preferredSize.height ?? 0.0),
         );
@@ -18,16 +17,14 @@ class SimpleAACAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PreferredSizeWidget? bottom;
   final Widget? leadingIcon;
   final List<Widget>? actions;
-  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: color ?? colors(context).primary,
       title: Text(
         label.toUpperCase(),
         style: SimpleAACText.subtitle2Style.copyWith(
-          color: colors(context).textOnPrimary,
+          color: context.themeColors.onPrimaryContainer,
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,

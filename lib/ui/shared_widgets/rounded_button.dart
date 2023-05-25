@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/base_theme.dart';
+import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 import 'simple_aac_loading_widget.dart';
 
@@ -112,46 +112,46 @@ class RoundedButton extends StatelessWidget {
 
   Color _getFillColor(BuildContext context) {
     if (isFilled && onPressed != null) {
-      return fillColor ?? colors(context).secondary;
+      return fillColor ?? context.themeColors.secondary;
     } else if (!isFilled && onPressed != null) {
-      return colors(context).textOnSecondary;
+      return context.themeColors.onSecondary;
     } else if (!isFilled && onPressed == null) {
-      return colors(context).textOnSecondary;
+      return context.themeColors.onSecondary;
     } else {
-      return colors(context).foreground;
+      return context.themeColors.background;
     }
   }
 
   Color _getOutlineColor(BuildContext context) {
     if (onPressed != null) {
-      return outlineColor ?? fillColor ?? colors(context).secondary;
+      return outlineColor ?? fillColor ?? context.themeColors.secondary;
     } else {
-      return colors(context).foreground;
+      return context.themeColors.background;
     }
   }
 
   TextStyle _getTextStyle(BuildContext context) {
     if (isFilled && onPressed != null) {
-      return textStyle?.copyWith(color: colors(context).textOnSecondary) ??
-          SimpleAACText.subtitle4Style.copyWith(color: colors(context).textOnSecondary);
+      return textStyle?.copyWith(color: context.themeColors.onSecondary) ??
+          SimpleAACText.subtitle4Style.copyWith(color: context.themeColors.onSecondary);
     } else if (!isFilled && onPressed != null) {
-      return SimpleAACText.subtitle4Style.copyWith(color: colors(context).secondary);
+      return SimpleAACText.subtitle4Style.copyWith(color: context.themeColors.secondary);
     } else if (isFilled && onPressed == null) {
-      return SimpleAACText.subtitle4Style.copyWith(color: colors(context).textOnForeground);
+      return SimpleAACText.subtitle4Style.copyWith(color: context.themeColors.onBackground);
     } else {
-      return SimpleAACText.subtitle4Style.copyWith(color: colors(context).foreground);
+      return SimpleAACText.subtitle4Style.copyWith(color: context.themeColors.background);
     }
   }
 
   Color _getLoadingColor(BuildContext context) {
     if (isFilled && onPressed != null) {
-      return colors(context).textOnSecondary;
+      return context.themeColors.onSecondary;
     } else if (!isFilled && onPressed != null) {
-      return colors(context).secondary;
+      return context.themeColors.secondary;
     } else if (isFilled && onPressed == null) {
-      return colors(context).textOnForeground;
+      return context.themeColors.onBackground;
     } else {
-      return colors(context).foreground;
+      return context.themeColors.background;
     }
   }
 

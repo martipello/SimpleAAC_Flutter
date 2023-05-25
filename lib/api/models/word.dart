@@ -9,9 +9,10 @@ import 'word_type.dart';
 
 part 'word.g.dart';
 
+@HiveType(typeId: 0)
 abstract class Word implements Built<Word, WordBuilder> {
-  factory Word([void Function(WordBuilder) updates]) = _$Word;
 
+  factory Word([void Function(WordBuilder) updates]) = _$Word;
   Word._();
 
   @HiveField(0)
@@ -57,8 +58,8 @@ abstract class Word implements Built<Word, WordBuilder> {
     return serializers.serializeWith(Word.serializer, this) as Map<String, dynamic>;
   }
 
-  static Word? fromJson(Map<String, dynamic> json) {
-    return serializers.deserializeWith(Word.serializer, json);
+  static Word fromJson(Map<String, dynamic> json) {
+    return serializers.deserializeWith(Word.serializer, json)!;
   }
 
   static Serializer<Word> get serializer => _$wordSerializer;

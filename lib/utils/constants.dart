@@ -10,5 +10,4 @@ class Constants {
   static const BIOMETRIC_KEY = 'use_biometric_key';
   static const FIRST_TIME = 'first_time';
   static const PREDICTIONS = 'predictions';
-  static const THEME = 'theme';
 }

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../dependency_injection_container.dart';
+import '../../extensions/build_context_extension.dart';
 import '../../view_models/file_picker/file_picker_view_model.dart';
-import '../theme/base_theme.dart';
 import '../theme/simple_aac_text.dart';
 import 'rounded_button.dart';
 
@@ -165,7 +165,7 @@ class _FilePickerState extends State<FilePicker> {
                 },
                 child: Icon(
                   Icons.close,
-                  color: colors(context).textOnPrimary,
+                  color: context.themeColors.onPrimary,
                 ),
               ),
             ),
@@ -202,7 +202,7 @@ class _FilePickerState extends State<FilePicker> {
         widget.errorLabel ?? 'Failed to retrieve files please try again.',
         style: widget.errorLabelStyle ??
             SimpleAACText.captionStyle.copyWith(
-              color: colors(context).error,
+              color: context.themeColors.error,
             ),
       ),
     );

@@ -22,7 +22,7 @@ class _SentenceWidgetState extends State<SentenceWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-          (_) {
+      (_) {
         _addSelectedFilterListener();
       },
     );
@@ -31,9 +31,9 @@ class _SentenceWidgetState extends State<SentenceWidget> {
   void _addSelectedFilterListener() {
     const duration = Duration(milliseconds: 200);
     selectedWordsViewModel.selectedWords.listen(
-          (selectedTypes) {
+      (selectedTypes) {
         Future.delayed(duration).then(
-              (value) {
+          (value) {
             if (scrollController.hasClients) {
               scrollController.animateTo(
                 scrollController.position.maxScrollExtent,
@@ -46,7 +46,6 @@ class _SentenceWidgetState extends State<SentenceWidget> {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +82,7 @@ class _SentenceWidgetState extends State<SentenceWidget> {
         padding: const EdgeInsets.fromLTRB(8, 8, 64, 8),
         scrollController: scrollController,
         itemBuilder: (context, index) {
-          return _buildWord(
+          return _buildWordTile(
             words[index],
             index,
           );
@@ -103,11 +102,7 @@ class _SentenceWidgetState extends State<SentenceWidget> {
         final animValue = Curves.easeInOut.transform(
           animation.value,
         );
-        final elevation = lerpDouble(
-          0,
-          8,
-          animValue,
-        )!;
+        final elevation = lerpDouble(0, 8, animValue)!;
         return Material(
           elevation: elevation,
           color: Colors.transparent,
@@ -121,14 +116,14 @@ class _SentenceWidgetState extends State<SentenceWidget> {
     );
   }
 
-  Widget _buildWord(
+  Widget _buildWordTile(
     Word word,
     int index,
   ) {
     return WordTile(
       key: ValueKey(index),
       word: word,
-      heroTag: word.getHeroTag('sentence-'),
+      heroTag: word.getHeroTag('sentence-$index-'),
       closeButtonOnTap: selectedWordsViewModel.removeSelectedWord,
       closeButtonOnLongPress: (_) {
         selectedWordsViewModel.clearSelectedWordList();

@@ -41,8 +41,7 @@ dependencies:
   diffutil_dart: ^3.0.0
   flutter_secure_storage: ^8.0.0
   logger: ^1.3.0
-  built_value: ^8.4.4
-  built_collection: ^5.1.1
+
   package_info: ^2.0.2
   firebase_core: ^2.10.0
   firebase_crashlytics: ^3.1.2
@@ -55,9 +54,12 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   flutter_speed_dial: ^6.2.0
   settings_ui: ^2.0.2
+  flutter_image_compress: ^2.0.1
+
   hive_built_value: ^2.3.0
   hive_built_value_flutter: ^2.3.0
-  hive_built_value_generator: ^2.3.0
+
+  flex_color_scheme: ^7.0.5
 
 
 dev_dependencies:
@@ -72,8 +74,10 @@ dev_dependencies:
   test: any
 
   build_runner: ^2.3.3
-  built_value_generator: any
+  built_value_generator: ^8.5.0
+  hive_built_value_generator: ^2.3.1
   flutter_native_splash: ^2.2.19
+
   flutter_launcher_icons: ^0.13.1
 
 flutter_native_splash:

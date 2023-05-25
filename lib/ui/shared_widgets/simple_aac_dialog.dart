@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/base_theme.dart';
+import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 
 extension SimpleAACDialogExtension on Widget {
@@ -45,7 +45,7 @@ class SimpleAACDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            color: colors(context).primary,
+            color: context.themeColors.primary,
             height: 50,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,7 +58,7 @@ class SimpleAACDialog extends StatelessWidget {
                         child: Text(
                           title!,
                           style: SimpleAACText.subtitle1Style.copyWith(
-                            color: colors(context).textOnPrimary,
+                            color: context.themeColors.onPrimary,
                           ),
                         ),
                       )
@@ -75,7 +75,7 @@ class SimpleAACDialog extends StatelessWidget {
                     ),
                     icon: Icon(
                       Icons.close,
-                      color: colors(context).textOnPrimary,
+                      color: context.themeColors.onPrimary,
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -169,7 +169,7 @@ class SimpleAACDialog extends StatelessWidget {
       child: Text(
         action.actionText,
         style: SimpleAACText.body3Style.copyWith(
-          color: colors(context).primary,
+          color: context.themeColors.primary,
         ),
         textAlign: TextAlign.end,
       ),

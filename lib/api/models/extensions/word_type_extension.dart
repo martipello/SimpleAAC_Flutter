@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-import '../../../ui/theme/base_theme.dart';
+import '../../../extensions/build_context_extension.dart';
+import '../../../ui/theme/app_color.dart';
 import '../word_sub_type.dart';
 import '../word_type.dart';
 
@@ -8,15 +9,15 @@ extension WordTypeExtension on WordType? {
   Color getColor(BuildContext context) {
     switch (this) {
       case WordType.nouns:
-        return colors(context).wordTypeNouns;
+        return AppColor.wordTypeNoun;
       case WordType.other:
-        return colors(context).wordTypeOther;
+        return AppColor.wordTypeOther;
       case WordType.quicks:
-        return colors(context).wordTypeQuicks;
+        return AppColor.wordTypeQuick;
       case WordType.verbs:
-        return colors(context).wordTypeVerbs;
+        return AppColor.wordTypeVerb;
       default:
-        return colors(context).primary;
+        return context.themeColors.primary;
     }
   }
 

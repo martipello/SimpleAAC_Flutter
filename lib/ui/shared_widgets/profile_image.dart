@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/base_theme.dart';
+import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 import 'simple_aac_loading_widget.dart';
 
@@ -47,13 +47,13 @@ class ProfileImage extends StatelessWidget {
         child: Container(
           height: size?.height ?? 150,
           width: size?.width ?? 150,
-          color: colors(context).primary,
+          color: context.themeColors.primary,
           child: Center(
             child: Text(
               linguistInitials,
               style: textStyle ??
                   SimpleAACText.subtitle2Style.copyWith(
-                    color: colors(context).textOnPrimary,
+                    color: context.themeColors.onPrimary,
                   ),
             ),
           ),

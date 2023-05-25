@@ -9,7 +9,7 @@ import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../theme/base_theme.dart';
+import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 
 const double kTabHeight = 48.0;
@@ -89,7 +89,7 @@ class ShortTab extends StatelessWidget {
         Text(
           text!.toUpperCase(),
           style: SimpleAACText.body3Style.copyWith(
-            color: colors(context).textOnPrimary,
+            color: context.themeColors.onPrimary,
           ),
           softWrap: false,
           overflow: TextOverflow.fade,
@@ -154,17 +154,17 @@ class _TabStyle extends AnimatedWidget {
     // To enable TextStyle.lerp(style1, style2, value), both styles must have
     // the same value of inherit. Force that to be inherit=true here.
     final defaultStyle =
-        (labelStyle ?? tabBarTheme.labelStyle ?? themeData.primaryTextTheme.bodyText1!).copyWith(inherit: true);
+        (labelStyle ?? tabBarTheme.labelStyle ?? themeData.primaryTextTheme.bodyLarge!).copyWith(inherit: true);
     final defaultUnselectedStyle = (unselectedLabelStyle ??
             tabBarTheme.unselectedLabelStyle ??
             labelStyle ??
-            themeData.primaryTextTheme.bodyText1!)
+            themeData.primaryTextTheme.bodyLarge!)
         .copyWith(inherit: true);
     final textStyle = selected
         ? TextStyle.lerp(defaultStyle, defaultUnselectedStyle, animation.value)!
         : TextStyle.lerp(defaultUnselectedStyle, defaultStyle, animation.value)!;
 
-    final selectedColor = labelColor ?? tabBarTheme.labelColor ?? themeData.primaryTextTheme.bodyText1!.color!;
+    final selectedColor = labelColor ?? tabBarTheme.labelColor ?? themeData.primaryTextTheme.bodyLarge!.color!;
     final unselectedColor =
         unselectedLabelColor ?? tabBarTheme.unselectedLabelColor ?? selectedColor.withAlpha(0xB2); // 70% alpha
     final color = selected
@@ -903,7 +903,7 @@ class _TabBarState extends State<TabBar> {
     // TODO(xu-baolin): Remove automatic adjustment to white color indicator
     // with a better long-term solution.
     // https://github.com/flutter/flutter/pull/68171#pullrequestreview-517753917
-    if (widget.automaticIndicatorColorAdjustment && color.value == Material.of(context)?.color?.value) {
+    if (widget.automaticIndicatorColorAdjustment && color.value == Material.of(context).color?.value) {
       color = Colors.white;
     }
 
@@ -923,13 +923,6 @@ class _TabBarState extends State<TabBar> {
   void _updateTabController() {
     final newController = widget.controller ?? DefaultTabController.of(context);
     assert(() {
-      if (newController == null) {
-        throw FlutterError('No TabController for ${widget.runtimeType}.\n'
-            'When creating a ${widget.runtimeType}, you must either provide an explicit '
-            'TabController using the "controller" property, or you must ensure that there '
-            'is a DefaultTabController above the ${widget.runtimeType}.\n'
-            'In this case, there was neither an explicit controller nor a default controller.');
-      }
       return true;
     }());
 
@@ -1293,13 +1286,6 @@ class _TabBarViewState extends State<TabBarView> {
   void _updateTabController() {
     final newController = widget.controller ?? DefaultTabController.of(context);
     assert(() {
-      if (newController == null) {
-        throw FlutterError('No TabController for ${widget.runtimeType}.\n'
-            'When creating a ${widget.runtimeType}, you must either provide an explicit '
-            'TabController using the "controller" property, or you must ensure that there '
-            'is a DefaultTabController above the ${widget.runtimeType}.\n'
-            'In this case, there was neither an explicit controller nor a default controller.');
-      }
       return true;
     }());
 
@@ -1559,22 +1545,15 @@ class TabPageSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fixColor = color ?? Colors.transparent;
-    final fixSelectedColor = selectedColor ?? colors(context).secondary;
+    final fixSelectedColor = selectedColor ?? context.themeColors.secondary;
     final selectedColorTween = ColorTween(begin: fixColor, end: fixSelectedColor);
     final previousColorTween = ColorTween(begin: fixSelectedColor, end: fixColor);
     final tabController = controller ?? DefaultTabController.of(context);
     assert(() {
-      if (tabController == null) {
-        throw FlutterError('No TabController for $runtimeType.\n'
-            'When creating a $runtimeType, you must either provide an explicit TabController '
-            'using the "controller" property, or you must ensure that there is a '
-            'DefaultTabController above the $runtimeType.\n'
-            'In this case, there was neither an explicit controller nor a default controller.');
-      }
       return true;
     }());
     final Animation<double> animation = CurvedAnimation(
-      parent: tabController!.animation!,
+      parent: tabController.animation!,
       curve: Curves.fastOutSlowIn,
     );
     return AnimatedBuilder(

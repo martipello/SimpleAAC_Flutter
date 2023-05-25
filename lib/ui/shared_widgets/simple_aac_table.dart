@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/base_theme.dart';
+import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 
 class SimpleAACTableRowInfo {
@@ -100,7 +100,7 @@ class SimpleAACTable extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: colors(context).chromeLight,
+                color: context.themeColors.onBackground,
                 size: 18,
               ),
             ],
@@ -160,7 +160,7 @@ class SimpleAACTable extends StatelessWidget {
       label ?? '',
       style: tableTitleTextStyle ??
           SimpleAACText.body1Style.copyWith(
-            color: colors(context).textOnForeground,
+            color: context.themeColors.onBackground,
           ),
     );
   }

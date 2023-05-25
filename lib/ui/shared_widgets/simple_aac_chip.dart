@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../extensions/build_context_extension.dart';
 import '../../extensions/string_extension.dart';
-import '../theme/base_theme.dart';
 import '../theme/simple_aac_text.dart';
 
 typedef OnSelected = void Function(bool selected);
@@ -38,34 +38,44 @@ class SimpleAACChip extends StatelessWidget {
           avatar: isSelected ? icon : null,
           label: Text(label.capitalize()),
           padding: EdgeInsets.zero,
-          backgroundColor: colors(context).textOnForeground,
+          backgroundColor: context.themeColors.background,
           labelStyle: SimpleAACText.body4Style.copyWith(
-            color: colors(context).textOnForeground,
+            color: context.themeColors.onBackground,
           ),
           onSelected: onSelected,
           selected: isSelected,
           showCheckmark: icon == null,
-          selectedColor: colors(context).chromeLighter,
-          checkmarkColor: colors(context).textOnForeground,
+          selectedColor: context.themeColors.onInverseSurface,
+          checkmarkColor: context.themeColors.onBackground,
         ),
       );
     } else {
       return SizedBox(
         height: 32,
         child: InputChip(
-          label: Text(label),
-          padding: EdgeInsets.zero,
-          backgroundColor: colors(context).foreground,
-          labelStyle: SimpleAACText.body4Style.copyWith(
-            color: colors(context).textOnForeground,
+          avatar: icon,
+          label: Text(
+            label,
+            style: SimpleAACText.body4Style.copyWith(
+              color: context.themeColors.onBackground,
+            ),
           ),
-          onPressed: onTap,
+          padding: EdgeInsets.zero,
+          backgroundColor: context.themeColors.background,
+          disabledColor: context.themeColors.onBackground,
+          labelStyle: SimpleAACText.body4Style.copyWith(
+            color: context.themeColors.onBackground,
+          ),
+          onPressed: onTap ?? (){},
+          isEnabled: true,
           deleteButtonTooltipMessage: 'Remove',
-          deleteIconColor: colors(context).textOnForeground,
+          deleteIconColor: context.themeColors.onBackground,
           onDeleted: onDelete,
-          deleteIcon: isRemovable ? const Icon(
-            Icons.close,
-          ) : null,
+          deleteIcon: isRemovable
+              ? const Icon(
+                  Icons.close,
+                )
+              : null,
         ),
       );
     }

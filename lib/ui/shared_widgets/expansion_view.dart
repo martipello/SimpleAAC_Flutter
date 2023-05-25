@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/base_theme.dart';
+import '../../extensions/build_context_extension.dart';
 
 class ExpansionView extends StatefulWidget {
   const ExpansionView({
@@ -89,7 +89,7 @@ class _ExpansionViewState extends State<ExpansionView> with TickerProviderStateM
                   turns: Tween(begin: 0.0, end: 0.5).animate(_controller),
                   child: Icon(
                     Icons.keyboard_arrow_down,
-                    color: colors(context).primary,
+                    color: context.themeColors.primary,
                   ),
                 ),
               ],

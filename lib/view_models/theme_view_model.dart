@@ -1,20 +1,19 @@
-import 'package:rxdart/rxdart.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
-import '../services/shared_preferences_service.dart';
-import '../ui/theme/simple_aac_theme.dart';
+import '../services/theme_service.dart';
+import '../ui/theme/theme_controller.dart';
 
 class ThemeViewModel {
   ThemeViewModel(
-    this.sharedPreferencesService,
+    this.themeService,
+    this.themeController,
   );
 
-  final SharedPreferencesService sharedPreferencesService;
+  final ThemeService themeService;
+  final ThemeController themeController;
 
-  final currentThemeStream = BehaviorSubject<String>();
-
-  Future<String> get currentTheme => sharedPreferencesService.theme();
-
-  void setTheme(SimpleAACTheme appTheme) {
-    sharedPreferencesService.setTheme(theme: appTheme.name);
+  Future<void> init() async {
+    await themeController.loadAll();
+    themeController.setUsedScheme(FlexScheme.mandyRed);
   }
 }

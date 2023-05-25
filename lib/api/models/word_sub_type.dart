@@ -1,11 +1,13 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
+import 'package:hive_built_value/hive_built_value.dart';
 
 import '../serializers/serializers.dart';
 
 part 'word_sub_type.g.dart';
 
+@HiveType(typeId: 2)
 class WordSubType extends EnumClass {
   const WordSubType._(String name) : super(name);
 
@@ -45,15 +47,14 @@ class WordSubType extends EnumClass {
   static const WordSubType learning = _$learning;
 
   static BuiltSet<WordSubType> get values => _$wordSubTypeValues;
-
   static WordSubType valueOf(String name) => _$wordSubTypeValueOf(name);
 
   String serialize() {
     return serializers.serializeWith(WordSubType.serializer, this) as String;
   }
 
-  static WordSubType? deserialize(String string) {
-    return serializers.deserializeWith(WordSubType.serializer, string);
+  static WordSubType deserialize(String string) {
+    return serializers.deserializeWith(WordSubType.serializer, string)!;
   }
 
   static Serializer<WordSubType> get serializer => _$wordSubTypeSerializer;

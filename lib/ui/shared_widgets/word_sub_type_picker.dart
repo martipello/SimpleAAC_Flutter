@@ -4,7 +4,7 @@ import '../../api/models/extensions/word_sub_type_extension.dart';
 import '../../api/models/extensions/word_type_extension.dart';
 import '../../api/models/word_sub_type.dart';
 import '../../api/models/word_type.dart';
-import '../theme/base_theme.dart';
+import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 
 typedef WordSubTypePickerCallBack = void Function(WordSubType? wordSubType);
@@ -42,7 +42,7 @@ class WordSubTypePicker extends StatelessWidget {
         isDense: true,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: wordType?.getSubTypes().first.getColor(context) ?? colors(context).primary,
+            color: wordType?.getSubTypes().first.getColor(context) ?? context.themeColors.primary,
             width: 2.0,
           ),
         ),

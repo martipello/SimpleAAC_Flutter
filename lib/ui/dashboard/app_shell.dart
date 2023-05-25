@@ -4,7 +4,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../api/models/word.dart';
 import '../../dependency_injection_container.dart';
-import '../../extensions/iterable_extension.dart';
+import '../../extensions/build_context_extension.dart';
 import '../../flavors.dart';
 import '../../services/shared_preferences_service.dart';
 import '../../view_models/selected_words_view_model.dart';
@@ -14,7 +14,6 @@ import '../quicks/quicks_view.dart';
 import '../settings_view.dart';
 import '../shared_widgets/app_bar.dart';
 import '../shared_widgets/simple_aac_loading_widget.dart';
-import '../theme/base_theme.dart';
 import '../theme/simple_aac_text.dart';
 import 'predictions_widget.dart';
 import 'sentence_widget.dart';
@@ -221,7 +220,7 @@ class _AppShellState extends State<AppShell> {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       selectedIconTheme: IconThemeData(
-        color: colors(context).secondary,
+        color: context.themeColors.secondary,
       ),
       showUnselectedLabels: false,
       iconSize: 24,
@@ -230,8 +229,8 @@ class _AppShellState extends State<AppShell> {
       elevation: 12,
       items: _bottomNavigationBarItems(),
       currentIndex: _selectedIndex,
-      selectedItemColor: colors(context).secondary,
-      unselectedItemColor: colors(context).primary,
+      selectedItemColor: context.themeColors.secondary,
+      unselectedItemColor: context.themeColors.primary,
       onTap: (index) {
         setState(
           () {
@@ -318,7 +317,7 @@ class _AppShellState extends State<AppShell> {
       children: [
         Icon(
           icon,
-          color: colors(context).textOnForeground,
+          color: context.themeColors.onBackground,
         ),
         const SizedBox(
           width: 16,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'theme/base_theme.dart';
+import '../extensions/build_context_extension.dart';
 import 'theme/simple_aac_text.dart';
 
 class PickImageDialog extends StatefulWidget {
@@ -75,7 +75,7 @@ class _PickImageDialogState extends State<PickImageDialog> {
               FittedBox(
                 child: Icon(
                   iconData,
-                  color: colors(context).textOnForeground,
+                  color: context.themeColors.onBackground,
                 ),
               ),
               Text(

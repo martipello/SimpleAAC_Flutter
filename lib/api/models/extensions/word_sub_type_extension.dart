@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-import '../../../ui/theme/base_theme.dart';
+import '../../../extensions/build_context_extension.dart';
+import '../../../ui/theme/app_color.dart';
 import '../word_sub_type.dart';
 
 extension WordSubTypeExtension on WordSubType? {
@@ -15,7 +16,7 @@ extension WordSubTypeExtension on WordSubType? {
       case WordSubType.ideas:
       case WordSubType.drink:
       case WordSubType.food:
-        return colors(context).wordTypeNouns;
+      return AppColor.wordTypeNoun;
       case WordSubType.action:
       case WordSubType.feeling:
       case WordSubType.thought:
@@ -23,7 +24,7 @@ extension WordSubTypeExtension on WordSubType? {
       case WordSubType.abverb:
       case WordSubType.helping:
       case WordSubType.strong:
-        return colors(context).wordTypeVerbs;
+        return AppColor.wordTypeVerb;
       case WordSubType.favourites:
       case WordSubType.pronouns:
       case WordSubType.conjunctions:
@@ -31,7 +32,7 @@ extension WordSubTypeExtension on WordSubType? {
       case WordSubType.propositionAndSound:
       case WordSubType.phrases:
       case WordSubType.suffix:
-        return colors(context).wordTypeQuicks;
+      return AppColor.wordTypeQuick;
       case WordSubType.home:
       case WordSubType.clothes:
       case WordSubType.extras:
@@ -43,9 +44,9 @@ extension WordSubTypeExtension on WordSubType? {
       case WordSubType.love:
       case WordSubType.occasion:
       case WordSubType.learning:
-        return colors(context).wordTypeOther;
+      return AppColor.wordTypeOther;
       default:
-        return colors(context).primary;
+        return context.themeColors.primary;
     }
   }
 }

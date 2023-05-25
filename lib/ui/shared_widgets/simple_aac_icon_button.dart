@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/base_theme.dart';
+import '../../extensions/build_context_extension.dart';
 
 class SimpleAACIconButton extends StatelessWidget {
   SimpleAACIconButton({
@@ -32,8 +32,8 @@ class SimpleAACIconButton extends StatelessWidget {
             child: Icon(
               iconData,
               color: callback != null
-                  ? iconColor ?? colors(context).secondary
-                  : disabledColor ?? colors(context).chromeLighter,
+                  ? iconColor ??context.themeColors.secondary
+                  : disabledColor ?? context.themeColors.background,
               size: iconSize,
             ),
           ),

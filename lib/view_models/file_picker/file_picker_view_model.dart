@@ -16,7 +16,7 @@ class FilePickerViewModel {
         maxHeight: 1024,
         imageQuality: 100,
       );
-      if (_pickedFileList?.isNotEmpty == true) {
+      if (_pickedFileList.isNotEmpty == true) {
         pickedFileList.add(_pickedFileList);
       }
     } catch (e) {

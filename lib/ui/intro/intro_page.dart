@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../dependency_injection_container.dart';
+import '../../extensions/build_context_extension.dart';
 import '../../services/shared_preferences_service.dart';
 import '../../ui/dashboard/app_shell.dart';
 import '../../ui/shared_widgets/rounded_button.dart';
-import '../../ui/theme/base_theme.dart';
 import '../../view_models/intro/intro_view_model.dart';
 import 'bio_metric_view.dart';
 import 'welcome_view.dart';
@@ -26,15 +26,15 @@ class IntroPage extends StatelessWidget {
             color: TweenSequence([
               TweenSequenceItem(
                 tween: ColorTween(
-                  begin: colors(context).white,
-                  end: colors(context).white,
+                  begin: Colors.white,
+                  end: context.themeColors.primary,
                 ),
                 weight: 1.0,
               ),
               TweenSequenceItem(
                 tween: ColorTween(
-                  begin: colors(context).white,
-                  end: colors(context).white,
+                  begin: Colors.white,
+                  end: context.themeColors.primary,
                 ),
                 weight: 1.0,
               ),
@@ -92,7 +92,7 @@ class IntroPage extends StatelessWidget {
             IconButton(
               icon: Icon(
                 showPreviousButton ? Icons.arrow_back_ios_new_rounded : null,
-                color: colors(context).textOnForeground,
+                color: context.themeColors.onBackground,
               ),
               onPressed: () {
                 controller.previousPage(
@@ -107,8 +107,8 @@ class IntroPage extends StatelessWidget {
               effect: SlideEffect(
                 dotHeight: 16,
                 dotWidth: 16,
-                dotColor: colors(context).chromeLighter,
-                activeDotColor: colors(context).secondary,
+                dotColor: context.themeColors.background,
+                activeDotColor: context.themeColors.secondary,
               ),
             ),
             pageIndex == introViewList().length - 1
@@ -123,7 +123,7 @@ class IntroPage extends StatelessWidget {
                 : IconButton(
                     icon: Icon(
                       showNextButton ? Icons.arrow_forward_ios_rounded : null,
-                      color: colors(context).textOnForeground,
+                      color: context.themeColors.background,
                     ),
                     onPressed: () {
                       controller.nextPage(

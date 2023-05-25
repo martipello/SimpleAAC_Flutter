@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../api/models/word.dart';
+import '../../extensions/build_context_extension.dart';
 import '../../extensions/iterable_extension.dart';
-import '../theme/base_theme.dart';
 import '../theme/simple_aac_text.dart';
 import '../word_detail_view.dart';
 import 'simple_aac_tile.dart';
@@ -34,61 +34,60 @@ class WordTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleAACTile(
-      key: key,
-      tapCallBack: () {
-        wordTapCallBack?.call(word);
-      },
-      longTapCallBack: () {
-        Navigator.of(context).pushNamed(
-          WordDetailView.routeName,
-          arguments: WordDetailViewArguments(
-            word: word,
-            heroTag: heroTag
+    return AspectRatio(
+      aspectRatio: 1 / 1.3,
+      child: SimpleAACTile(
+        key: key,
+        tapCallBack: () {
+          wordTapCallBack?.call(word);
+        },
+        longTapCallBack: () {
+          Navigator.of(context).pushNamed(
+            WordDetailView.routeName,
+            arguments: WordDetailViewArguments(word: word, heroTag: heroTag),
+          );
+        },
+        border: RoundedRectangleBorder(
+          side: BorderSide(
+            color: context.themeColors.primary,
           ),
-        );
-      },
-      border: RoundedRectangleBorder(
-        side: BorderSide(
-          color: colors(context).primary,
+          borderRadius: BorderRadius.circular(4),
         ),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      isSelected: isSelected,
-      closeButtonOnTap: closeButtonOnTap != null
-          ? () {
-              closeButtonOnTap?.call(word);
-            }
-          : null,
-      closeButtonOnLongPress: closeButtonOnLongPress != null
-          ? () {
-              closeButtonOnLongPress?.call(word);
-            }
-          : null,
-      hasReOrderButton: hasReOrderButton,
-      child: AspectRatio(
-        aspectRatio: 1.0 / 1.3,
-        child: _buildWordTileContent(),
+        isSelected: isSelected,
+        closeButtonOnTap: closeButtonOnTap != null
+            ? () {
+                closeButtonOnTap?.call(word);
+              }
+            : null,
+        closeButtonOnLongPress: closeButtonOnLongPress != null
+            ? () {
+                closeButtonOnLongPress?.call(word);
+              }
+            : null,
+        hasReOrderButton: hasReOrderButton,
+        child: _buildWordTileContent(context),
       ),
     );
   }
 
-  Widget _buildWordTileContent() {
+  Widget _buildWordTileContent(
+    BuildContext context,
+  ) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Flexible(
-            child: Hero(
-              tag: heroTag,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(4),
-                ),
-                clipBehavior: Clip.hardEdge,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(4),
+              ),
+              clipBehavior: Clip.hardEdge,
+              child: Hero(
+                tag: heroTag,
                 child: Image.asset(
-                  word.imageList.firstOrNull() ?? 'assets/images/sealstudioslogocenter.png',
+                  word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
                   fit: BoxFit.contain,
                 ),
               ),
@@ -99,7 +98,7 @@ class WordTile extends StatelessWidget {
           ),
           Text(
             word.word,
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: SimpleAACText.body4Style,
           ),
@@ -107,4 +106,5 @@ class WordTile extends StatelessWidget {
       ),
     );
   }
+
 }

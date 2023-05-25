@@ -17,7 +17,6 @@ import 'shared_widgets/simple_aac_text_field.dart';
 import 'shared_widgets/simple_aac_tile.dart';
 import 'shared_widgets/word_sub_type_picker.dart';
 import 'shared_widgets/word_type_picker.dart';
-import 'theme/base_theme.dart';
 
 class ManageWordViewArguments {
   ManageWordViewArguments({
@@ -177,7 +176,7 @@ class _ManageWordViewState extends State<ManageWordView> {
           SimpleAACTile(
             border: RoundedRectangleBorder(
               side: BorderSide(
-                color: _word?.type.getColor(context) ?? colors(context).primary,
+                color: _word?.type.getColor(context) ?? context.themeColors.primary,
                 width: 2,
               ),
               borderRadius: BorderRadius.circular(4),
@@ -320,7 +319,7 @@ class _ManageWordViewState extends State<ManageWordView> {
                         padding: const EdgeInsets.all(16),
                         child: Icon(
                           Icons.add_a_photo_outlined,
-                          color: colors(context).textOnForeground,
+                          color: context.themeColors.onBackground,
                         ),
                       ),
                     ),
@@ -398,7 +397,7 @@ class _ManageWordViewState extends State<ManageWordView> {
   ) {
     return RoundedButton(
       label: 'Cancel',
-      fillColor: colors(context).chrome,
+      fillColor: context.themeColors.secondary,
       onPressed: () {
         Navigator.of(context).pop();
       },

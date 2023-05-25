@@ -14,3 +14,22 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+[//]: # (TODO)
+FIX theming - in app purchases - allow for importing fonts 
+FIX onboarding - allow for restoring backups
+IMPLEMENT - prepopulate hive with default data 
+IMPLEMENT - in app purchases for word images call them fonts? allow for importing fonts
+IMPLEMENT settings - switch themes and fonts
+MAKE details page resemble a word tile 
+Create Group Widget
+Create Group Edit
+Create MultiImage Widget
+Create Add Predictions View
+FIX add image buttons change icons for something friendlier
+Make the app friendlier and less cold
+ADD new colors for other themes https://m3.material.io/theme-builder#/custom
+ADD messaging and sign in
+
+

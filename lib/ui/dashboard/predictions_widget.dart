@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../api/models/word.dart';
 import '../../dependency_injection_container.dart';
+import '../../extensions/iterable_extension.dart';
 import '../../services/shared_preferences_service.dart';
 import '../shared_widgets/chip_group.dart';
 import '../shared_widgets/simple_aac_chip.dart';
@@ -56,7 +57,7 @@ class PredictionsWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         final word = predictions[index];
         return _buildPredictionChip(
-          word.word,
+          word,
           _getAddPredictionFunction(word),
           _getRemovePredictionFunction(word),
         );
@@ -106,7 +107,7 @@ class PredictionsWidget extends StatelessWidget {
       chips: predictions
           .map(
             (word) => _buildPredictionChip(
-              word.word,
+              word,
               _getAddPredictionFunction(word),
               _getRemovePredictionFunction(word),
             ),
@@ -116,12 +117,16 @@ class PredictionsWidget extends StatelessWidget {
   }
 
   Widget _buildPredictionChip(
-    String label,
+    Word word,
     VoidCallback? onTap,
     VoidCallback? onDelete,
   ) {
     return SimpleAACChip(
-      label: label,
+      label: word.word,
+      icon: Image.asset(
+        word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
+        fit: BoxFit.contain,
+      ),
       chipType: ChipType.normal,
       onTap: onTap,
       onDelete: onDelete,

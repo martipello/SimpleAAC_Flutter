@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/base_theme.dart';
+import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 
 class NoResults extends StatelessWidget {
@@ -26,7 +26,7 @@ class NoResults extends StatelessWidget {
                 Icon(
                   Icons.hourglass_empty_outlined,
                   size: 120,
-                  color: colors(context).chromeLighter,
+                  color: context.themeColors.onBackground,
                 ),
             const SizedBox(
               height: 24,

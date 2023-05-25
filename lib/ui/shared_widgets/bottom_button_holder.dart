@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/base_theme.dart';
+import '../../extensions/build_context_extension.dart';
 
 class BottomButtonHolder extends StatelessWidget {
   const BottomButtonHolder({
@@ -35,7 +35,7 @@ class BottomButtonHolder extends StatelessWidget {
                   blurRadius: 6,
                 ),
               ],
-              color: color ?? colors(context).white,
+              color: color ?? context.themeColors.background,
             )
           : null,
       child: Material(
