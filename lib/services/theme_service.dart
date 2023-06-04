@@ -10,7 +10,7 @@ class ThemeService {
   Future<void> put<T>(String key, T value) async {
     final hiveClient = await _hiveClient;
     return hiveClient.put<T>(
-      Store.keyThemeMode,
+      key,
       value,
     );
   }

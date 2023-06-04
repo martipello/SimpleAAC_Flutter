@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hive_built_value/hive_built_value.dart';
 import 'package:path_provider/path_provider.dart';
@@ -39,10 +40,22 @@ class HiveClient {
     String key, {
     T? defaultValue,
   }) async {
-    return _hiveBox.get(
-      key,
-      defaultValue: defaultValue,
-    );
+
+    try {
+      final loaded = _hiveBox.get(key, defaultValue: defaultValue) as T;
+      if (kDebugMode) {
+        debugPrint('Hive type   : $key as ${defaultValue.runtimeType}');
+        debugPrint('Hive loaded : $key as $loaded with ${loaded.runtimeType}');
+      }
+      return loaded;
+    } catch (e) {
+      debugPrint('Hive load (get) ERROR');
+      debugPrint(' Error message ...... : $e');
+      debugPrint(' Store key .......... : $key');
+      debugPrint(' defaultValue ....... : $defaultValue');
+      // If something goes wrong we return the default value.
+      return defaultValue;
+    }
   }
 
   Future<XFile?> getPNGFile(

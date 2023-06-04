@@ -24,8 +24,8 @@ Future<void> init() async {
   getIt.registerLazySingletonAsync(PackageInfo.fromPlatform);
   getIt.registerLazySingletonAsync(() => HiveClient.init(kThemeBox), instanceName: kThemeBox);
   getIt.registerLazySingletonAsync(() => HiveClient.init(kWordBox), instanceName: kWordBox);
-  getIt.registerLazySingleton(ThemeService.new);
-  getIt.registerLazySingleton(() => ThemeController(getIt()));
+  getIt.registerFactory(ThemeService.new);
+  getIt.registerFactory(() => ThemeController(getIt()));
   getIt.registerLazySingleton(SharedPreferencesService.new);
   getIt.registerLazySingleton(() => WordService(getIt(instanceName: kWordBox)));
   getIt.registerLazySingleton(() => const FlutterSecureStorage());
@@ -35,7 +35,7 @@ Future<void> init() async {
   getIt.registerFactory(IntroViewModel.new);
   getIt.registerFactory(TabBarViewModel.new);
   getIt.registerFactory(ManageWordViewModel.new);
-  getIt.registerLazySingleton(() => ThemeViewModel(getIt(), getIt()));
+  getIt.registerFactory(() => ThemeViewModel(getIt(), getIt()));
   getIt.registerFactory(() => FilePickerViewModel(getIt()));
 }
 

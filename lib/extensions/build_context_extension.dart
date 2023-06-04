@@ -1,7 +1,12 @@
 import 'dart:ui' as ui;
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../ui/theme/theme_builder_widget.dart';
+import '../ui/theme/theme_controller.dart';
+import '../view_models/theme_view_model.dart';
 
 extension BuildContextExt on BuildContext {
   double get screenWidth => MediaQuery.of(this).size.width;
@@ -18,9 +23,12 @@ extension BuildContextExt on BuildContext {
   dynamic get routeArguments => ModalRoute.of(this)?.settings.arguments;
 
   ColorScheme get themeColors => Theme.of(this).colorScheme;
+
   TextTheme get textStyles => Theme.of(this).textTheme;
 
   bool get isDark => Theme.of(this).colorScheme.brightness == Brightness.dark;
+
+  ThemeViewModel get themeViewModel => ThemeBuilderWidget.of(this).themeViewModel;
 
   void nextEditableTextFocus() {
     do {

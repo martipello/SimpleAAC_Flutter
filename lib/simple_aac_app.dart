@@ -10,11 +10,12 @@ import 'ui/dashboard/app_shell.dart';
 import 'ui/manage_word_view.dart';
 import 'ui/settings_view.dart';
 import 'ui/theme/theme_controller.dart';
+import 'ui/theme/theme_view.dart';
 import 'ui/word_detail_view.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
-const FlexSchemeData _myFlexScheme = FlexSchemeData(
+const FlexSchemeData myFlexScheme = FlexSchemeData(
   name: 'Midnight blue',
   description: 'Midnight blue theme, custom definition of all colors',
   light: FlexSchemeColor(
@@ -70,7 +71,7 @@ class _SimpleAACAppState extends State<SimpleAACApp> {
       theme: FlexThemeData.light(
         useMaterial3: themeController.useMaterial3,
         colors: themeController.usedScheme == FlexScheme.custom
-            ? _myFlexScheme.light
+            ? myFlexScheme.light
             : FlexColor.schemes[themeController.usedScheme]!.light,
         surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
         blendLevel: 10,
@@ -86,7 +87,7 @@ class _SimpleAACAppState extends State<SimpleAACApp> {
       darkTheme: FlexThemeData.dark(
         useMaterial3: themeController.useMaterial3,
         colors: themeController.usedScheme == FlexScheme.custom
-            ? _myFlexScheme.dark
+            ? myFlexScheme.dark
             : FlexColor.schemes[themeController.usedScheme]!.dark,
         surfaceMode: FlexSurfaceMode.highScaffoldLowSurfaces,
         blendLevel: 12,
@@ -103,6 +104,7 @@ class _SimpleAACAppState extends State<SimpleAACApp> {
         WordDetailView.routeName: (context) => WordDetailView(),
         ManageWordView.routeName: (context) => ManageWordView(),
         SettingsView.routeName: (context) => SettingsView(),
+        ThemeView.routeName: (context) => ThemeView(),
       },
     );
   }

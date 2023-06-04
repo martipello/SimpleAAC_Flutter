@@ -5,6 +5,7 @@ class Constants {
   static const PROFILE_IMAGE = 'profile_image';
   static const USER_FIRST_NAME = 'user_first_name';
   static const USER_LAST_NAME = 'user_last_name';
+  static const THEME_NAME = 'user_last_name';
   static const PASSWORD_KEY = 'password_key';
   static const EMAIL_KEY = 'EMAIL_KEY';
   static const BIOMETRIC_KEY = 'use_biometric_key';

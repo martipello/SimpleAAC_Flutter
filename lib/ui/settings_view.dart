@@ -7,6 +7,7 @@ import '../extensions/build_context_extension.dart';
 import '../services/shared_preferences_service.dart';
 import '../view_models/theme_view_model.dart';
 import 'theme/simple_aac_text.dart';
+import 'theme/theme_view.dart';
 
 class SettingsView extends StatefulWidget {
   static const String routeName = '/settings';
@@ -17,7 +18,6 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   final _sharedPreferenceService = getIt.get<SharedPreferencesService>();
-  final _themeViewModel = getIt.get<ThemeViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,6 @@ class _SettingsViewState extends State<SettingsView> {
       stream: _sharedPreferenceService.hasPredictionsEnabledStream,
       builder: (context, snapshot) {
         final _hasPredictionsEnabled = snapshot.data == true;
-        final themeMode = _themeViewModel.themeController.themeMode;
         return Scaffold(
           appBar: _settingsAppBar(),
           body: _buildSettingsList(
@@ -51,8 +50,8 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   SettingsSection _buildThemeModeSettingsSection() {
-    final themeMode = _themeViewModel.themeController.themeMode;
-    final isDark = themeMode == ThemeMode.dark;
+    final isDark = context.isDark;
+
     return SettingsSection(
       title: const Text(
         'Dark Mode',
@@ -63,13 +62,13 @@ class _SettingsViewState extends State<SettingsView> {
           initialValue: isDark,
           onToggle: (_){
             if(isDark) {
-              _themeViewModel.themeController.setThemeMode(ThemeMode.light);
+              context.themeViewModel.setThemeMode(ThemeMode.light);
             } else {
-              _themeViewModel.themeController.setThemeMode(ThemeMode.dark);
+              context.themeViewModel.setThemeMode(ThemeMode.dark);
             }
           },
           title: Text(
-            'Current theme mode $themeMode',
+            'Current theme mode is ${isDark ? 'Dark' : 'Light'}',
             style: SimpleAACText.body4Style,
           ),
         ),
@@ -78,20 +77,21 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   SettingsSection _buildThemeSettingsSection() {
-    final name = FlexColor.schemes[_themeViewModel.themeController.usedScheme]?.name;
+    final currentThemeName = context.themeViewModel.themeName;
     return SettingsSection(
       title: const Text(
         'Theme',
         style: SimpleAACText.body4Style,
       ),
       tiles: [
-        SettingsTile.switchTile(
-          initialValue: true,
-          onToggle: _sharedPreferenceService.setPredictionsEnabled,
+        SettingsTile.navigation(
           title: Text(
-            'Current theme $name',
+            'Current theme $currentThemeName',
             style: SimpleAACText.body4Style,
           ),
+          onPressed: (_){
+            Navigator.of(context).pushNamed(ThemeView.routeName);
+          },
         ),
       ],
     );
