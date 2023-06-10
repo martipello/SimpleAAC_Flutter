@@ -112,46 +112,41 @@ class RoundedButton extends StatelessWidget {
 
   Color _getFillColor(BuildContext context) {
     if (isFilled && onPressed != null) {
-      return fillColor ?? context.themeColors.secondary;
+      return fillColor ?? context.themeColors.primary;
     } else if (!isFilled && onPressed != null) {
-      return context.themeColors.onSecondary;
-    } else if (!isFilled && onPressed == null) {
-      return context.themeColors.onSecondary;
-    } else {
       return context.themeColors.background;
+    } else if (!isFilled && onPressed == null) {
+      return context.themeColors.shadow;
+    } else {
+      return context.themeColors.primary;
     }
   }
 
   Color _getOutlineColor(BuildContext context) {
     if (onPressed != null) {
-      return outlineColor ?? fillColor ?? context.themeColors.secondary;
+      return outlineColor ?? fillColor ?? context.themeColors.primary;
     } else {
-      return context.themeColors.background;
+      return context.themeColors.shadow;
     }
   }
 
   TextStyle _getTextStyle(BuildContext context) {
     if (isFilled && onPressed != null) {
-      return textStyle?.copyWith(color: context.themeColors.onSecondary) ??
-          SimpleAACText.subtitle4Style.copyWith(color: context.themeColors.onSecondary);
+      return textStyle ?? SimpleAACText.subtitle4Style;
     } else if (!isFilled && onPressed != null) {
-      return SimpleAACText.subtitle4Style.copyWith(color: context.themeColors.secondary);
+      return SimpleAACText.subtitle4Style;
     } else if (isFilled && onPressed == null) {
-      return SimpleAACText.subtitle4Style.copyWith(color: context.themeColors.onBackground);
+      return SimpleAACText.subtitle4Style;
     } else {
-      return SimpleAACText.subtitle4Style.copyWith(color: context.themeColors.background);
+      return SimpleAACText.subtitle4Style;
     }
   }
 
   Color _getLoadingColor(BuildContext context) {
-    if (isFilled && onPressed != null) {
-      return context.themeColors.onSecondary;
-    } else if (!isFilled && onPressed != null) {
-      return context.themeColors.secondary;
-    } else if (isFilled && onPressed == null) {
+    if (!isFilled && onPressed != null) {
       return context.themeColors.onBackground;
     } else {
-      return context.themeColors.background;
+      return context.themeColors.onPrimary;
     }
   }
 

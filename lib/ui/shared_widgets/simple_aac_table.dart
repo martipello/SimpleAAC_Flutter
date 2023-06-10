@@ -100,7 +100,6 @@ class SimpleAACTable extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: context.themeColors.onBackground,
                 size: 18,
               ),
             ],
@@ -159,9 +158,7 @@ class SimpleAACTable extends StatelessWidget {
     return Text(
       label ?? '',
       style: tableTitleTextStyle ??
-          SimpleAACText.body1Style.copyWith(
-            color: context.themeColors.onBackground,
-          ),
+          SimpleAACText.body1Style,
     );
   }
 }

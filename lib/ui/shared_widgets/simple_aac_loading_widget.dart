@@ -21,7 +21,7 @@ class SimpleAACLoadingWidget extends StatelessWidget {
               valueColor,
             )
           : AlwaysStoppedAnimation(
-        context.themeColors.secondary,
+        context.themeColors.primary,
             ),
     );
   }

@@ -77,7 +77,6 @@ class SimpleAACTextField extends StatelessWidget {
       prefixIcon: prefixIcon != null
           ? Icon(
               prefixIcon,
-              color: context.themeColors.onBackground,
             )
           : null,
       suffixIcon: loading
@@ -92,10 +91,9 @@ class SimpleAACTextField extends StatelessWidget {
             )
           : textController.text.isNotEmpty
               ? IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.close,
                     size: 20,
-                    color: context.themeColors.onBackground,
                   ),
                   onPressed: () {
                     FocusScope.of(context).unfocus();

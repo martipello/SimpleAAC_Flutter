@@ -10,6 +10,7 @@ class OverlayButton extends StatelessWidget {
     this.onLongPress,
     this.size,
   });
+
   final IconData iconData;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
@@ -17,25 +18,27 @@ class OverlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(
-        360,
-      ),
+    final height = size?.height ?? 24;
+    final width = size?.width ?? 24;
+    return ClipOval(
       child: Container(
-        color: Colors.white.withOpacity(
-          0.7,
+        decoration: BoxDecoration(
+          color: context.themeColors.background.withOpacity(
+            0.3,
+          ),
         ),
+        height: height,
+        width: width,
         child: Material(
           type: MaterialType.transparency,
           child: InkWell(
             onTap: onTap,
             onLongPress: onLongPress,
             child: SizedBox(
-              height: size?.height ?? 24,
-              width: size?.width ?? 24,
               child: Center(
                 child: Icon(
                   iconData,
+                  size: height * 0.56,
                   color: context.themeColors.onBackground,
                 ),
               ),

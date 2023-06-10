@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../api/models/extensions/word_type_extension.dart';
 import '../../api/models/word.dart';
-import '../../extensions/build_context_extension.dart';
 import '../../extensions/iterable_extension.dart';
 import '../theme/simple_aac_text.dart';
 import '../word_detail_view.dart';
@@ -44,12 +44,15 @@ class WordTile extends StatelessWidget {
         longTapCallBack: () {
           Navigator.of(context).pushNamed(
             WordDetailView.routeName,
-            arguments: WordDetailViewArguments(word: word, heroTag: heroTag),
+            arguments: WordDetailViewArguments(
+              word: word,
+              heroTag: heroTag,
+            ),
           );
         },
         border: RoundedRectangleBorder(
           side: BorderSide(
-            color: context.themeColors.primary,
+            color: word.type.getColor(context),
           ),
           borderRadius: BorderRadius.circular(4),
         ),
@@ -106,5 +109,4 @@ class WordTile extends StatelessWidget {
       ),
     );
   }
-
 }

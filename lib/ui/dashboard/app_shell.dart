@@ -4,7 +4,6 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../api/models/word.dart';
 import '../../dependency_injection_container.dart';
-import '../../extensions/build_context_extension.dart';
 import '../../flavors.dart';
 import '../../services/shared_preferences_service.dart';
 import '../../view_models/selected_words_view_model.dart';
@@ -21,7 +20,12 @@ import 'sentence_widget.dart';
 const kPlayButtonHeroTag = 'play-button';
 
 class AppShell extends StatefulWidget {
+
+  const AppShell({super.key, this.title});
+
   static const routeName = '/dashboard';
+
+  final String? title;
 
   @override
   _AppShellState createState() => _AppShellState();
@@ -188,7 +192,7 @@ class _AppShellState extends State<AppShell> {
 
   SimpleAACAppBar _buildSimpleAACAppBar() {
     return SimpleAACAppBar(
-      label: F.title,
+      label: widget.title ?? F.title,
       actions: [
         _buildSearchAppBarAction(),
         _buildMenuAppBarAction(),
@@ -219,18 +223,10 @@ class _AppShellState extends State<AppShell> {
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      selectedIconTheme: IconThemeData(
-        color: context.themeColors.secondary,
-      ),
       showUnselectedLabels: false,
-      iconSize: 24,
-      unselectedFontSize: 0,
-      selectedFontSize: SimpleAACText.body3Style.fontSize ?? 14,
       elevation: 12,
       items: _bottomNavigationBarItems(),
       currentIndex: _selectedIndex,
-      selectedItemColor: context.themeColors.secondary,
-      unselectedItemColor: context.themeColors.primary,
       onTap: (index) {
         setState(
           () {
@@ -317,7 +313,6 @@ class _AppShellState extends State<AppShell> {
       children: [
         Icon(
           icon,
-          color: context.themeColors.onBackground,
         ),
         const SizedBox(
           width: 16,

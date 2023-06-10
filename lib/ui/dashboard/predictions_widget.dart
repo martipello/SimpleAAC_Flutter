@@ -50,7 +50,7 @@ class PredictionsWidget extends StatelessWidget {
       shrinkWrap: true,
       padding: const EdgeInsets.only(
         left: 4,
-        right: 56,
+        right: 96,
       ),
       scrollDirection: Axis.horizontal,
       itemCount: predictions.length,
@@ -123,9 +123,15 @@ class PredictionsWidget extends StatelessWidget {
   ) {
     return SimpleAACChip(
       label: word.word,
-      icon: Image.asset(
-        word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
-        fit: BoxFit.contain,
+      icon: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: ClipOval(
+          clipBehavior: Clip.hardEdge,
+          child: Image.asset(
+            word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
+            fit: BoxFit.contain,
+          ),
+        ),
       ),
       chipType: ChipType.normal,
       onTap: onTap,

@@ -70,24 +70,19 @@ class _SentenceWidgetState extends State<SentenceWidget> {
   Widget _buildListView(
     BuiltList<Word> words,
   ) {
-    return Theme(
-      data: ThemeData(
-        canvasColor: Colors.transparent,
-      ),
-      child: ReorderableListView.builder(
-        scrollDirection: Axis.horizontal,
-        proxyDecorator: _proxyDecorator,
-        itemCount: words.length,
-        onReorder: selectedWordsViewModel.updatePositionSelectedWordList,
-        padding: const EdgeInsets.fromLTRB(8, 8, 64, 8),
-        scrollController: scrollController,
-        itemBuilder: (context, index) {
-          return _buildWordTile(
-            words[index],
-            index,
-          );
-        },
-      ),
+    return ReorderableListView.builder(
+      scrollDirection: Axis.horizontal,
+      proxyDecorator: _proxyDecorator,
+      itemCount: words.length,
+      onReorder: selectedWordsViewModel.updatePositionSelectedWordList,
+      padding: const EdgeInsets.fromLTRB(8, 8, 64, 8),
+      scrollController: scrollController,
+      itemBuilder: (context, index) {
+        return _buildWordTile(
+          words[index],
+          index,
+        );
+      },
     );
   }
 
@@ -128,7 +123,7 @@ class _SentenceWidgetState extends State<SentenceWidget> {
       closeButtonOnLongPress: (_) {
         selectedWordsViewModel.clearSelectedWordList();
       },
-      hasReOrderButton: false,
+      hasReOrderButton: true,
     );
   }
 }

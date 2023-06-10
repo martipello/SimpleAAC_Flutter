@@ -38,7 +38,9 @@ class IntroPage extends StatelessWidget {
                 ),
                 weight: 1.0,
               ),
-            ]).evaluate(AlwaysStoppedAnimation(color)),
+            ]).evaluate(
+              AlwaysStoppedAnimation(color),
+            ),
           ),
           child: child,
         );

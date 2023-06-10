@@ -40,13 +40,15 @@ class ThemeViewModel {
   }
 
   String? get themeName => FlexColor.schemes[themeController.usedScheme]?.name;
+
+  ThemeMode get themeMode => themeController.themeMode;
 }
 
 enum SimpleAACTheme {
   red(color: FlexScheme.redM3),
   blue(color: FlexScheme.blueM3),
   yellow(color: FlexScheme.yellowM3),
-  green(color: FlexScheme.greenM3),
+  green(color: FlexScheme.limeM3),
   pink(color: FlexScheme.pinkM3),
   purple(color: FlexScheme.purpleM3);
 

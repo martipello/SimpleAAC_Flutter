@@ -87,9 +87,8 @@ class _ExpansionViewState extends State<ExpansionView> with TickerProviderStateM
                 ),
                 RotationTransition(
                   turns: Tween(begin: 0.0, end: 0.5).animate(_controller),
-                  child: Icon(
+                  child: const Icon(
                     Icons.keyboard_arrow_down,
-                    color: context.themeColors.primary,
                   ),
                 ),
               ],

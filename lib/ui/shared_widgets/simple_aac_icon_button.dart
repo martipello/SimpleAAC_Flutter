@@ -29,12 +29,14 @@ class SimpleAACIconButton extends StatelessWidget {
           child: SizedBox(
             height: _getIconHolderSize(),
             width: _getIconHolderSize(),
-            child: Icon(
-              iconData,
-              color: callback != null
-                  ? iconColor ??context.themeColors.secondary
-                  : disabledColor ?? context.themeColors.background,
-              size: iconSize,
+            child: Center(
+              child: Icon(
+                iconData,
+                color: callback != null
+                    ? iconColor ?? context.themeColors.onPrimary
+                    : disabledColor ?? context.themeColors.shadow,
+                size: iconSize,
+              ),
             ),
           ),
         ),

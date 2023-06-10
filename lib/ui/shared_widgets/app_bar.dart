@@ -23,9 +23,7 @@ class SimpleAACAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(
         label.toUpperCase(),
-        style: SimpleAACText.subtitle2Style.copyWith(
-          color: context.themeColors.onPrimaryContainer,
-        ),
+        style: SimpleAACText.subtitle2Style,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),

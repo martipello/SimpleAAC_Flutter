@@ -57,9 +57,7 @@ class SimpleAACDialog extends StatelessWidget {
                         ),
                         child: Text(
                           title!,
-                          style: SimpleAACText.subtitle1Style.copyWith(
-                            color: context.themeColors.onPrimary,
-                          ),
+                          style: SimpleAACText.subtitle1Style,
                         ),
                       )
                     : const SizedBox(),
@@ -73,9 +71,8 @@ class SimpleAACDialog extends StatelessWidget {
                       minWidth: 12,
                       minHeight: 12,
                     ),
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.close,
-                      color: context.themeColors.onPrimary,
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -168,9 +165,7 @@ class SimpleAACDialog extends StatelessWidget {
       onPressed: action.actionVoidCallback,
       child: Text(
         action.actionText,
-        style: SimpleAACText.body3Style.copyWith(
-          color: context.themeColors.primary,
-        ),
+        style: SimpleAACText.body3Style,
         textAlign: TextAlign.end,
       ),
     );

@@ -23,10 +23,9 @@ class NoResults extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             emptyImage ??
-                Icon(
+                const Icon(
                   Icons.hourglass_empty_outlined,
                   size: 120,
-                  color: context.themeColors.onBackground,
                 ),
             const SizedBox(
               height: 24,
@@ -36,7 +35,7 @@ class NoResults extends StatelessWidget {
                 horizontal: 36.0,
               ),
               child: Text(
-                'Your all caught up. You can swipe down to check for more content.',
+                'No results. Try swiping down to refresh.',
                 style: SimpleAACText.body1Style,
                 textAlign: TextAlign.center,
               ),
