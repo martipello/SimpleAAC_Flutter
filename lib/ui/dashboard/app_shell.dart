@@ -57,7 +57,7 @@ class _AppShellState extends State<AppShell> {
       builder: (context, snapshot) {
         final isFirstTime = snapshot.data;
         if(isFirstTime == null) {
-          return const SimpleAACLoadingWidget();
+          return const Center(child: SimpleAACLoadingWidget(),);
         }
         if (isFirstTime == true) {
           return IntroPage();

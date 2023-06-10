@@ -13,9 +13,11 @@ class ThemeViewModel {
   final ThemeController themeController;
   final SharedPreferencesService sharedPreferencesService;
 
-  Future<void> init() async {
+  Future<void> init({bool doSetInitialTheme = true}) async {
     await themeController.loadAll();
-    await setInitialTheme();
+    if(doSetInitialTheme) {
+      await setInitialTheme();
+    }
   }
 
   Future<void> setInitialTheme() async {
@@ -56,7 +58,7 @@ enum SimpleAACTheme {
 
   static SimpleAACTheme getTheme(String themeName) {
     return SimpleAACTheme.values.firstWhere(
-      (theme) => theme == themeName,
+      (theme) => theme.name == themeName,
       orElse: () => SimpleAACTheme.red,
     );
   }

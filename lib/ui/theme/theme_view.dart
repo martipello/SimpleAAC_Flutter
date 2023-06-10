@@ -65,7 +65,7 @@ class _ThemeViewState extends State<ThemeView> {
           isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
         ),
         onPressed: () {
-          if(isDark) {
+          if (isDark) {
             context.themeViewModel.setThemeMode(ThemeMode.light);
           } else {
             context.themeViewModel.setThemeMode(ThemeMode.dark);
@@ -109,10 +109,12 @@ class _ThemeViewState extends State<ThemeView> {
     SimpleAACTheme theme,
   ) {
     return FutureBuilder<void>(
-      future: themeViewModel.init(),
+      future: themeViewModel.init(doSetInitialTheme: false),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SimpleAACLoadingWidget();
+          return const Center(
+            child: SimpleAACLoadingWidget(),
+          );
         }
         themeViewModel.setTheme(theme);
         return Center(
@@ -124,11 +126,10 @@ class _ThemeViewState extends State<ThemeView> {
                 themeViewModel: themeViewModel,
                 themeBuilder: (themeController) {
                   return MaterialApp(
+                    debugShowCheckedModeBanner: false,
                     theme: FlexThemeData.light(
                       useMaterial3: themeController.useMaterial3,
-                      colors: themeController.usedScheme == FlexScheme.custom
-                          ? myFlexScheme.light
-                          : FlexColor
+                      colors: FlexColor
                               .schemes[themeController.usedScheme]!.light,
                       surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
                       blendLevel: 10,
@@ -143,9 +144,7 @@ class _ThemeViewState extends State<ThemeView> {
                     // We also change the blend level and app bar elevation
                     darkTheme: FlexThemeData.dark(
                       useMaterial3: themeController.useMaterial3,
-                      colors: themeController.usedScheme == FlexScheme.custom
-                          ? myFlexScheme.dark
-                          : FlexColor.schemes[themeController.usedScheme]!.dark,
+                      colors: FlexColor.schemes[themeController.usedScheme]!.dark,
                       surfaceMode: FlexSurfaceMode.highScaffoldLowSurfaces,
                       blendLevel: 12,
                       appBarElevation: 1,
