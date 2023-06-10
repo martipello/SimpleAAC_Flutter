@@ -42,6 +42,10 @@ class ThemeViewModel {
   String? get themeName => FlexColor.schemes[themeController.usedScheme]?.name;
 
   ThemeMode get themeMode => themeController.themeMode;
+
+  void dispose(){
+    themeController.dispose();
+  }
 }
 
 enum SimpleAACTheme {

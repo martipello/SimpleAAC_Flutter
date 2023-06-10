@@ -13,7 +13,14 @@ import 'ui/theme/theme_builder_widget.dart';
 import 'view_models/theme_view_model.dart';
 
 // ignore: avoid_classes_with_only_static_members
-class SimpleAACAppWrapper {
+class SimpleAACAppWrapper extends StatefulWidget {
+  const SimpleAACAppWrapper({
+    super.key,
+    required this.themeViewModel,
+  });
+
+  final ThemeViewModel themeViewModel;
+
   static void init() async {
     runZonedGuarded<Future<void>>(
       () async {
@@ -21,8 +28,7 @@ class SimpleAACAppWrapper {
         await initializeFirebase();
         FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
         if (kDebugMode) {
-          await FirebaseCrashlytics.instance
-              .setCrashlyticsCollectionEnabled(false);
+          await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
         }
         await di.init();
         await di.allReady();
@@ -31,28 +37,33 @@ class SimpleAACAppWrapper {
         final themeViewModel = di.getIt.get<ThemeViewModel>();
         await themeViewModel.init();
         runApp(
-          _buildThemeWrapper(themeViewModel),
+          SimpleAACAppWrapper(
+            themeViewModel: themeViewModel,
+          ),
         );
       },
-      (error, stack) => FirebaseCrashlytics.instance
-          .recordError(error, stack, reason: 'Zoned Error'),
+      (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, reason: 'Zoned Error'),
     );
   }
 
-  static Widget _buildThemeWrapper(
-    ThemeViewModel themeViewModel,
-  ) {
+  static Future<void> initializeFirebase() async {
+    await Firebase.initializeApp();
+  }
+
+  @override
+  State<SimpleAACAppWrapper> createState() => _SimpleAACAppWrapperState();
+}
+
+class _SimpleAACAppWrapperState extends State<SimpleAACAppWrapper> {
+  @override
+  Widget build(BuildContext context) {
     return ThemeBuilderWidget(
-      themeViewModel: themeViewModel,
+      themeViewModel: widget.themeViewModel,
       themeBuilder: (themeController) {
         return SimpleAACApp(
           themeController: themeController,
         );
       },
     );
-  }
-
-  static Future<void> initializeFirebase() async {
-    await Firebase.initializeApp();
   }
 }

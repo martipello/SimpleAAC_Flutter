@@ -144,6 +144,7 @@ class HiveClient {
   }
 
   Future<void> dispose() async {
+    _hiveBox.compact();
     _hiveBox.close();
   }
 }

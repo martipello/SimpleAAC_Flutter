@@ -26,4 +26,9 @@ class ThemeService {
     );
     return value ?? defaultValue;
   }
+
+  Future<void> dispose() async {
+    final hiveClient = await _hiveClient;
+    hiveClient.dispose();
+  }
 }
