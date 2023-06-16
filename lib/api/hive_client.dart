@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:hive_built_value/hive_built_value.dart';
+import 'package:hive_built_value_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../ui/shared_widgets/my_custom_painter.dart';
@@ -12,37 +13,38 @@ import '../ui/shared_widgets/my_custom_painter.dart';
 const pngFileExtension = '.png';
 
 class HiveClient {
-  HiveClient._();
-
-  static late final Box<dynamic> _hiveBox;
-
-  static Future<HiveClient> init<T>(String boxName) async {
-    _hiveBox = await Hive.openBox<T>(
-      boxName,
-    );
-    return HiveClient._();
+  /// Private constructor
+  HiveClient._create(Box box) {
+    hiveBox = box;
   }
+
+  static Future<HiveClient> create<T>(String boxName) async {
+    final box = await Hive.openBox<T>(boxName);
+    final hiveClient = HiveClient._create(box);
+    return hiveClient;
+  }
+
+  late final Box hiveBox;
 
   Future<void> put<T>(
     String key,
     T? value,
   ) async {
-    return _hiveBox.put(key, value);
+    return hiveBox.put(key, value);
   }
 
   Future<void> delete(
     String key,
   ) async {
-    return _hiveBox.delete(key);
+    return hiveBox.delete(key);
   }
 
   Future<T?> get<T>(
     String key, {
     T? defaultValue,
   }) async {
-
     try {
-      final loaded = _hiveBox.get(key, defaultValue: defaultValue) as T;
+      final loaded = hiveBox.get(key, defaultValue: defaultValue) as T?;
       if (kDebugMode) {
         debugPrint('Hive type   : $key as ${defaultValue.runtimeType}');
         debugPrint('Hive loaded : $key as $loaded with ${loaded.runtimeType}');
@@ -56,6 +58,29 @@ class HiveClient {
       // If something goes wrong we return the default value.
       return defaultValue;
     }
+  }
+
+  BuiltList<T> getAll<T>() => hiveBox.values.whereType<T>().toBuiltList();
+
+  Future<BuiltList<T>> getAllForKeys<T>(BuiltList<String> keys) async {
+    try {
+      final allLoaded = BuiltList<T>();
+      for (var key in keys) {
+        final loaded = hiveBox.get(key) as T;
+        allLoaded.rebuild((b) => b.add(loaded));
+      }
+      return allLoaded;
+    } catch (e) {
+      return BuiltList<T>();
+    }
+  }
+
+  void addListener(AsyncCallback callback){
+    hiveBox.listenable().addListener(callback);
+  }
+
+  void removeListener(AsyncCallback callback){
+    hiveBox.listenable().removeListener(callback);
   }
 
   Future<XFile?> getPNGFile(
@@ -144,7 +169,7 @@ class HiveClient {
   }
 
   Future<void> dispose() async {
-    _hiveBox.compact();
-    _hiveBox.close();
+    hiveBox.compact();
+    hiveBox.close();
   }
 }

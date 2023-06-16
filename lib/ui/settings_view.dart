@@ -1,11 +1,9 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 import '../dependency_injection_container.dart';
 import '../extensions/build_context_extension.dart';
 import '../services/shared_preferences_service.dart';
-import '../view_models/theme_view_model.dart';
 import 'theme/simple_aac_text.dart';
 import 'theme/theme_view.dart';
 
@@ -22,7 +20,7 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<bool?>(
-      stream: _sharedPreferenceService.hasPredictionsEnabledStream,
+      stream: _sharedPreferenceService.hasRelatedWordsEnabledStream,
       builder: (context, snapshot) {
         final _hasPredictionsEnabled = snapshot.data == true;
         return Scaffold(
@@ -108,7 +106,7 @@ class _SettingsViewState extends State<SettingsView> {
       tiles: [
         SettingsTile.switchTile(
           initialValue: _hasPredictionsEnabled,
-          onToggle: _sharedPreferenceService.setPredictionsEnabled,
+          onToggle: _sharedPreferenceService.setRelatedWordsEnabled,
           title: const Text(
             'Show predictions when selecting cards',
             style: SimpleAACText.body4Style,

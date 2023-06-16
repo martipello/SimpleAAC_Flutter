@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 
 class SimpleAACAppBar extends StatelessWidget implements PreferredSizeWidget {

@@ -4,10 +4,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_built_value/hive_built_value.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'api/hive.dart';
 import 'dependency_injection_container.dart' as di;
+import 'services/shared_preferences_service.dart';
 import 'simple_aac_app.dart';
 import 'ui/theme/theme_builder_widget.dart';
 import 'view_models/theme_view_model.dart';
@@ -30,19 +32,31 @@ class SimpleAACAppWrapper extends StatefulWidget {
         if (kDebugMode) {
           await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
         }
+
+        final appDocumentDir = await getApplicationDocumentsDirectory();
+        await initHive(appDocumentDir);
         await di.init();
         await di.allReady();
-        final appDocumentDir = await getApplicationDocumentsDirectory();
-        initHive(appDocumentDir);
+
+        final isFirstTime = await SharedPreferencesService.firstTime;
+        if(isFirstTime) {
+          await populateInitialData();
+        }
+
         final themeViewModel = di.getIt.get<ThemeViewModel>();
         await themeViewModel.init();
+
         runApp(
           SimpleAACAppWrapper(
             themeViewModel: themeViewModel,
           ),
         );
       },
-      (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, reason: 'Zoned Error'),
+      (error, stack) => FirebaseCrashlytics.instance.recordError(
+        error,
+        stack,
+        reason: 'Zoned Error',
+      ),
     );
   }
 

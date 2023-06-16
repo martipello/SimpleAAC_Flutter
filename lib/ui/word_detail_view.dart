@@ -1,11 +1,14 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../extensions/build_context_extension.dart';
 import '../api/models/word.dart';
+import '../dependency_injection_container.dart';
 import '../extensions/iterable_extension.dart';
+import '../view_models/words_view_model.dart';
 import 'dashboard/app_shell.dart';
-import 'dashboard/predictions_widget.dart';
+import 'dashboard/related_words_widget.dart';
 import 'manage_word_view.dart';
 import 'shared_widgets/overlay_button.dart';
 import 'shared_widgets/simple_aac_dialog.dart';
@@ -32,6 +35,7 @@ class WordDetailView extends StatefulWidget {
 }
 
 class _WordDetailViewState extends State<WordDetailView> {
+  final wordViewModel = getIt.get<WordsViewModel>();
   WordDetailViewArguments get _wordDetailViewArguments => context.routeArguments as WordDetailViewArguments;
 
   Word get _word => _wordDetailViewArguments.word;
@@ -157,9 +161,15 @@ class _WordDetailViewState extends State<WordDetailView> {
                   const SizedBox(
                     height: 8,
                   ),
-                  PredictionsWidget(
-                    predictions: _word.predictionList,
-                    isExpanded: true,
+                  FutureBuilder<BuiltList<Word>>(
+                    future: wordViewModel.getWordsForIds(_word.extraRelatedWordIds),
+                    builder: (context, snapshot) {
+                      final extraRelatedWords = snapshot.data ?? BuiltList();
+                      return RelatedWordsWidget(
+                        relatedWords: extraRelatedWords,
+                        isExpanded: true,
+                      );
+                    }
                   ),
                 ],
               ),

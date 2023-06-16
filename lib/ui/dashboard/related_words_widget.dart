@@ -8,44 +8,39 @@ import '../../services/shared_preferences_service.dart';
 import '../shared_widgets/chip_group.dart';
 import '../shared_widgets/simple_aac_chip.dart';
 
-typedef WordListCallBack = void Function(BuiltList<Word> word);
+typedef WordListCallBack = void Function(BuiltList<String> word);
 
-class PredictionsWidget extends StatelessWidget {
-  PredictionsWidget({
+class RelatedWordsWidget extends StatelessWidget {
+  RelatedWordsWidget({
     Key? key,
-    required this.predictions,
-    this.onPredictionsChanged,
+    required this.relatedWords,
+    this.onRelatedWordIdsChanged,
     this.isExpanded = false,
   }) : super(key: key);
 
-  final BuiltList<Word> predictions;
-  final WordListCallBack? onPredictionsChanged;
+  final BuiltList<Word> relatedWords;
+  final WordListCallBack? onRelatedWordIdsChanged;
   final bool isExpanded;
 
   final sharedPreferences = getIt.get<SharedPreferencesService>();
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: sharedPreferences.hasPredictionsEnabled(),
-      builder: (context, initialStateSnapshot) {
-        return StreamBuilder<bool?>(
-          initialData: initialStateSnapshot.data,
-          stream: sharedPreferences.hasPredictionsEnabledStream,
-          builder: (context, snapshot) {
-            final hasPredictionsEnabled = snapshot.data ?? initialStateSnapshot.data ?? true;
-            if (hasPredictionsEnabled) {
-              return isExpanded ? _buildExpandedChipGroup() : _buildPredictionListView();
-            } else {
-              return const SizedBox();
-            }
-          },
-        );
+    return StreamBuilder<bool?>(
+      initialData: sharedPreferences.hasRelatedWordsEnabled(),
+      stream: sharedPreferences.hasRelatedWordsEnabledStream,
+      builder: (context, snapshot) {
+        final hasRelatedWordsEnabled = snapshot.data ?? sharedPreferences.hasRelatedWordsEnabled();
+        if (hasRelatedWordsEnabled) {
+          return isExpanded ? _buildExpandedChipGroup() : _buildRelatedWordListView();
+        } else {
+          return const SizedBox();
+        }
       },
     );
   }
 
-  Widget _buildPredictionListView() {
+  Widget _buildRelatedWordListView() {
     return ListView.separated(
       shrinkWrap: true,
       padding: const EdgeInsets.only(
@@ -53,13 +48,13 @@ class PredictionsWidget extends StatelessWidget {
         right: 96,
       ),
       scrollDirection: Axis.horizontal,
-      itemCount: predictions.length,
+      itemCount: relatedWords.length,
       itemBuilder: (context, index) {
-        final word = predictions[index];
-        return _buildPredictionChip(
+        final word = relatedWords[index];
+        return _buildRelatedWordChip(
           word,
-          _getAddPredictionFunction(word),
-          _getRemovePredictionFunction(word),
+          _getAddRelatedWordFunction(word),
+          _getRemoveRelatedWordFunction(word),
         );
       },
       separatorBuilder: (context, index) {
@@ -70,15 +65,20 @@ class PredictionsWidget extends StatelessWidget {
     );
   }
 
-  VoidCallback? _getAddPredictionFunction(
+  VoidCallback? _getAddRelatedWordFunction(
     Word word,
   ) {
-    if (onPredictionsChanged != null) {
+    if (onRelatedWordIdsChanged != null) {
       return () {
-        onPredictionsChanged?.call(
-          predictions.rebuild(
-            (pb) => pb.add(word),
-          ),
+        onRelatedWordIdsChanged?.call(
+          relatedWords
+              .rebuild(
+                (pb) => pb.add(word),
+              )
+              .map(
+                (p0) => p0.wordId,
+              )
+              .toBuiltList(),
         );
       };
     } else {
@@ -86,15 +86,20 @@ class PredictionsWidget extends StatelessWidget {
     }
   }
 
-  VoidCallback? _getRemovePredictionFunction(
+  VoidCallback? _getRemoveRelatedWordFunction(
     Word word,
   ) {
-    if (onPredictionsChanged != null) {
+    if (onRelatedWordIdsChanged != null) {
       return () {
-        onPredictionsChanged?.call(
-          predictions.rebuild(
-            (pb) => pb.remove(word),
-          ),
+        onRelatedWordIdsChanged?.call(
+          relatedWords
+              .rebuild(
+                (pb) => pb.remove(word),
+              )
+              .map(
+                (p0) => p0.wordId,
+              )
+              .toBuiltList(),
         );
       };
     } else {
@@ -104,19 +109,19 @@ class PredictionsWidget extends StatelessWidget {
 
   Widget _buildExpandedChipGroup() {
     return ChipGroup(
-      chips: predictions
+      chips: relatedWords
           .map(
-            (word) => _buildPredictionChip(
+            (word) => _buildRelatedWordChip(
               word,
-              _getAddPredictionFunction(word),
-              _getRemovePredictionFunction(word),
+              _getAddRelatedWordFunction(word),
+              _getRemoveRelatedWordFunction(word),
             ),
           )
           .toList(),
     );
   }
 
-  Widget _buildPredictionChip(
+  Widget _buildRelatedWordChip(
     Word word,
     VoidCallback? onTap,
     VoidCallback? onDelete,

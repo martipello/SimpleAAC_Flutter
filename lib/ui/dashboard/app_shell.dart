@@ -3,24 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../api/models/word.dart';
+import '../../api/models/word_type.dart';
 import '../../dependency_injection_container.dart';
+import '../../extensions/string_extension.dart';
 import '../../flavors.dart';
 import '../../services/shared_preferences_service.dart';
 import '../../view_models/selected_words_view_model.dart';
 import '../intro/intro_page.dart';
 import '../manage_word_view.dart';
-import '../quicks/quicks_view.dart';
 import '../settings_view.dart';
 import '../shared_widgets/app_bar.dart';
-import '../shared_widgets/simple_aac_loading_widget.dart';
 import '../theme/simple_aac_text.dart';
-import 'predictions_widget.dart';
+import '../word_type_views/word_type_view.dart';
+import 'related_words_widget.dart';
 import 'sentence_widget.dart';
 
 const kPlayButtonHeroTag = 'play-button';
 
 class AppShell extends StatefulWidget {
-
   const AppShell({super.key, this.title});
 
   static const routeName = '/dashboard';
@@ -43,7 +43,7 @@ class _AppShellState extends State<AppShell> {
     selectedWordsViewModel.selectedWords.listen((value) {
       print('selectedWordsStream WORD $value');
     });
-    selectedWordsViewModel.predictions.listen((value) {
+    selectedWordsViewModel.relatedWords.listen((value) {
       print('predictionsForSelectedWord WORD $value');
     });
   }
@@ -56,19 +56,11 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: sharedPreferences.isFirstTime(),
-      builder: (context, snapshot) {
-        final isFirstTime = snapshot.data;
-        if(isFirstTime == null) {
-          return const Center(child: SimpleAACLoadingWidget(),);
-        }
-        if (isFirstTime == true) {
-          return IntroPage();
-        }
-        return _buildAppShell();
-      },
-    );
+    final isFirstTime = sharedPreferences.isFirstTime();
+    if (isFirstTime == true) {
+      return IntroPage();
+    }
+    return _buildAppShell();
   }
 
   Widget _buildAppShell() {
@@ -85,12 +77,13 @@ class _AppShellState extends State<AppShell> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildHeroHolder(),
-        [
-          QuicksView(),
-          QuicksView(),
-          QuicksView(),
-          QuicksView(),
-        ].elementAt(_selectedIndex)
+        WordType.values
+            .map(
+              (wordType) => WordTypeView(
+                wordType: wordType,
+              ),
+            )
+            .elementAt(_selectedIndex)
       ],
     );
   }
@@ -102,7 +95,7 @@ class _AppShellState extends State<AppShell> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SentenceWidget(),
-            _buildPredictions(),
+            _buildRelatedWords(),
           ],
         ),
         Positioned.fill(
@@ -118,16 +111,16 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  Widget _buildPredictions() {
+  Widget _buildRelatedWords() {
     return StreamBuilder<BuiltList<Word>>(
-      stream: selectedWordsViewModel.predictions,
+      stream: selectedWordsViewModel.relatedWords,
       builder: (context, snapshot) {
-        final predictions = snapshot.data ?? BuiltList();
+        final relatedWords = snapshot.data ?? BuiltList();
         return SizedBox(
           height: 48,
-          child: PredictionsWidget(
-            predictions: predictions,
-            onPredictionsChanged: selectedWordsViewModel.setPredictions,
+          child: RelatedWordsWidget(
+            relatedWords: relatedWords,
+            onRelatedWordIdsChanged: selectedWordsViewModel.setRelatedWordsForWordIds,
           ),
         );
       },
@@ -202,22 +195,22 @@ class _AppShellState extends State<AppShell> {
 
   Widget _buildMenuAppBarAction() {
     return IconButton(
-        padding: EdgeInsets.zero,
-        visualDensity: VisualDensity.compact,
-        onPressed: () {},
-        icon: _buildMenuButton(),
-      );
+      padding: EdgeInsets.zero,
+      visualDensity: VisualDensity.compact,
+      onPressed: () {},
+      icon: _buildMenuButton(),
+    );
   }
 
   Widget _buildSearchAppBarAction() {
     return IconButton(
-        padding: EdgeInsets.zero,
-        visualDensity: VisualDensity.compact,
-        onPressed: () {},
-        icon: const Icon(
-          Icons.search_rounded,
-        ),
-      );
+      padding: EdgeInsets.zero,
+      visualDensity: VisualDensity.compact,
+      onPressed: () {},
+      icon: const Icon(
+        Icons.search_rounded,
+      ),
+    );
   }
 
   Widget _buildBottomNavigationBar() {
@@ -238,24 +231,14 @@ class _AppShellState extends State<AppShell> {
   }
 
   List<BottomNavigationBarItem> _bottomNavigationBarItems() {
-    return [
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.add),
-        label: 'QUICKS',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.add),
-        label: 'NOUNS',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.add),
-        label: 'VERBS',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.add),
-        label: 'OTHER',
-      ),
-    ];
+    return WordType.values
+        .map(
+          (e) => BottomNavigationBarItem(
+            icon: const Icon(Icons.add),
+            label: e.name.capitalize(),
+          ),
+        )
+        .toList();
   }
 
   Widget _buildMenuButton() {
@@ -292,7 +275,8 @@ class _AppShellState extends State<AppShell> {
             ),
           ),
           PopupMenuItem(
-            onTap: () {},
+            onTap: () {
+            },
             child: _buildMenuItem(
               context,
               'About',

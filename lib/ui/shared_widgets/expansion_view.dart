@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../extensions/build_context_extension.dart';
 
 class ExpansionView extends StatefulWidget {
   const ExpansionView({

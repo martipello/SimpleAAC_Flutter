@@ -1,23 +1,33 @@
 import 'package:flutter/material.dart';
 
+import '../../api/models/extensions/word_sub_type_extension.dart';
+import '../../api/models/extensions/word_type_extension.dart';
+import '../../api/models/word_sub_type.dart';
+import '../../api/models/word_type.dart';
 import '../../dependency_injection_container.dart';
 import '../../extensions/build_context_extension.dart';
 import '../../view_models/utils/tab_bar_view_model.dart';
-import 'favourites_view.dart';
+import 'word_sub_type_view.dart';
 
-class QuicksView extends StatefulWidget {
+class WordTypeView extends StatefulWidget {
+  const WordTypeView({super.key, required this.wordType});
+
+  final WordType wordType;
+
   @override
-  State<QuicksView> createState() => _QuicksViewState();
+  State<WordTypeView> createState() => _WordTypeViewState();
 }
 
-class _QuicksViewState extends State<QuicksView> with SingleTickerProviderStateMixin {
+class _WordTypeViewState extends State<WordTypeView> with SingleTickerProviderStateMixin {
+  List<WordSubType> get subTypes => widget.wordType.getSubTypes();
   final _tabBarViewModel = getIt.get<TabBarViewModel>();
+
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: subTypes.length, vsync: this);
     _tabController.addListener(
       () {
         _tabBarViewModel.setCurrentTabIndex(_tabController.index);
@@ -43,31 +53,28 @@ class _QuicksViewState extends State<QuicksView> with SingleTickerProviderStateM
               Container(
                 child: TabBar(
                   controller: _tabController,
+                  isScrollable: true,
                   indicatorColor: context.themeColors.secondary,
-                  tabs: [
-                    _buildTab(
-                      'FAVOURITES',
-                      Icons.favorite_outline_rounded,
-                    ),
-                    _buildTab(
-                      'PRONOUN',
-                      Icons.people_outlined,
-                    ),
-                    _buildTab(
-                      'CONJUNCTIONS',
-                      Icons.add_outlined,
-                    ),
-                  ],
+                  tabs: subTypes
+                      .map(
+                        (e) => _buildTab(
+                          e.name,
+                          e.getIcon(),
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
-                  children: [
-                    FavouritesView(),
-                    const Text('PRONOUN'),
-                    const Text('CONJUNCTIONS'),
-                  ],
+                  children: subTypes
+                      .map(
+                        (e) => WordSubTypeView(
+                          wordSubType: e,
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
             ],
@@ -77,7 +84,10 @@ class _QuicksViewState extends State<QuicksView> with SingleTickerProviderStateM
     );
   }
 
-  Widget _buildTab(String label, IconData icon) {
+  Widget _buildTab(
+    String label,
+    IconData icon,
+  ) {
     return Tab(
       text: label,
       icon: Icon(icon),

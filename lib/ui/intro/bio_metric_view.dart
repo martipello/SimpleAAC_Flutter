@@ -15,24 +15,19 @@ class _BioMetricViewState extends State<BioMetricView> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool?>(
-      future: _sharedPreferences.useBiometrics(),
-      builder: (context, snapshot) {
-        final isFingerprintEnabled = snapshot.data ?? false;
-        return IntroView(
-          title: 'Fast Sign In',
-          bodyWidget: _buildBodyWidget(context),
-          descriptionLabel: _getEnableFingerprintDescription(
-            context,
-            isFingerprintEnabled: isFingerprintEnabled,
-          ),
-          actionButtonLabel: isFingerprintEnabled ? 'Disable' : 'Enable',
-          actionButtonFillColor: isFingerprintEnabled ? context.themeColors.background : context.themeColors.secondary,
-          actionButtonCallback: () {
-            _sharedPreferences.setBiometrics(useBiometrics: !isFingerprintEnabled);
-            setState(() {});
-          },
-        );
+    final isFingerprintEnabled = _sharedPreferences.useBiometrics();
+    return IntroView(
+      title: 'Fast Sign In',
+      bodyWidget: _buildBodyWidget(context),
+      descriptionLabel: _getEnableFingerprintDescription(
+        context,
+        isFingerprintEnabled: isFingerprintEnabled,
+      ),
+      actionButtonLabel: isFingerprintEnabled ? 'Disable' : 'Enable',
+      actionButtonFillColor: isFingerprintEnabled ? context.themeColors.background : context.themeColors.secondary,
+      actionButtonCallback: () {
+        _sharedPreferences.setBiometrics(useBiometrics: !isFingerprintEnabled);
+        setState(() {});
       },
     );
   }

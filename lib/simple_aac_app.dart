@@ -72,7 +72,7 @@ class _SimpleAACAppState extends State<SimpleAACApp> {
       themeMode: themeController.themeMode,
       initialRoute: AppShell.routeName,
       routes: {
-        AppShell.routeName: (context) => AppShell(),
+        AppShell.routeName: (context) => const AppShell(),
         WordDetailView.routeName: (context) => WordDetailView(),
         ManageWordView.routeName: (context) => ManageWordView(),
         SettingsView.routeName: (context) => SettingsView(),

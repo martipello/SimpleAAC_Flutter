@@ -1,51 +1,40 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../dependency_injection_container.dart';
 import '../utils/constants.dart';
-import '../view_models/theme_view_model.dart';
 
 class SharedPreferencesService {
-  final _sharedPreferences = getIt.getAsync<SharedPreferences>();
+  SharedPreferencesService(this.sharedPreferences);
 
-  final hasPredictionsEnabledStream = BehaviorSubject<bool?>();
+  final SharedPreferences sharedPreferences;
 
-  Future<SharedPreferences> sharedPreferences() {
-    return _sharedPreferences;
-  }
+  final hasRelatedWordsEnabledStream = BehaviorSubject<bool?>();
 
-  Future<bool> isFirstTime() async {
-    final sharedPreferences = await _sharedPreferences;
+  bool isFirstTime() {
     return sharedPreferences.getBool(Constants.FIRST_TIME) ?? true;
   }
 
-  Future<bool> hasPredictionsEnabled() async {
-    final sharedPreferences = await _sharedPreferences;
-    return sharedPreferences.getBool(Constants.PREDICTIONS) ?? true;
+  bool hasRelatedWordsEnabled() {
+    return sharedPreferences.getBool(Constants.RELATED_WORDS) ?? true;
   }
 
-  Future<String> email() async {
-    final sharedPreferences = await _sharedPreferences;
+  String email() {
     return sharedPreferences.getString(Constants.EMAIL_KEY) ?? '';
   }
 
-  Future<String> name() async {
-    final sharedPreferences = await _sharedPreferences;
+  String name() {
     return sharedPreferences.getString(Constants.USER_FIRST_NAME) ?? '';
   }
 
-  Future<String> lastName() async {
-    final sharedPreferences = await _sharedPreferences;
+  String lastName() {
     return sharedPreferences.getString(Constants.USER_LAST_NAME) ?? '';
   }
 
-  Future<String> themeName() async {
-    final sharedPreferences = await _sharedPreferences;
+  String themeName() {
     return sharedPreferences.getString(Constants.THEME_NAME) ?? 'red';
   }
 
-  Future<bool> useBiometrics() async {
-    final sharedPreferences = await _sharedPreferences;
+  bool useBiometrics() {
     if (sharedPreferences.containsKey(Constants.BIOMETRIC_KEY)) {
       if (sharedPreferences.getBool(Constants.BIOMETRIC_KEY) == true) {
         return true;
@@ -54,44 +43,41 @@ class SharedPreferencesService {
     return false;
   }
 
-  Future<void> setFirstTime({required bool isFirstTime}) async {
-    final sharedPreferences = await _sharedPreferences;
+  void setFirstTime({required bool isFirstTime}) {
     sharedPreferences.setBool(Constants.FIRST_TIME, isFirstTime);
   }
 
   //ignore: avoid_positional_boolean_parameters
-  Future<void> setPredictionsEnabled(bool hasPredictionsEnabled) async {
-    final sharedPreferences = await _sharedPreferences;
-    sharedPreferences.setBool(Constants.PREDICTIONS, hasPredictionsEnabled);
-    hasPredictionsEnabledStream.add(hasPredictionsEnabled);
+  void setRelatedWordsEnabled(bool hasRelatedWordsEnabled) {
+    sharedPreferences.setBool(Constants.RELATED_WORDS, hasRelatedWordsEnabled);
+    hasRelatedWordsEnabledStream.add(hasRelatedWordsEnabled);
   }
 
-  Future<void> setBiometrics({required bool useBiometrics}) async {
-    final sharedPreferences = await _sharedPreferences;
+  void setBiometrics({required bool useBiometrics}) {
     sharedPreferences.setBool(Constants.BIOMETRIC_KEY, useBiometrics);
   }
 
-  Future<void> setEmail(String email) async {
-    final sharedPreferences = await _sharedPreferences;
+  void setEmail(String email) {
     sharedPreferences.setString(Constants.EMAIL_KEY, email);
   }
 
-  Future<void> setThemeName(String themeName) async {
-    final sharedPreferences = await _sharedPreferences;
+  void setThemeName(String themeName) {
     sharedPreferences.setString(Constants.THEME_NAME, themeName);
   }
 
-  Future<void> setUserName(String userName) async {
-    final sharedPreferences = await _sharedPreferences;
+  void setUserName(String userName) {
     sharedPreferences.setString(Constants.USER_FIRST_NAME, userName);
   }
 
-  Future<void> setUserLastName(String userLastName) async {
-    final sharedPreferences = await _sharedPreferences;
+  void setUserLastName(String userLastName) {
     sharedPreferences.setString(Constants.USER_LAST_NAME, userLastName);
   }
 
   void dispose() {
-    hasPredictionsEnabledStream.close();
+    hasRelatedWordsEnabledStream.close();
   }
+
+  static Future<bool> get firstTime => SharedPreferences.getInstance().then(
+        (sharedPreferences) => sharedPreferences.getBool(Constants.FIRST_TIME) ?? true,
+      );
 }

@@ -4,8 +4,13 @@ import 'package:rxdart/rxdart.dart';
 import '../../api/models/word.dart';
 import '../../api/models/word_sub_type.dart';
 import '../../api/models/word_type.dart';
+import '../../services/word_service.dart';
 
 class ManageWordViewModel {
+  ManageWordViewModel(this.wordService);
+
+  final WordService wordService;
+
   final wordStream = BehaviorSubject<Word?>();
 
   void setWord(Word? word) {
@@ -77,22 +82,27 @@ class ManageWordViewModel {
     }
   }
 
-  void setWordPredictions(BuiltList<Word> predictions) {
+  void setExtraRelatedWords(BuiltList<String> relatedWordIds) {
     final word = wordStream.valueOrNull;
     if (word != null) {
       wordStream.add(
         word.rebuild(
-          (p0) => p0.predictionList.replace(predictions),
+          (p0) => p0.extraRelatedWordIds.replace(relatedWordIds),
         ),
       );
     } else {
       wordStream.add(
         Word(
-          (p0) => p0.predictionList.replace(predictions),
+          (p0) => p0.extraRelatedWordIds.replace(relatedWordIds),
         ),
       );
     }
   }
+
+  Stream<BuiltList<Word>> get relatedWords => wordStream.switchMap((word) async* {
+    //TODO add some cool logic for getting related words and add these and extraRelatedWordIds words
+    await wordService.getAllForKeys(word?.extraRelatedWordIds ?? BuiltList());
+  });
 
   void dispose() {
     wordStream.close();
