@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/constants.dart';
 
+const defaultLanguageId = 'l1';
+
 class SharedPreferencesService {
   SharedPreferencesService(this.sharedPreferences);
 
@@ -36,7 +38,7 @@ class SharedPreferencesService {
   }
 
   String languageId() {
-    return sharedPreferences.getString(Constants.LANGUAGE_ID) ?? '';
+    return sharedPreferences.getString(Constants.LANGUAGE_ID) ?? defaultLanguageId;
   }
 
   bool useBiometrics() {
