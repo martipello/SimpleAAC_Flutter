@@ -6,10 +6,10 @@ class ThemeService {
 
   ThemeService(this.hiveClient);
 
-  final HiveClient hiveClient;
+  final HiveClient<dynamic> hiveClient;
 
   Future<void> put<T>(String key, T value) async {
-    return hiveClient.put<T>(
+    return hiveClient.put(
       key,
       value,
     );
@@ -19,7 +19,7 @@ class ThemeService {
     String key,
     T defaultValue,
   ) async {
-    final value = await hiveClient.get<T?>(
+    final value = await hiveClient.get(
       key,
       defaultValue: defaultValue,
     );

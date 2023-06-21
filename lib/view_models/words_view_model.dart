@@ -26,7 +26,7 @@ class WordsViewModel {
   Future<BuiltList<Word>> getWordsForIds(
     BuiltList<String> wordIds,
   ) async {
-    return wordService.getAllForKeys(wordIds);
+    return wordService.getWordsForIds(wordIds);
   }
 
   void addWordsOfTypeListener(WordSubType wordSubType) {

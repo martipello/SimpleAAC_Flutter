@@ -7,7 +7,7 @@ import '../serializers/serializers.dart';
 
 part 'word_type.g.dart';
 
-@HiveType(typeId: 1)
+@HiveType(typeId: 2)
 class WordType extends EnumClass {
   const WordType._(String name) : super(name);
   static const WordType quicks = _$quicks;

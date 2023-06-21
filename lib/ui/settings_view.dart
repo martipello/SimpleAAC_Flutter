@@ -20,7 +20,7 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<bool?>(
-      stream: _sharedPreferenceService.hasRelatedWordsEnabledStream,
+      stream: _sharedPreferenceService.relatedWordsEnabled,
       builder: (context, snapshot) {
         final _hasPredictionsEnabled = snapshot.data == true;
         return Scaffold(

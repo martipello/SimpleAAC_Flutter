@@ -99,9 +99,12 @@ class ManageWordViewModel {
     }
   }
 
-  Stream<BuiltList<Word>> get relatedWords => wordStream.switchMap((word) async* {
-    //TODO add some cool logic for getting related words and add these and extraRelatedWordIds words
-    await wordService.getAllForKeys(word?.extraRelatedWordIds ?? BuiltList());
+  Stream<BuiltList<Word>> get relatedWords => wordStream.whereType<Word>().switchMap((word) {
+    return wordService.getRelatedWords(word).asStream();
+  });
+
+  Stream<BuiltList<Word>> get extraRelatedWords => wordStream.whereType<Word>().switchMap((word) {
+    return wordService.getExtraRelatedWords(word).asStream();
   });
 
   void dispose() {

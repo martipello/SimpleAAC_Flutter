@@ -55,7 +55,7 @@ class SelectedWordsViewModel {
   }
 
   void setRelatedWordsForWordIds(BuiltList<String> relatedWords) async {
-    final words = await wordService.getAllForKeys(relatedWords);
+    final words = await wordService.getWordsForIds(relatedWords);
     setRelatedWords(words);
   }
 

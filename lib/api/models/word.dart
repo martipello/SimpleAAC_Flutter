@@ -9,7 +9,7 @@ import 'word_type.dart';
 
 part 'word.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 1)
 abstract class Word implements Built<Word, WordBuilder> {
 
   factory Word([void Function(WordBuilder) updates]) = _$Word;

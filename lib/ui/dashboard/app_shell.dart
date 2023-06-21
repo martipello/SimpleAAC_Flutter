@@ -21,11 +21,16 @@ import 'sentence_widget.dart';
 const kPlayButtonHeroTag = 'play-button';
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key, this.title});
+  const AppShell({
+    super.key,
+    this.title,
+    this.isHome = true,
+  });
 
   static const routeName = '/dashboard';
 
   final String? title;
+  final bool isHome;
 
   @override
   _AppShellState createState() => _AppShellState();
@@ -50,7 +55,9 @@ class _AppShellState extends State<AppShell> {
 
   @override
   void dispose() {
-    sharedPreferences.dispose();
+    if (widget.isHome) {
+      sharedPreferences.dispose();
+    }
     super.dispose();
   }
 
@@ -275,8 +282,7 @@ class _AppShellState extends State<AppShell> {
             ),
           ),
           PopupMenuItem(
-            onTap: () {
-            },
+            onTap: () {},
             child: _buildMenuItem(
               context,
               'About',

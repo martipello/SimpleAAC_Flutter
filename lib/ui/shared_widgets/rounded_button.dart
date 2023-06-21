@@ -132,13 +132,13 @@ class RoundedButton extends StatelessWidget {
 
   TextStyle _getTextStyle(BuildContext context) {
     if (isFilled && onPressed != null) {
-      return textStyle ?? SimpleAACText.subtitle4Style;
+      return textStyle ?? SimpleAACText.body1Style.copyWith(color: context.themeColors.onPrimary);
     } else if (!isFilled && onPressed != null) {
-      return SimpleAACText.subtitle4Style;
+      return SimpleAACText.body1Style.copyWith(color: context.themeColors.onBackground);
     } else if (isFilled && onPressed == null) {
-      return SimpleAACText.subtitle4Style;
+      return SimpleAACText.body1Style.copyWith(color: Colors.black12);
     } else {
-      return SimpleAACText.subtitle4Style;
+      return SimpleAACText.body1Style.copyWith(color: context.themeColors.onPrimary);
     }
   }
 

@@ -89,7 +89,7 @@ class WordTile extends StatelessWidget {
               clipBehavior: Clip.hardEdge,
               child: Hero(
                 tag: heroTag,
-                child: Image.asset(
+                child: Image.network(
                   word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
                   fit: BoxFit.contain,
                 ),

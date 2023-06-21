@@ -5,7 +5,8 @@ import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api/hive_client.dart';
-import 'api/models/word.dart';
+import 'api/models/language.dart';
+import 'services/language_service.dart';
 import 'services/navigation_service.dart';
 import 'services/shared_preferences_service.dart';
 import 'services/theme_service.dart';
@@ -25,13 +26,14 @@ Future<void> init() async {
   getIt.registerLazySingletonAsync(SharedPreferences.getInstance);
   getIt.registerLazySingletonAsync(PackageInfo.fromPlatform);
   getIt.registerSingletonAsync(() => HiveClient.create<dynamic>(kThemeBox), instanceName: kThemeBox);
+  getIt.registerSingletonAsync(() => HiveClient.create<Language>(kLanguageBox), instanceName: kLanguageBox);
   await getIt.isReady<HiveClient>(instanceName: kThemeBox);
-  getIt.registerSingletonAsync(() => HiveClient.create<Word>(kWordBox), instanceName: kWordBox);
-  await getIt.isReady<HiveClient>(instanceName: kWordBox);
+  await getIt.isReady<HiveClient>(instanceName: kLanguageBox);
   await getIt.isReady<SharedPreferences>();
   await getIt.isReady<PackageInfo>();
   await getIt.isReady<SharedPreferences>();
-  getIt.registerLazySingleton(() => WordService(getIt(instanceName: kWordBox)));
+  getIt.registerLazySingleton(() => LanguageService(getIt(instanceName: kLanguageBox), getIt()));
+  getIt.registerLazySingleton(() => WordService(getIt()));
   getIt.registerLazySingleton(() => SharedPreferencesService(getIt()));
   getIt.registerLazySingleton(() => const FlutterSecureStorage());
   getIt.registerLazySingleton(NavigationService.new);

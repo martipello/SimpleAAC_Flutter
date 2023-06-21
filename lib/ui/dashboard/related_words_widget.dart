@@ -28,7 +28,7 @@ class RelatedWordsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<bool?>(
       initialData: sharedPreferences.hasRelatedWordsEnabled(),
-      stream: sharedPreferences.hasRelatedWordsEnabledStream,
+      stream: sharedPreferences.relatedWordsEnabled,
       builder: (context, snapshot) {
         final hasRelatedWordsEnabled = snapshot.data ?? sharedPreferences.hasRelatedWordsEnabled();
         if (hasRelatedWordsEnabled) {

@@ -8,7 +8,8 @@ class SharedPreferencesService {
 
   final SharedPreferences sharedPreferences;
 
-  final hasRelatedWordsEnabledStream = BehaviorSubject<bool?>();
+  final relatedWordsEnabled = BehaviorSubject<bool?>();
+  final currentLanguageId = BehaviorSubject<String?>();
 
   bool isFirstTime() {
     return sharedPreferences.getBool(Constants.FIRST_TIME) ?? true;
@@ -34,6 +35,10 @@ class SharedPreferencesService {
     return sharedPreferences.getString(Constants.THEME_NAME) ?? 'red';
   }
 
+  String languageId() {
+    return sharedPreferences.getString(Constants.LANGUAGE_ID) ?? '';
+  }
+
   bool useBiometrics() {
     if (sharedPreferences.containsKey(Constants.BIOMETRIC_KEY)) {
       if (sharedPreferences.getBool(Constants.BIOMETRIC_KEY) == true) {
@@ -50,7 +55,7 @@ class SharedPreferencesService {
   //ignore: avoid_positional_boolean_parameters
   void setRelatedWordsEnabled(bool hasRelatedWordsEnabled) {
     sharedPreferences.setBool(Constants.RELATED_WORDS, hasRelatedWordsEnabled);
-    hasRelatedWordsEnabledStream.add(hasRelatedWordsEnabled);
+    relatedWordsEnabled.add(hasRelatedWordsEnabled);
   }
 
   void setBiometrics({required bool useBiometrics}) {
@@ -61,10 +66,6 @@ class SharedPreferencesService {
     sharedPreferences.setString(Constants.EMAIL_KEY, email);
   }
 
-  void setThemeName(String themeName) {
-    sharedPreferences.setString(Constants.THEME_NAME, themeName);
-  }
-
   void setUserName(String userName) {
     sharedPreferences.setString(Constants.USER_FIRST_NAME, userName);
   }
@@ -73,8 +74,18 @@ class SharedPreferencesService {
     sharedPreferences.setString(Constants.USER_LAST_NAME, userLastName);
   }
 
+  void setThemeName(String themeName) {
+    sharedPreferences.setString(Constants.THEME_NAME, themeName);
+  }
+
+  void setLanguageId(String languageId) {
+    currentLanguageId.add(languageId);
+    sharedPreferences.setString(Constants.LANGUAGE_ID, languageId);
+  }
+
   void dispose() {
-    hasRelatedWordsEnabledStream.close();
+    relatedWordsEnabled.close();
+    currentLanguageId.close();
   }
 
   static Future<bool> get firstTime => SharedPreferences.getInstance().then(

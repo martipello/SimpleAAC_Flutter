@@ -163,6 +163,7 @@ class _ThemeViewState extends State<ThemeView> {
       themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       home: AppShell(
         title: '${theme.name} ${isDark ? ThemeMode.dark.name : ThemeMode.light.name}',
+        isHome: false,
       ),
     );
   }
@@ -205,11 +206,13 @@ class _ThemeViewState extends State<ThemeView> {
         isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
       ),
       onPressed: () {
-        setState(
-          () {
-            isDark = !isDark;
-          },
-        );
+        if (mounted) {
+          setState(
+            () {
+              isDark = !isDark;
+            },
+          );
+        }
       },
     );
   }

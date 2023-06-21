@@ -11,4 +11,5 @@ class Constants {
   static const BIOMETRIC_KEY = 'use_biometric_key';
   static const FIRST_TIME = 'first_time';
   static const RELATED_WORDS = 'relatedWords';
+  static const LANGUAGE_ID = 'languageId';
 }
