@@ -128,6 +128,7 @@ class _AppShellState extends State<AppShell> {
           child: RelatedWordsWidget(
             relatedWords: relatedWords,
             onRelatedWordIdsChanged: selectedWordsViewModel.setRelatedWordsForWordIds,
+            onRelatedWordSelected: selectedWordsViewModel.addSelectedWord,
           ),
         );
       },
@@ -310,7 +311,7 @@ class _AppShellState extends State<AppShell> {
         Flexible(
           child: Text(
             label,
-            style: SimpleAACText.body4Style,
+            style: SimpleAACText.body1Style,
           ),
         ),
       ],

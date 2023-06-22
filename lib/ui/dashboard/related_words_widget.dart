@@ -7,6 +7,7 @@ import '../../extensions/iterable_extension.dart';
 import '../../services/shared_preferences_service.dart';
 import '../shared_widgets/chip_group.dart';
 import '../shared_widgets/simple_aac_chip.dart';
+import '../shared_widgets/word_tile.dart';
 
 typedef WordListCallBack = void Function(BuiltList<String> word);
 
@@ -14,12 +15,14 @@ class RelatedWordsWidget extends StatelessWidget {
   RelatedWordsWidget({
     Key? key,
     required this.relatedWords,
+    required this.onRelatedWordSelected,
     this.onRelatedWordIdsChanged,
     this.isExpanded = false,
   }) : super(key: key);
 
   final BuiltList<Word> relatedWords;
   final WordListCallBack? onRelatedWordIdsChanged;
+  final WordCallBack onRelatedWordSelected;
   final bool isExpanded;
 
   final sharedPreferences = getIt.get<SharedPreferencesService>();
@@ -53,8 +56,7 @@ class RelatedWordsWidget extends StatelessWidget {
         final word = relatedWords[index];
         return _buildRelatedWordChip(
           word,
-          _getAddRelatedWordFunction(word),
-          _getRemoveRelatedWordFunction(word),
+          onDeleteWordFunction(word),
         );
       },
       separatorBuilder: (context, index) {
@@ -65,56 +67,13 @@ class RelatedWordsWidget extends StatelessWidget {
     );
   }
 
-  VoidCallback? _getAddRelatedWordFunction(
-    Word word,
-  ) {
-    if (onRelatedWordIdsChanged != null) {
-      return () {
-        onRelatedWordIdsChanged?.call(
-          relatedWords
-              .rebuild(
-                (pb) => pb.add(word),
-              )
-              .map(
-                (p0) => p0.wordId,
-              )
-              .toBuiltList(),
-        );
-      };
-    } else {
-      return null;
-    }
-  }
-
-  VoidCallback? _getRemoveRelatedWordFunction(
-    Word word,
-  ) {
-    if (onRelatedWordIdsChanged != null) {
-      return () {
-        onRelatedWordIdsChanged?.call(
-          relatedWords
-              .rebuild(
-                (pb) => pb.remove(word),
-              )
-              .map(
-                (p0) => p0.wordId,
-              )
-              .toBuiltList(),
-        );
-      };
-    } else {
-      return null;
-    }
-  }
-
   Widget _buildExpandedChipGroup() {
     return ChipGroup(
       chips: relatedWords
           .map(
             (word) => _buildRelatedWordChip(
               word,
-              _getAddRelatedWordFunction(word),
-              _getRemoveRelatedWordFunction(word),
+              onDeleteWordFunction(word),
             ),
           )
           .toList(),
@@ -123,7 +82,6 @@ class RelatedWordsWidget extends StatelessWidget {
 
   Widget _buildRelatedWordChip(
     Word word,
-    VoidCallback? onTap,
     VoidCallback? onDelete,
   ) {
     return SimpleAACChip(
@@ -139,8 +97,32 @@ class RelatedWordsWidget extends StatelessWidget {
         ),
       ),
       chipType: ChipType.normal,
-      onTap: onTap,
+      onTap: () {
+        onRelatedWordSelected.call(word);
+      },
       onDelete: onDelete,
     );
+  }
+
+  VoidCallback? onDeleteWordFunction(
+    Word word,
+  ) {
+    final onDeleteWord = onRelatedWordIdsChanged;
+    if (onDeleteWord != null) {
+      return () {
+        onDeleteWord.call(
+          relatedWords
+              .rebuild(
+                (pb) => pb.remove(word),
+              )
+              .map(
+                (p0) => p0.wordId,
+              )
+              .toBuiltList(),
+        );
+      };
+    } else {
+      return null;
+    }
   }
 }

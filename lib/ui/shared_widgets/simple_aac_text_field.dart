@@ -41,7 +41,7 @@ class SimpleAACTextField extends StatelessWidget {
     return TextFormField(
       controller: textController,
       maxLines: maxLines,
-      style: textStyle ?? SimpleAACText.body4Style,
+      style: textStyle ?? SimpleAACText.body1Style,
       textInputAction: textInputAction,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       keyboardType: textInputType,
@@ -65,7 +65,7 @@ class SimpleAACTextField extends StatelessWidget {
   InputDecoration _buildInputDecoration(BuildContext context) {
     return InputDecoration(
       labelText: labelText,
-      labelStyle: SimpleAACText.body4Style,
+      labelStyle: SimpleAACText.body1Style,
       floatingLabelBehavior: FloatingLabelBehavior.never,
       enabled: isEnabled,
       isDense: isDense,

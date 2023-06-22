@@ -68,7 +68,7 @@ class WordSubTypePicker extends StatelessWidget {
                 value: e,
                 child: Text(
                   e.name.toUpperCase(),
-                  style: SimpleAACText.body4Style,
+                  style: SimpleAACText.body1Style,
                 ),
               ),
             )

@@ -166,6 +166,7 @@ class _WordDetailViewState extends State<WordDetailView> {
                     builder: (context, snapshot) {
                       final extraRelatedWords = snapshot.data ?? BuiltList();
                       return RelatedWordsWidget(
+                        onRelatedWordSelected: (_){},
                         relatedWords: extraRelatedWords,
                         isExpanded: true,
                       );
@@ -256,7 +257,7 @@ class _WordDetailViewState extends State<WordDetailView> {
                 padding: EdgeInsets.only(top: 8.0),
                 child: Text(
                   'Are you sure you want to delete this word?',
-                  style: SimpleAACText.body4Style,
+                  style: SimpleAACText.body1Style,
                 ),
               ),
               dialogActions: [

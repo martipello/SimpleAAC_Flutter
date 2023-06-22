@@ -114,7 +114,7 @@ class SimpleAACTable extends StatelessWidget {
               Flexible(
                 child: Text(
                   iconLabel?.trim() ?? '',
-                  style: SimpleAACText.body4Style,
+                  style: SimpleAACText.body1Style,
                 ),
               ),
             ],

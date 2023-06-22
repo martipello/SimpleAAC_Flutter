@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../api/models/extensions/word_type_extension.dart';
 import '../../api/models/word.dart';
+import '../../extensions/build_context_extension.dart';
 import '../../extensions/iterable_extension.dart';
 import '../theme/simple_aac_text.dart';
 import '../word_detail_view.dart';
@@ -77,7 +78,7 @@ class WordTile extends StatelessWidget {
     BuildContext context,
   ) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(4.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -91,7 +92,7 @@ class WordTile extends StatelessWidget {
                 tag: heroTag,
                 child: Image.network(
                   word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
-                  fit: BoxFit.contain,
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
@@ -102,8 +103,11 @@ class WordTile extends StatelessWidget {
           Text(
             word.word,
             maxLines: 2,
+            textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
-            style: SimpleAACText.body4Style,
+            style: SimpleAACText.body1Style.copyWith(
+              color: context.themeColors.onPrimary,
+            ),
           ),
         ],
       ),

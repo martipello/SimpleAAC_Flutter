@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simple_aac/view_models/language_view_model.dart';
 
 import 'api/hive_client.dart';
 import 'api/models/language.dart';
@@ -42,6 +43,7 @@ Future<void> init() async {
   getIt.registerFactory(() => ThemeService(getIt(instanceName: kThemeBox)));
   getIt.registerFactory(() => ThemeController(getIt()));
   getIt.registerFactory(() => WordsViewModel(getIt()));
+  getIt.registerFactory(() => LanguageViewModel(getIt()));
   getIt.registerFactory(IntroViewModel.new);
   getIt.registerFactory(TabBarViewModel.new);
   getIt.registerFactory(() => ManageWordViewModel(getIt()));

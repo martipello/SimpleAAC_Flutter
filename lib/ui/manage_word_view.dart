@@ -348,6 +348,7 @@ class _ManageWordViewState extends State<ManageWordView> {
                 child: word?.extraRelatedWordIds.isNotEmpty == true
                     ? RelatedWordsWidget(
                         relatedWords: relatedWords,
+                        onRelatedWordSelected: (_){},
                         onRelatedWordIdsChanged: _wordViewModel.setExtraRelatedWords,
                         isExpanded: true,
                       )
