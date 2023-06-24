@@ -21,7 +21,7 @@ class ThemeViewModel {
   }
 
   Future<void> setInitialTheme() async {
-    final themeName = await sharedPreferencesService.themeName();
+    final themeName = sharedPreferencesService.themeName;
     final theme = SimpleAACTheme.getTheme(themeName);
     setTheme(theme);
   }

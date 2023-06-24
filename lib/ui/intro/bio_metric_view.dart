@@ -15,7 +15,7 @@ class _BioMetricViewState extends State<BioMetricView> {
 
   @override
   Widget build(BuildContext context) {
-    final isFingerprintEnabled = _sharedPreferences.useBiometrics();
+    final isFingerprintEnabled = _sharedPreferences.useBiometrics;
     return IntroView(
       title: 'Fast Sign In',
       bodyWidget: _buildBodyWidget(context),

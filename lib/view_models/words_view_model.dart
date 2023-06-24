@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:built_collection/built_collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:simple_aac/ui/dashboard/related_words_widget.dart';
 
 import '../api/models/word.dart';
 import '../api/models/word_sub_type.dart';
@@ -17,7 +17,7 @@ class WordsViewModel {
 
   final wordsOfType = BehaviorSubject<BuiltList<Word>>();
 
-  void init(WordSubType wordSubType){
+  void init(WordSubType wordSubType) {
     this.wordSubType = wordSubType;
     _addWords(wordSubType);
     addWordsOfTypeListener(wordSubType);
@@ -30,17 +30,15 @@ class WordsViewModel {
   }
 
   void addWordsOfTypeListener(WordSubType wordSubType) {
-    wordService.addListener(listenerCallBack(wordSubType));
+    wordService.addListener(
+      _getWordListCallBackWrapper(wordSubType),
+    );
   }
 
   void removeWordsOfTypeListener(WordSubType wordSubType) {
-    wordService.removeListener(listenerCallBack(wordSubType));
-  }
-
-  AsyncCallback listenerCallBack(WordSubType wordSubType) {
-    return () async {
-      await _addWords(wordSubType);
-    };
+    wordService.removeListener(
+      _getWordListCallBackWrapper(wordSubType),
+    );
   }
 
   Future<void> _addWords(WordSubType wordSubType) async {
@@ -54,7 +52,13 @@ class WordsViewModel {
     return wordService.getAllForType(wordSubType);
   }
 
-  void dispose(){
+  WordListCallBack _getWordListCallBackWrapper(WordSubType wordSubType) {
+    return (_) {
+      _addWords(wordSubType);
+    };
+  }
+
+  void dispose() {
     removeWordsOfTypeListener(wordSubType);
   }
 }

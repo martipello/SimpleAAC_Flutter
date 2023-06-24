@@ -1,3 +1,4 @@
+import 'package:change_notifier_builder/change_notifier_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -22,35 +23,23 @@ class _SettingsViewState extends State<SettingsView> {
   final _languageViewModel = getIt.get<LanguageViewModel>();
 
   @override
-  void initState() {
-    super.initState();
-    _languageViewModel.init();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _languageViewModel.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Language?>(
-      stream: _languageViewModel.currentLanguage,
-      builder: (context, currentLanguageSnapshot) {
-        return StreamBuilder<bool?>(
-          stream: _sharedPreferenceService.relatedWordsEnabled,
-          builder: (context, relatedWordsEnabledSnapshot) {
-            final _currentLanguage = currentLanguageSnapshot.data;
-            final _hasRelatedWordsEnabled = relatedWordsEnabledSnapshot.data == true;
-            return Scaffold(
-              appBar: _settingsAppBar(),
-              body: _buildSettingsList(
+    return ChangeNotifierBuilder(
+      notifier: _sharedPreferenceService,
+      builder: (context, _, __) {
+        final _hasRelatedWordsEnabled = _sharedPreferenceService.hasRelatedWordsEnabled;
+        return Scaffold(
+          appBar: _settingsAppBar(),
+          body: FutureBuilder<Language>(
+            future: _languageViewModel.getCurrentLanguage(),
+            builder: (context, snapshot) {
+              final _currentLanguage = snapshot.data;
+              return _buildSettingsList(
                 _currentLanguage,
                 _hasRelatedWordsEnabled,
-              ),
-            );
-          },
+              );
+            }
+          ),
         );
       },
     );

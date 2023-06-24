@@ -9,6 +9,8 @@ import 'shared_preferences_service.dart';
 
 const kLanguageBox = 'language';
 
+typedef LanguageCallBack = void Function(Language language);
+
 class LanguageService {
   LanguageService(
     this.hiveClient,
@@ -19,7 +21,7 @@ class LanguageService {
   final SharedPreferencesService sharedPreferencesService;
 
   String currentLanguageId() {
-    return sharedPreferencesService.languageId();
+    return sharedPreferencesService.currentLanguageId;
   }
 
   Future<void> put(Language language) {
@@ -42,9 +44,14 @@ class LanguageService {
     return hiveClient.delete(language.id);
   }
 
-  Future<Language?> getCurrentLanguage() {
-    final languageId = sharedPreferencesService.languageId();
-    return hiveClient.get(languageId);
+  Future<Language> getCurrentLanguage() async {
+    final languageId = sharedPreferencesService.currentLanguageId;
+    final language = await hiveClient.get<Language>(languageId);
+    return language!;
+  }
+
+  void setCurrentLanguage(Language language) {
+    sharedPreferencesService.setLanguageId(language.id);
   }
 
   Future<Language?> get(String languageId) {
@@ -55,11 +62,26 @@ class LanguageService {
     return hiveClient.getAll();
   }
 
-  void addListener(AsyncCallback voidCallback) {
-    hiveClient.addListener(voidCallback);
+  void addListener(LanguageCallBack callBack) {
+    sharedPreferencesService.addListener(
+      _getLanguageCallbackWrapper(callBack),
+    );
   }
 
-  void removeListener(AsyncCallback voidCallback) {
-    hiveClient.removeListener(voidCallback);
+  void removeListener(LanguageCallBack callBack) {
+    sharedPreferencesService.removeListener(
+      _getLanguageCallbackWrapper(callBack),
+    );
+  }
+
+  AsyncCallback _getLanguageCallbackWrapper(LanguageCallBack callBack) {
+    return () async {
+      final currentLanguage = await getCurrentLanguage();
+      callBack.call(currentLanguage);
+    };
+  }
+
+  void dispose() {
+    hiveClient.dispose();
   }
 }

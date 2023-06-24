@@ -117,8 +117,7 @@ class IntroPage extends StatelessWidget {
                 ? RoundedButton(
                     label: 'Done',
                     onPressed: () async {
-                      final sharedPreferences = await _sharedPreferences;
-                      sharedPreferences.setFirstTime(isFirstTime: false);
+                      _sharedPreferences.setFirstTime(isFirstTime: false);
                       Navigator.of(context).pushReplacementNamed(AppShell.routeName);
                     },
                   )

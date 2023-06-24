@@ -14,7 +14,7 @@ class WordTile extends StatelessWidget {
   const WordTile({
     required this.word,
     required this.key,
-    required this.heroTag,
+    this.heroTag,
     this.wordTapCallBack,
     this.hasReOrderButton = false,
     this.isSelected = false,
@@ -24,7 +24,7 @@ class WordTile extends StatelessWidget {
 
   final Word word;
   final Key key;
-  final String heroTag;
+  final String? heroTag;
 
   final WordCallBack? wordTapCallBack;
   final WordCallBack? closeButtonOnTap;
@@ -88,13 +88,12 @@ class WordTile extends StatelessWidget {
                 Radius.circular(4),
               ),
               clipBehavior: Clip.hardEdge,
-              child: Hero(
-                tag: heroTag,
-                child: Image.network(
-                  word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
+              child: heroTag != null
+                  ? wrapWithHero(
+                      _buildImage(),
+                      heroTag!,
+                    )
+                  : _buildImage(),
             ),
           ),
           const SizedBox(
@@ -106,11 +105,25 @@ class WordTile extends StatelessWidget {
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
             style: SimpleAACText.body1Style.copyWith(
-              color: context.themeColors.onPrimary,
+              color: context.themeColors.onBackground,
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget wrapWithHero(Widget child, String heroTag) {
+    return Hero(
+      tag: heroTag,
+      child: child,
+    );
+  }
+
+  Widget _buildImage() {
+    return Image.network(
+      word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
+      fit: BoxFit.cover,
     );
   }
 }

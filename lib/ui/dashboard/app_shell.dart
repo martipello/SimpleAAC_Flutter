@@ -63,7 +63,7 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final isFirstTime = sharedPreferences.isFirstTime();
+    final isFirstTime = sharedPreferences.isFirstTime;
     if (isFirstTime == true) {
       return IntroPage();
     }

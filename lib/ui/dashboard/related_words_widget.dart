@@ -1,4 +1,5 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:change_notifier_builder/change_notifier_builder.dart';
 import 'package:flutter/material.dart';
 
 import '../../api/models/word.dart';
@@ -9,7 +10,8 @@ import '../shared_widgets/chip_group.dart';
 import '../shared_widgets/simple_aac_chip.dart';
 import '../shared_widgets/word_tile.dart';
 
-typedef WordListCallBack = void Function(BuiltList<String> word);
+typedef WordListCallBack = void Function(BuiltList<Word> word);
+typedef WordIDListCallBack = void Function(BuiltList<String> word);
 
 class RelatedWordsWidget extends StatelessWidget {
   RelatedWordsWidget({
@@ -21,19 +23,18 @@ class RelatedWordsWidget extends StatelessWidget {
   }) : super(key: key);
 
   final BuiltList<Word> relatedWords;
-  final WordListCallBack? onRelatedWordIdsChanged;
+  final WordIDListCallBack? onRelatedWordIdsChanged;
   final WordCallBack onRelatedWordSelected;
   final bool isExpanded;
 
-  final sharedPreferences = getIt.get<SharedPreferencesService>();
+  final _sharedPreferencesService = getIt.get<SharedPreferencesService>();
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<bool?>(
-      initialData: sharedPreferences.hasRelatedWordsEnabled(),
-      stream: sharedPreferences.relatedWordsEnabled,
-      builder: (context, snapshot) {
-        final hasRelatedWordsEnabled = snapshot.data ?? sharedPreferences.hasRelatedWordsEnabled();
+    return ChangeNotifierBuilder(
+      notifier: _sharedPreferencesService,
+      builder: (context, _, __) {
+        final hasRelatedWordsEnabled = _sharedPreferencesService.hasRelatedWordsEnabled;
         if (hasRelatedWordsEnabled) {
           return isExpanded ? _buildExpandedChipGroup() : _buildRelatedWordListView();
         } else {
@@ -115,9 +116,7 @@ class RelatedWordsWidget extends StatelessWidget {
               .rebuild(
                 (pb) => pb.remove(word),
               )
-              .map(
-                (p0) => p0.wordId,
-              )
+              .map((p0) => p0.wordId)
               .toBuiltList(),
         );
       };
