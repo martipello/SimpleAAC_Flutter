@@ -15,7 +15,7 @@ class ThemeViewModel {
 
   Future<void> init({bool doSetInitialTheme = true}) async {
     await themeController.loadAll();
-    if(doSetInitialTheme) {
+    if (doSetInitialTheme) {
       await setInitialTheme();
     }
   }
@@ -43,7 +43,7 @@ class ThemeViewModel {
 
   ThemeMode get themeMode => themeController.themeMode;
 
-  void dispose(){
+  void dispose() {
     themeController.dispose();
   }
 }
