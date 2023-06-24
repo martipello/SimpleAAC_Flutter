@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../api/models/extensions/word_type_extension.dart';
 import '../../api/models/word.dart';
+import '../../extensions/build_context_extension.dart';
 import '../../extensions/iterable_extension.dart';
 import '../theme/simple_aac_text.dart';
 import '../word_detail_view.dart';
@@ -13,7 +14,7 @@ class WordTile extends StatelessWidget {
   const WordTile({
     required this.word,
     required this.key,
-    required this.heroTag,
+    this.heroTag,
     this.wordTapCallBack,
     this.hasReOrderButton = false,
     this.isSelected = false,
@@ -23,7 +24,7 @@ class WordTile extends StatelessWidget {
 
   final Word word;
   final Key key;
-  final String heroTag;
+  final String? heroTag;
 
   final WordCallBack? wordTapCallBack;
   final WordCallBack? closeButtonOnTap;
@@ -77,7 +78,7 @@ class WordTile extends StatelessWidget {
     BuildContext context,
   ) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(4.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -87,13 +88,12 @@ class WordTile extends StatelessWidget {
                 Radius.circular(4),
               ),
               clipBehavior: Clip.hardEdge,
-              child: Hero(
-                tag: heroTag,
-                child: Image.asset(
-                  word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
-                  fit: BoxFit.contain,
-                ),
-              ),
+              child: heroTag != null
+                  ? wrapWithHero(
+                      _buildImage(),
+                      heroTag!,
+                    )
+                  : _buildImage(),
             ),
           ),
           const SizedBox(
@@ -102,11 +102,28 @@ class WordTile extends StatelessWidget {
           Text(
             word.word,
             maxLines: 2,
+            textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
-            style: SimpleAACText.body4Style,
+            style: SimpleAACText.body1Style.copyWith(
+              color: context.themeColors.onBackground,
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget wrapWithHero(Widget child, String heroTag) {
+    return Hero(
+      tag: heroTag,
+      child: child,
+    );
+  }
+
+  Widget _buildImage() {
+    return Image.network(
+      word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
+      fit: BoxFit.cover,
     );
   }
 }

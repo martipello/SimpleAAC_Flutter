@@ -191,7 +191,7 @@ class _FilePickerState extends State<FilePicker> {
   Widget _buildLabel() {
     return Text(
       widget.label ?? 'Upload File',
-      style: widget.labelStyle ?? SimpleAACText.body4Style,
+      style: widget.labelStyle ?? SimpleAACText.body1Style,
     );
   }
 

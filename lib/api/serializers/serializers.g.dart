@@ -7,9 +7,17 @@ part of 'serializers.dart';
 // **************************************************************************
 
 Serializers _$serializers = (new Serializers().toBuilder()
+      ..add(Language.serializer)
+      ..add(LanguageResponse.serializer)
       ..add(Word.serializer)
       ..add(WordSubType.serializer)
       ..add(WordType.serializer)
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(Language)]),
+          () => new ListBuilder<Language>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => new ListBuilder<String>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => new ListBuilder<String>())

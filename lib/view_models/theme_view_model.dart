@@ -15,13 +15,13 @@ class ThemeViewModel {
 
   Future<void> init({bool doSetInitialTheme = true}) async {
     await themeController.loadAll();
-    if(doSetInitialTheme) {
+    if (doSetInitialTheme) {
       await setInitialTheme();
     }
   }
 
   Future<void> setInitialTheme() async {
-    final themeName = await sharedPreferencesService.themeName();
+    final themeName = sharedPreferencesService.themeName;
     final theme = SimpleAACTheme.getTheme(themeName);
     setTheme(theme);
   }
@@ -42,6 +42,10 @@ class ThemeViewModel {
   String? get themeName => FlexColor.schemes[themeController.usedScheme]?.name;
 
   ThemeMode get themeMode => themeController.themeMode;
+
+  void dispose() {
+    themeController.dispose();
+  }
 }
 
 enum SimpleAACTheme {

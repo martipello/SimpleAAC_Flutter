@@ -1,0 +1,73 @@
+Given this data model
+
+class Word {
+
+  String get wordId;
+
+  DateTime? get createdDate;
+
+  WordType get type;
+
+  WordSubType get subType;
+
+  String get word;
+
+  BuiltList<String> get imageList;
+
+  String get sound;
+
+  bool? get isFavourite;
+
+  double? get usageCount;
+
+  double? get keyStage;
+
+  bool? get isUserAdded;
+
+  bool? get isBackedUp;
+
+  BuiltList<String> get extraRelatedWordIds;
+}
+
+class WordType extends Enum {
+    quicks,nouns,verbs,other;
+}
+
+class WordSubType extends Enum {
+  people,
+  animals,
+  nature,
+  time,
+  places,
+  things,
+  ideas,
+  drink,
+  food,
+  action,
+  feeling,
+  thought,
+  sense,
+  abverb,
+  helping,
+  strong,
+  favourites,
+  pronouns,
+  conjunctions,
+  adjectives,
+  propositionAndSound,
+  phrases,
+  suffix,
+  home,
+  clothes,
+  extras,
+  travel,
+  art,
+  games,
+  music,
+  body,
+  love,
+  occasion,
+  learning;
+}
+
+please generate words based on the top 50 most used english words as JSON, createdDate field should be right now, sound field is how the Word.word sounds, isFavourite should be false, usageCount should be 0, isUserAdded should be false, isBackedUp should be false, extraRelatedWordIds should be a list of 5 Word.wordId that are commonly used with this Word.word you should probably add these after creating the initial Words, imageList field should be a list of 1 image url for this Word.word from google images, wordId should be unique, wordType and wordSubType should never be null, keystage is a 1-3 rating of the Word.word perceived complexity

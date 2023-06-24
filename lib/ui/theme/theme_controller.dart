@@ -51,6 +51,12 @@ class ThemeController with ChangeNotifier {
   // Make the ThemeService private so it cannot be used directly.
   final ThemeService _themeService;
 
+  Future<void> dispose() async {
+    _themeService.dispose();
+    super.dispose();
+  }
+
+
   /// Load all ThemeController settings from the ThemeService. It may load from
   /// app coded defaults, a local database or the internet. The controller only
   /// knows it can load all the setting default values from the service.

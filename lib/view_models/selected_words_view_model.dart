@@ -2,26 +2,31 @@ import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../api/models/word.dart';
+import '../services/word_service.dart';
 
 // enum SelectedWordListAction {
 //   add, remove,
 // }
 
 class SelectedWordsViewModel {
+  SelectedWordsViewModel(this.wordService);
+
+  final WordService wordService;
+
   final selectedWords = BehaviorSubject<BuiltList<Word>>.seeded(
     BuiltList<Word>.of([]),
   );
 
-  final predictions = BehaviorSubject<BuiltList<Word>>.seeded(
+  final relatedWords = BehaviorSubject<BuiltList<Word>>.seeded(
     BuiltList<Word>.of([]),
   );
 
   void dispose() {
     selectedWords.close();
-    predictions.close();
+    relatedWords.close();
   }
 
-  void addSelectedWord(Word word) {
+  Future<void> addSelectedWord(Word word) async {
     final words = selectedWords.valueOrNull;
     if (words != null) {
       selectedWords.add(
@@ -29,7 +34,8 @@ class SelectedWordsViewModel {
           (wb) => wb.add(word),
         ),
       );
-      setPredictions(word.predictionList);
+      final relatedWords = await wordService.getRelatedWords(word);
+      setRelatedWords(relatedWords);
     }
   }
 
@@ -44,13 +50,19 @@ class SelectedWordsViewModel {
     }
   }
 
-  void setPredictions(BuiltList<Word> predictions) {
-    this.predictions.add(
-      predictions,
-    );
+  void setRelatedWords(BuiltList<Word> relatedWords) {
+    this.relatedWords.add(relatedWords);
   }
 
-  void updatePositionSelectedWordList(int oldIndex, int newIndex) {
+  void setRelatedWordsForWordIds(BuiltList<String> relatedWords) async {
+    final words = await wordService.getWordsForIds(relatedWords);
+    setRelatedWords(words);
+  }
+
+  void updatePositionSelectedWordList(
+    int oldIndex,
+    int newIndex,
+  ) {
     final words = selectedWords.valueOrNull;
     if (words != null) {
       if (oldIndex < words.length && newIndex < words.length - 1) {

@@ -1,25 +1,71 @@
-import '../api/hive_client.dart';
-import '../api/models/word.dart';
+import 'package:built_collection/built_collection.dart';
+import 'package:simple_aac/ui/dashboard/related_words_widget.dart';
 
-const kWordBox = 'words';
+import '../api/models/word.dart';
+import '../api/models/word_sub_type.dart';
+import 'language_service.dart';
 
 class WordService {
-  WordService(this.hiveClient);
+  WordService(this.languageService);
 
-  final HiveClient hiveClient;
+  final LanguageService languageService;
 
-  Future<void> put(Word word) {
-    return hiveClient.put<Word>(
-      word.wordId,
-      word,
+  Future<BuiltList<Word>> getAllForType(WordSubType wordSubType) async {
+    final currentLanguage = await languageService.getCurrentLanguage();
+    final words = currentLanguage.words;
+    return words.where((w) => w.subType == wordSubType).toBuiltList();
+  }
+
+  Future<BuiltList<Word>> getExtraRelatedWords(Word word) async {
+    final currentLanguage = await languageService.getCurrentLanguage();
+    return currentLanguage.words
+        .where(
+          (lw) => word.extraRelatedWordIds.any(
+            (w) => w == lw.wordId,
+          ),
+        )
+        .toBuiltList();
+  }
+
+  Future<BuiltList<Word>> getRelatedWords(Word word) async {
+    final currentLanguage = await languageService.getCurrentLanguage();
+    final words = currentLanguage.words;
+    final extraRelatedWords = await getExtraRelatedWords(word);
+    //TODO make this actually get related words not just the related words on the word
+    final relatedWords = words.where(
+      (lw) => word.extraRelatedWordIds.any(
+        (w) => w == lw.wordId,
+      ),
+    );
+    return <Word>{...extraRelatedWords, ...relatedWords}.toBuiltList();
+  }
+
+  Future<BuiltList<Word>> getWordsForIds(BuiltList<String> wordIds) async {
+    final currentLanguage = await languageService.getCurrentLanguage();
+    return currentLanguage.words
+        .where(
+          (word) => wordIds.any(
+            (id) => word.wordId == id,
+          ),
+        )
+        .toBuiltList();
+  }
+
+  void addListener(WordListCallBack wordListCallBack) {
+    languageService.addListener(
+      _getWordListCallbackWrapper(wordListCallBack),
     );
   }
 
-  Future<void> delete(Word word) {
-    return hiveClient.delete(word.wordId);
+  void removeListener(WordListCallBack wordListCallBack) {
+    languageService.removeListener(
+      _getWordListCallbackWrapper(wordListCallBack),
+    );
   }
 
-  Future<Word?> get(String wordId) {
-    return hiveClient.get<Word?>(wordId);
+  LanguageCallBack _getWordListCallbackWrapper(WordListCallBack wordListCallBack) {
+    return (language) {
+      wordListCallBack.call(language.words);
+    };
   }
 }

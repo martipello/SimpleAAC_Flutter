@@ -9,7 +9,7 @@ import 'word_type.dart';
 
 part 'word.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 1)
 abstract class Word implements Built<Word, WordBuilder> {
 
   factory Word([void Function(WordBuilder) updates]) = _$Word;
@@ -52,7 +52,7 @@ abstract class Word implements Built<Word, WordBuilder> {
   bool? get isBackedUp;
 
   @HiveField(12)
-  BuiltList<Word> get predictionList;
+  BuiltList<String> get extraRelatedWordIds;
 
   Map<String, dynamic> toJson() {
     return serializers.serializeWith(Word.serializer, this) as Map<String, dynamic>;

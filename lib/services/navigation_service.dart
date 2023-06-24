@@ -36,12 +36,12 @@ class NavigationService {
   }) async {
     final currentState = navigatorKey.currentState;
     if (currentState != null) {
-      await currentState.pushNamed(
+      return currentState.pushNamed(
         routeName,
         arguments: arguments,
       );
     } else {
-      await Future.value(false);
+      return Future.value(false);
     }
   }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 
 class SimpleAACTableRowInfo {
@@ -115,7 +114,7 @@ class SimpleAACTable extends StatelessWidget {
               Flexible(
                 child: Text(
                   iconLabel?.trim() ?? '',
-                  style: SimpleAACText.body4Style,
+                  style: SimpleAACText.body1Style,
                 ),
               ),
             ],

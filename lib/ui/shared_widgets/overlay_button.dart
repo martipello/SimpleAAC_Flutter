@@ -24,7 +24,7 @@ class OverlayButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: context.themeColors.background.withOpacity(
-            0.3,
+            0.6,
           ),
         ),
         height: height,
@@ -38,7 +38,7 @@ class OverlayButton extends StatelessWidget {
               child: Center(
                 child: Icon(
                   iconData,
-                  size: height * 0.56,
+                  size: height * 0.7,
                   color: context.themeColors.onBackground,
                 ),
               ),

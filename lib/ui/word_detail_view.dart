@@ -1,11 +1,14 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../extensions/build_context_extension.dart';
 import '../api/models/word.dart';
+import '../dependency_injection_container.dart';
 import '../extensions/iterable_extension.dart';
+import '../view_models/words_view_model.dart';
 import 'dashboard/app_shell.dart';
-import 'dashboard/predictions_widget.dart';
+import 'dashboard/related_words_widget.dart';
 import 'manage_word_view.dart';
 import 'shared_widgets/overlay_button.dart';
 import 'shared_widgets/simple_aac_dialog.dart';
@@ -15,11 +18,11 @@ import 'theme/simple_aac_text.dart';
 class WordDetailViewArguments {
   WordDetailViewArguments({
     required this.word,
-    required this.heroTag,
+    this.heroTag,
   });
 
   final Word word;
-  final String heroTag;
+  final String? heroTag;
 }
 
 const kImageHeight = 350.0;
@@ -32,11 +35,13 @@ class WordDetailView extends StatefulWidget {
 }
 
 class _WordDetailViewState extends State<WordDetailView> {
+  final wordViewModel = getIt.get<WordsViewModel>();
+
   WordDetailViewArguments get _wordDetailViewArguments => context.routeArguments as WordDetailViewArguments;
 
   Word get _word => _wordDetailViewArguments.word;
 
-  String get heroTag => _wordDetailViewArguments.heroTag;
+  String? get heroTag => _wordDetailViewArguments.heroTag;
 
   @override
   Widget build(BuildContext context) {
@@ -157,10 +162,16 @@ class _WordDetailViewState extends State<WordDetailView> {
                   const SizedBox(
                     height: 8,
                   ),
-                  PredictionsWidget(
-                    predictions: _word.predictionList,
-                    isExpanded: true,
-                  ),
+                  FutureBuilder<BuiltList<Word>>(
+                      future: wordViewModel.getWordsForIds(_word.extraRelatedWordIds),
+                      builder: (context, snapshot) {
+                        final extraRelatedWords = snapshot.data ?? BuiltList();
+                        return RelatedWordsWidget(
+                          onRelatedWordSelected: (_) {},
+                          relatedWords: extraRelatedWords,
+                          isExpanded: true,
+                        );
+                      }),
                 ],
               ),
             ),
@@ -197,19 +208,34 @@ class _WordDetailViewState extends State<WordDetailView> {
 
   Widget _buildWordDetailImage(Word _word) {
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 24,
-      ),
-      child: Hero(
-        tag: heroTag,
-        transitionOnUserGestures: true,
-        child: Image.asset(
-          _word.imageList.firstOrNull() ?? 'assets/images/sealstudioslogocenter.png',
-          fit: BoxFit.cover,
-          height: kImageHeight,
-          width: context.screenWidth,
+        padding: const EdgeInsets.only(
+          bottom: 24,
         ),
-      ),
+        child: heroTag != null
+            ? _wrapWithHero(
+                _buildImage(_word),
+                heroTag!,
+              )
+            : _buildImage(_word));
+  }
+
+  Widget _wrapWithHero(
+    Widget child,
+    String heroTag,
+  ) {
+    return Hero(
+      tag: heroTag,
+      transitionOnUserGestures: true,
+      child: child,
+    );
+  }
+
+  Widget _buildImage(Word _word) {
+    return Image.asset(
+      _word.imageList.firstOrNull() ?? 'assets/images/sealstudioslogocenter.png',
+      fit: BoxFit.cover,
+      height: kImageHeight,
+      width: context.screenWidth,
     );
   }
 
@@ -246,7 +272,7 @@ class _WordDetailViewState extends State<WordDetailView> {
                 padding: EdgeInsets.only(top: 8.0),
                 child: Text(
                   'Are you sure you want to delete this word?',
-                  style: SimpleAACText.body4Style,
+                  style: SimpleAACText.body1Style,
                 ),
               ),
               dialogActions: [
@@ -280,5 +306,4 @@ class _WordDetailViewState extends State<WordDetailView> {
       activeIcon: Icons.close,
     );
   }
-
 }

@@ -46,7 +46,7 @@ class SimpleAACText {
   static const body1Style = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.normal,
-    height: 1.625,
+    height: 1,
     fontFamily: 'Antipasto',
   );
 

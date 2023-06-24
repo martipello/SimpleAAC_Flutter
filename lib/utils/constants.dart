@@ -10,5 +10,6 @@ class Constants {
   static const EMAIL_KEY = 'EMAIL_KEY';
   static const BIOMETRIC_KEY = 'use_biometric_key';
   static const FIRST_TIME = 'first_time';
-  static const PREDICTIONS = 'predictions';
+  static const RELATED_WORDS = 'relatedWords';
+  static const LANGUAGE_ID = 'languageId';
 }

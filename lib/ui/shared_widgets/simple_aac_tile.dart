@@ -30,7 +30,7 @@ class SimpleAACTile extends StatelessWidget {
     return Card(
       key: key,
       elevation: isSelected ? 0 : 2,
-      color: isSelected ? context.themeColors.background : Colors.white,
+      color: isSelected ? context.themeColors.surfaceVariant : null,
       shape: border ?? defaultBorder,
       clipBehavior: Clip.hardEdge,
       child: Material(
@@ -81,10 +81,13 @@ class SimpleAACTile extends StatelessWidget {
     return Positioned.fill(
       child: Align(
         alignment: alignment,
-        child: OverlayButton(
-          iconData: iconData,
-          onTap: onTap,
-          onLongPress: onLongPress,
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: OverlayButton(
+            iconData: iconData,
+            onTap: onTap,
+            onLongPress: onLongPress,
+          ),
         ),
       ),
     );

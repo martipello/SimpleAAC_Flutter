@@ -55,11 +55,13 @@ dependencies:
   flutter_speed_dial: ^6.2.0
   settings_ui: ^2.0.2
   flutter_image_compress: ^2.0.1
+  expandable: ^5.0.1
 
   hive_built_value: ^2.3.0
   hive_built_value_flutter: ^2.3.0
 
   flex_color_scheme: ^7.0.5
+  change_notifier_builder: ^1.1.2
 
 
 dev_dependencies:
@@ -142,6 +144,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/json/
     - assets/fonts/
 
   uses-material-design: true

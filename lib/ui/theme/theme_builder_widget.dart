@@ -1,3 +1,4 @@
+import 'package:change_notifier_builder/change_notifier_builder.dart';
 import 'package:flutter/material.dart';
 
 import '../../view_models/theme_view_model.dart';
@@ -11,9 +12,9 @@ class ThemeBuilderWidget extends InheritedWidget {
     required this.themeViewModel,
     super.key,
   }) : super(
-          child: AnimatedBuilder(
-            animation: themeViewModel.themeController,
-            builder: (context, child) {
+          child: ChangeNotifierBuilder(
+            notifier: themeViewModel.themeController,
+            builder: (context, _, child) {
               return themeBuilder.call(
                 themeViewModel.themeController,
               );

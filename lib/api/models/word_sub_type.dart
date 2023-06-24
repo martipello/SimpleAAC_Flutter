@@ -7,7 +7,7 @@ import '../serializers/serializers.dart';
 
 part 'word_sub_type.g.dart';
 
-@HiveType(typeId: 2)
+@HiveType(typeId: 3)
 class WordSubType extends EnumClass {
   const WordSubType._(String name) : super(name);
 

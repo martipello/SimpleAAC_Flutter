@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dependency_injection_container.dart';
 import 'services/navigation_service.dart';
 import 'ui/dashboard/app_shell.dart';
+import 'ui/language_view.dart';
 import 'ui/manage_word_view.dart';
 import 'ui/settings_view.dart';
 import 'ui/theme/theme_controller.dart';
@@ -72,11 +73,12 @@ class _SimpleAACAppState extends State<SimpleAACApp> {
       themeMode: themeController.themeMode,
       initialRoute: AppShell.routeName,
       routes: {
-        AppShell.routeName: (context) => AppShell(),
+        AppShell.routeName: (context) => const AppShell(),
         WordDetailView.routeName: (context) => WordDetailView(),
         ManageWordView.routeName: (context) => ManageWordView(),
         SettingsView.routeName: (context) => SettingsView(),
         ThemeView.routeName: (context) => ThemeView(),
+        LanguageView.routeName: (context) => LanguageView(),
       },
     );
   }

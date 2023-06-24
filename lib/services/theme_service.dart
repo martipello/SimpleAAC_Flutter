@@ -1,15 +1,15 @@
 import '../api/hive_client.dart';
-import '../dependency_injection_container.dart';
-import '../ui/theme/store.dart';
 
 const kThemeBox = 'themes';
 
 class ThemeService {
-  final _hiveClient = getIt.getAsync<HiveClient>(instanceName: kThemeBox);
+
+  ThemeService(this.hiveClient);
+
+  final HiveClient<dynamic> hiveClient;
 
   Future<void> put<T>(String key, T value) async {
-    final hiveClient = await _hiveClient;
-    return hiveClient.put<T>(
+    return hiveClient.put(
       key,
       value,
     );
@@ -19,11 +19,14 @@ class ThemeService {
     String key,
     T defaultValue,
   ) async {
-    final hiveClient = await _hiveClient;
-    final value = await hiveClient.get<T>(
+    final value = await hiveClient.get(
       key,
       defaultValue: defaultValue,
     );
     return value ?? defaultValue;
+  }
+
+  Future<void> dispose() async {
+    hiveClient.dispose();
   }
 }

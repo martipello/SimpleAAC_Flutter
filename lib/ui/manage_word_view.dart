@@ -8,7 +8,7 @@ import '../extensions/build_context_extension.dart';
 import '../extensions/iterable_extension.dart';
 import '../view_models/create_word/manage_word_view_model.dart';
 import 'dashboard/app_shell.dart';
-import 'dashboard/predictions_widget.dart';
+import 'dashboard/related_words_widget.dart';
 import 'pick_image_dialog.dart';
 import 'shared_widgets/app_bar.dart';
 import 'shared_widgets/bottom_button_holder.dart';
@@ -202,7 +202,7 @@ class _ManageWordViewState extends State<ManageWordView> {
           _buildCreateWordWordLabel(_word),
           _buildCreateWordWordSound(_word),
           _buildMediumMargin(),
-          _buildPredictions(_word),
+          _buildExtraRelatedWords(_word),
         ],
       ),
     );
@@ -330,31 +330,38 @@ class _ManageWordViewState extends State<ManageWordView> {
     );
   }
 
-  Widget _buildPredictions(
+  Widget _buildExtraRelatedWords(
     Word? word,
   ) {
-    return Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(
-            top: 8.0,
-          ),
-          child: SizedBox(
-            height: 32,
-            child: word?.predictionList.isNotEmpty == true
-                ? PredictionsWidget(
-                    predictions: word?.predictionList ?? BuiltList(),
-                    onPredictionsChanged: _wordViewModel.setWordPredictions,
-                    isExpanded: true,
-                  )
-                : null,
-          ),
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: _buildAddPredictionButton(),
-        ),
-      ],
+    return StreamBuilder<BuiltList<Word>>(
+      stream: _wordViewModel.relatedWords,
+      builder: (context, snapshot) {
+        final relatedWords = snapshot.data ?? BuiltList<Word>();
+        return Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 8.0,
+              ),
+              child: SizedBox(
+                height: 32,
+                child: word?.extraRelatedWordIds.isNotEmpty == true
+                    ? RelatedWordsWidget(
+                        relatedWords: relatedWords,
+                        onRelatedWordSelected: (_){},
+                        onRelatedWordIdsChanged: _wordViewModel.setExtraRelatedWords,
+                        isExpanded: true,
+                      )
+                    : null,
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: _buildAddPredictionButton(),
+            ),
+          ],
+        );
+      }
     );
   }
 
