@@ -2,18 +2,19 @@ import 'package:built_collection/built_collection.dart';
 import 'package:simple_aac/ui/dashboard/related_words_widget.dart';
 
 import '../api/models/word.dart';
+import '../api/models/word_base.dart';
 import '../api/models/word_sub_type.dart';
 import 'language_service.dart';
 
-class WordService {
-  WordService(this.languageService);
+class WordBaseService {
+  WordBaseService(this.languageService);
 
   final LanguageService languageService;
 
-  Future<BuiltList<Word>> getAllForType(WordSubType wordSubType) async {
+  Future<BuiltList<WordBase>> getAllForType(WordSubType wordSubType) async {
     final currentLanguage = await languageService.getCurrentLanguage();
-    final words = currentLanguage.words;
-    return words.where((w) => w.subType == wordSubType).toBuiltList();
+    final wordsAndSentences = [...currentLanguage.words, ...currentLanguage.sentences];
+    return wordsAndSentences.where((w) => w.subType == wordSubType).toBuiltList();
   }
 
   Future<BuiltList<Word>> getExtraRelatedWords(Word word) async {
@@ -21,7 +22,7 @@ class WordService {
     return currentLanguage.words
         .where(
           (lw) => word.extraRelatedWordIds.any(
-            (w) => w == lw.wordId,
+            (w) => w == lw.id,
           ),
         )
         .toBuiltList();
@@ -34,7 +35,7 @@ class WordService {
     //TODO make this actually get related words not just the related words on the word
     final relatedWords = words.where(
       (lw) => word.extraRelatedWordIds.any(
-        (w) => w == lw.wordId,
+        (w) => w == lw.id,
       ),
     );
     return <Word>{...extraRelatedWords, ...relatedWords}.toBuiltList();
@@ -45,7 +46,7 @@ class WordService {
     return currentLanguage.words
         .where(
           (word) => wordIds.any(
-            (id) => word.wordId == id,
+            (id) => word.id == id,
           ),
         )
         .toBuiltList();
@@ -57,15 +58,23 @@ class WordService {
     );
   }
 
-  void removeListener(WordListCallBack wordListCallBack) {
+  void removeListener(
+    WordListCallBack wordListCallBack,
+  ) {
     languageService.removeListener(
-      _getWordListCallbackWrapper(wordListCallBack),
+      _getWordListCallbackWrapper(
+        wordListCallBack,
+      ),
     );
   }
 
-  LanguageCallBack _getWordListCallbackWrapper(WordListCallBack wordListCallBack) {
+  LanguageCallBack _getWordListCallbackWrapper(
+    WordListCallBack wordListCallBack,
+  ) {
     return (language) {
-      wordListCallBack.call(language.words);
+      wordListCallBack.call(
+        language.words,
+      );
     };
   }
 }

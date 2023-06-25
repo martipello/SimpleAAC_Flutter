@@ -2,19 +2,20 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:hive_built_value/hive_built_value.dart';
+import 'package:simple_aac/api/models/word.dart';
 import 'package:simple_aac/api/models/word_base.dart';
+import 'package:simple_aac/api/models/word_sub_type.dart';
+import 'package:simple_aac/api/models/word_type.dart';
 
 import '../serializers/serializers.dart';
-import 'word_sub_type.dart';
-import 'word_type.dart';
 
-part 'word.g.dart';
+part 'sentence.g.dart';
 
-@HiveType(typeId: 1)
-abstract class Word with WordBase implements Built<Word, WordBuilder> {
+@HiveType(typeId: 4)
+abstract class Sentence with WordBase implements Built<Sentence, SentenceBuilder> {
 
-  factory Word([void Function(WordBuilder) updates]) = _$Word;
-  Word._();
+  factory Sentence([void Function(SentenceBuilder) updates]) = _$Sentence;
+  Sentence._();
 
   @HiveField(0)
   String get id;
@@ -29,10 +30,7 @@ abstract class Word with WordBase implements Built<Word, WordBuilder> {
   WordSubType get subType;
 
   @HiveField(4)
-  String get word;
-
-  @HiveField(5)
-  BuiltList<String> get imageList;
+  BuiltList<Word> get words;
 
   @HiveField(6)
   String get sound;
@@ -42,9 +40,6 @@ abstract class Word with WordBase implements Built<Word, WordBuilder> {
 
   @HiveField(8)
   double? get usageCount;
-
-  @HiveField(9)
-  double? get keyStage;
 
   @HiveField(10)
   bool? get isUserAdded;
@@ -56,12 +51,12 @@ abstract class Word with WordBase implements Built<Word, WordBuilder> {
   BuiltList<String> get extraRelatedWordIds;
 
   Map<String, dynamic> toJson() {
-    return serializers.serializeWith(Word.serializer, this) as Map<String, dynamic>;
+    return serializers.serializeWith(Sentence.serializer, this) as Map<String, dynamic>;
   }
 
-  static Word fromJson(Map<String, dynamic> json) {
-    return serializers.deserializeWith(Word.serializer, json)!;
+  static Sentence fromJson(Map<String, dynamic> json) {
+    return serializers.deserializeWith(Sentence.serializer, json)!;
   }
 
-  static Serializer<Word> get serializer => _$wordSerializer;
+  static Serializer<Sentence> get serializer => _$sentenceSerializer;
 }

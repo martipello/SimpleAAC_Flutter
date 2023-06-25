@@ -116,7 +116,7 @@ class RelatedWordsWidget extends StatelessWidget {
               .rebuild(
                 (pb) => pb.remove(word),
               )
-              .map((p0) => p0.wordId)
+              .map((p0) => p0.id)
               .toBuiltList(),
         );
       };

@@ -1,8 +1,9 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:simple_aac/api/models/word_base.dart';
 
 import '../api/models/word.dart';
-import '../services/word_service.dart';
+import '../services/word_base_service.dart';
 
 // enum SelectedWordListAction {
 //   add, remove,
@@ -11,9 +12,9 @@ import '../services/word_service.dart';
 class SelectedWordsViewModel {
   SelectedWordsViewModel(this.wordService);
 
-  final WordService wordService;
+  final WordBaseService wordService;
 
-  final selectedWords = BehaviorSubject<BuiltList<Word>>.seeded(
+  final selectedWords = BehaviorSubject<BuiltList<WordBase>>.seeded(
     BuiltList<Word>.of([]),
   );
 
@@ -26,7 +27,7 @@ class SelectedWordsViewModel {
     relatedWords.close();
   }
 
-  Future<void> addSelectedWord(Word word) async {
+  Future<void> addSelectedWord(WordBase word) async {
     final words = selectedWords.valueOrNull;
     if (words != null) {
       selectedWords.add(
@@ -34,17 +35,19 @@ class SelectedWordsViewModel {
           (wb) => wb.add(word),
         ),
       );
-      final relatedWords = await wordService.getRelatedWords(word);
-      setRelatedWords(relatedWords);
+      if (word is Word) {
+        final relatedWords = await wordService.getRelatedWords(word);
+        setRelatedWords(relatedWords);
+      }
     }
   }
 
-  void removeSelectedWord(Word word) {
+  void removeSelectedWord(WordBase wordBase) {
     final words = selectedWords.valueOrNull;
     if (words != null) {
       selectedWords.add(
         words.rebuild(
-          (wb) => wb.remove(word),
+          (wb) => wb.remove(wordBase),
         ),
       );
     }

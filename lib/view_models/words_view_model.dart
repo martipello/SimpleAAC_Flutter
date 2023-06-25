@@ -2,20 +2,21 @@ import 'dart:async';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:simple_aac/api/models/word_base.dart';
 import 'package:simple_aac/ui/dashboard/related_words_widget.dart';
 
 import '../api/models/word.dart';
 import '../api/models/word_sub_type.dart';
-import '../services/word_service.dart';
+import '../services/word_base_service.dart';
 
 class WordsViewModel {
   WordsViewModel(this.wordService);
 
-  final WordService wordService;
+  final WordBaseService wordService;
 
   late final WordSubType wordSubType;
 
-  final wordsOfType = BehaviorSubject<BuiltList<Word>>();
+  final wordsOfType = BehaviorSubject<BuiltList<WordBase>>();
 
   void init(WordSubType wordSubType) {
     this.wordSubType = wordSubType;
@@ -46,7 +47,7 @@ class WordsViewModel {
     wordsOfType.add(words);
   }
 
-  Future<BuiltList<Word>> getWordsOfType(
+  Future<BuiltList<WordBase>> getWordsOfType(
     WordSubType wordSubType,
   ) async {
     return wordService.getAllForType(wordSubType);

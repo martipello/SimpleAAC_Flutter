@@ -27,6 +27,14 @@ class _$LanguageSerializer implements StructuredSerializer<Language> {
       serializers.serialize(object.words,
           specifiedType:
               const FullType(BuiltList, const [const FullType(Word)])),
+      'sentences',
+      serializers.serialize(object.sentences,
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(Sentence)])),
+      'wordGroups',
+      serializers.serialize(object.wordGroups,
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(WordGroup)])),
     ];
 
     return result;
@@ -57,6 +65,18 @@ class _$LanguageSerializer implements StructuredSerializer<Language> {
                       const FullType(BuiltList, const [const FullType(Word)]))!
               as BuiltList<Object?>);
           break;
+        case 'sentences':
+          result.sentences.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(Sentence)]))!
+              as BuiltList<Object?>);
+          break;
+        case 'wordGroups':
+          result.wordGroups.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(WordGroup)]))!
+              as BuiltList<Object?>);
+          break;
       }
     }
 
@@ -71,17 +91,28 @@ class _$Language extends Language {
   final String displayName;
   @override
   final BuiltList<Word> words;
+  @override
+  final BuiltList<Sentence> sentences;
+  @override
+  final BuiltList<WordGroup> wordGroups;
 
   factory _$Language([void Function(LanguageBuilder)? updates]) =>
       (new LanguageBuilder()..update(updates))._build();
 
   _$Language._(
-      {required this.id, required this.displayName, required this.words})
+      {required this.id,
+      required this.displayName,
+      required this.words,
+      required this.sentences,
+      required this.wordGroups})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(id, r'Language', 'id');
     BuiltValueNullFieldError.checkNotNull(
         displayName, r'Language', 'displayName');
     BuiltValueNullFieldError.checkNotNull(words, r'Language', 'words');
+    BuiltValueNullFieldError.checkNotNull(sentences, r'Language', 'sentences');
+    BuiltValueNullFieldError.checkNotNull(
+        wordGroups, r'Language', 'wordGroups');
   }
 
   @override
@@ -97,7 +128,9 @@ class _$Language extends Language {
     return other is Language &&
         id == other.id &&
         displayName == other.displayName &&
-        words == other.words;
+        words == other.words &&
+        sentences == other.sentences &&
+        wordGroups == other.wordGroups;
   }
 
   @override
@@ -106,6 +139,8 @@ class _$Language extends Language {
     _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jc(_$hash, displayName.hashCode);
     _$hash = $jc(_$hash, words.hashCode);
+    _$hash = $jc(_$hash, sentences.hashCode);
+    _$hash = $jc(_$hash, wordGroups.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -115,7 +150,9 @@ class _$Language extends Language {
     return (newBuiltValueToStringHelper(r'Language')
           ..add('id', id)
           ..add('displayName', displayName)
-          ..add('words', words))
+          ..add('words', words)
+          ..add('sentences', sentences)
+          ..add('wordGroups', wordGroups))
         .toString();
   }
 }
@@ -135,6 +172,18 @@ class LanguageBuilder implements Builder<Language, LanguageBuilder> {
   ListBuilder<Word> get words => _$this._words ??= new ListBuilder<Word>();
   set words(ListBuilder<Word>? words) => _$this._words = words;
 
+  ListBuilder<Sentence>? _sentences;
+  ListBuilder<Sentence> get sentences =>
+      _$this._sentences ??= new ListBuilder<Sentence>();
+  set sentences(ListBuilder<Sentence>? sentences) =>
+      _$this._sentences = sentences;
+
+  ListBuilder<WordGroup>? _wordGroups;
+  ListBuilder<WordGroup> get wordGroups =>
+      _$this._wordGroups ??= new ListBuilder<WordGroup>();
+  set wordGroups(ListBuilder<WordGroup>? wordGroups) =>
+      _$this._wordGroups = wordGroups;
+
   LanguageBuilder();
 
   LanguageBuilder get _$this {
@@ -143,6 +192,8 @@ class LanguageBuilder implements Builder<Language, LanguageBuilder> {
       _id = $v.id;
       _displayName = $v.displayName;
       _words = $v.words.toBuilder();
+      _sentences = $v.sentences.toBuilder();
+      _wordGroups = $v.wordGroups.toBuilder();
       _$v = null;
     }
     return this;
@@ -170,12 +221,18 @@ class LanguageBuilder implements Builder<Language, LanguageBuilder> {
               id: BuiltValueNullFieldError.checkNotNull(id, r'Language', 'id'),
               displayName: BuiltValueNullFieldError.checkNotNull(
                   displayName, r'Language', 'displayName'),
-              words: words.build());
+              words: words.build(),
+              sentences: sentences.build(),
+              wordGroups: wordGroups.build());
     } catch (_) {
       late String _$failedField;
       try {
         _$failedField = 'words';
         words.build();
+        _$failedField = 'sentences';
+        sentences.build();
+        _$failedField = 'wordGroups';
+        wordGroups.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             r'Language', _$failedField, e.toString());
@@ -209,20 +266,30 @@ class LanguageAdapter extends TypeAdapter<Language> {
           ..displayName = fields[1] as String
           ..words = fields[2] == null
               ? null
-              : ListBuilder<Word>(fields[2] as Iterable))
+              : ListBuilder<Word>(fields[2] as Iterable)
+          ..sentences = fields[3] == null
+              ? null
+              : ListBuilder<Sentence>(fields[3] as Iterable)
+          ..wordGroups = fields[4] == null
+              ? null
+              : ListBuilder<WordGroup>(fields[4] as Iterable))
         .build();
   }
 
   @override
   void write(BinaryWriter writer, Language obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.displayName)
       ..writeByte(2)
-      ..write(obj.words.toList());
+      ..write(obj.words.toList())
+      ..writeByte(3)
+      ..write(obj.sentences.toList())
+      ..writeByte(4)
+      ..write(obj.wordGroups.toList());
   }
 
   @override

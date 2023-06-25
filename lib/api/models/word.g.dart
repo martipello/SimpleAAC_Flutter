@@ -18,9 +18,8 @@ class _$WordSerializer implements StructuredSerializer<Word> {
   Iterable<Object?> serialize(Serializers serializers, Word object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[
-      'wordId',
-      serializers.serialize(object.wordId,
-          specifiedType: const FullType(String)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(String)),
       'type',
       serializers.serialize(object.type,
           specifiedType: const FullType(WordType)),
@@ -98,8 +97,8 @@ class _$WordSerializer implements StructuredSerializer<Word> {
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
-        case 'wordId':
-          result.wordId = serializers.deserialize(value,
+        case 'id':
+          result.id = serializers.deserialize(value,
               specifiedType: const FullType(String))! as String;
           break;
         case 'createdDate':
@@ -163,7 +162,7 @@ class _$WordSerializer implements StructuredSerializer<Word> {
 
 class _$Word extends Word {
   @override
-  final String wordId;
+  final String id;
   @override
   final DateTime? createdDate;
   @override
@@ -193,7 +192,7 @@ class _$Word extends Word {
       (new WordBuilder()..update(updates))._build();
 
   _$Word._(
-      {required this.wordId,
+      {required this.id,
       this.createdDate,
       required this.type,
       required this.subType,
@@ -207,7 +206,7 @@ class _$Word extends Word {
       this.isBackedUp,
       required this.extraRelatedWordIds})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(wordId, r'Word', 'wordId');
+    BuiltValueNullFieldError.checkNotNull(id, r'Word', 'id');
     BuiltValueNullFieldError.checkNotNull(type, r'Word', 'type');
     BuiltValueNullFieldError.checkNotNull(subType, r'Word', 'subType');
     BuiltValueNullFieldError.checkNotNull(word, r'Word', 'word');
@@ -228,7 +227,7 @@ class _$Word extends Word {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is Word &&
-        wordId == other.wordId &&
+        id == other.id &&
         createdDate == other.createdDate &&
         type == other.type &&
         subType == other.subType &&
@@ -246,7 +245,7 @@ class _$Word extends Word {
   @override
   int get hashCode {
     var _$hash = 0;
-    _$hash = $jc(_$hash, wordId.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jc(_$hash, createdDate.hashCode);
     _$hash = $jc(_$hash, type.hashCode);
     _$hash = $jc(_$hash, subType.hashCode);
@@ -266,7 +265,7 @@ class _$Word extends Word {
   @override
   String toString() {
     return (newBuiltValueToStringHelper(r'Word')
-          ..add('wordId', wordId)
+          ..add('id', id)
           ..add('createdDate', createdDate)
           ..add('type', type)
           ..add('subType', subType)
@@ -286,9 +285,9 @@ class _$Word extends Word {
 class WordBuilder implements Builder<Word, WordBuilder> {
   _$Word? _$v;
 
-  String? _wordId;
-  String? get wordId => _$this._wordId;
-  set wordId(String? wordId) => _$this._wordId = wordId;
+  String? _id;
+  String? get id => _$this._id;
+  set id(String? id) => _$this._id = id;
 
   DateTime? _createdDate;
   DateTime? get createdDate => _$this._createdDate;
@@ -347,7 +346,7 @@ class WordBuilder implements Builder<Word, WordBuilder> {
   WordBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
-      _wordId = $v.wordId;
+      _id = $v.id;
       _createdDate = $v.createdDate;
       _type = $v.type;
       _subType = $v.subType;
@@ -384,8 +383,7 @@ class WordBuilder implements Builder<Word, WordBuilder> {
     try {
       _$result = _$v ??
           new _$Word._(
-              wordId: BuiltValueNullFieldError.checkNotNull(
-                  wordId, r'Word', 'wordId'),
+              id: BuiltValueNullFieldError.checkNotNull(id, r'Word', 'id'),
               createdDate: createdDate,
               type:
                   BuiltValueNullFieldError.checkNotNull(type, r'Word', 'type'),
@@ -439,7 +437,7 @@ class WordAdapter extends TypeAdapter<Word> {
     };
 
     return (WordBuilder()
-          ..wordId = fields[0] as String
+          ..id = fields[0] as String
           ..createdDate = fields[1] as DateTime?
           ..type = fields[2] as WordType
           ..subType = fields[3] as WordSubType
@@ -464,7 +462,7 @@ class WordAdapter extends TypeAdapter<Word> {
     writer
       ..writeByte(13)
       ..writeByte(0)
-      ..write(obj.wordId)
+      ..write(obj.id)
       ..writeByte(1)
       ..write(obj.createdDate)
       ..writeByte(2)

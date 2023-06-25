@@ -1,6 +1,8 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart';
+import 'package:simple_aac/api/models/sentence.dart';
+import 'package:simple_aac/api/models/word_group.dart';
 
 import '../models/language.dart';
 import '../models/language_response.dart';
@@ -15,7 +17,9 @@ part 'serializers.g.dart';
   [
     Language,
     LanguageResponse,
+    Sentence,
     Word,
+    WordGroup,
     WordSubType,
     WordType,
   ],

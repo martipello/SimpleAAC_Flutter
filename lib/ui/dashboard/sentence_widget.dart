@@ -2,9 +2,12 @@ import 'dart:ui';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_aac/ui/shared_widgets/sentence_tile.dart';
 
-import '../../api/models/extensions/word_extension.dart';
+import '../../api/models/extensions/word_base_extension.dart';
+import '../../api/models/sentence.dart';
 import '../../api/models/word.dart';
+import '../../api/models/word_base.dart';
 import '../../dependency_injection_container.dart';
 import '../../view_models/selected_words_view_model.dart';
 import '../shared_widgets/word_tile.dart';
@@ -49,7 +52,7 @@ class _SentenceWidgetState extends State<SentenceWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<BuiltList<Word>>(
+    return StreamBuilder<BuiltList<WordBase>>(
       stream: selectedWordsViewModel.selectedWords,
       builder: (context, snapshot) {
         final words = snapshot.data ?? BuiltList<Word>();
@@ -68,7 +71,7 @@ class _SentenceWidgetState extends State<SentenceWidget> {
   }
 
   Widget _buildListView(
-    BuiltList<Word> words,
+    BuiltList<WordBase> words,
   ) {
     return ReorderableListView.builder(
       scrollDirection: Axis.horizontal,
@@ -78,10 +81,20 @@ class _SentenceWidgetState extends State<SentenceWidget> {
       padding: const EdgeInsets.fromLTRB(8, 8, 64, 8),
       scrollController: scrollController,
       itemBuilder: (context, index) {
-        return _buildWordTile(
-          words[index],
-          index,
-        );
+        final wordBase = words[index];
+        if (wordBase is Word) {
+          return _buildWordTile(
+            wordBase,
+            index,
+          );
+        }  else if (wordBase is Sentence) {
+          return _buildSentenceTile(
+            wordBase,
+            index,
+          );
+        }  else {
+          throw Exception('Unknown word type');
+        }
       },
     );
   }
@@ -119,6 +132,22 @@ class _SentenceWidgetState extends State<SentenceWidget> {
       key: ValueKey(index),
       word: word,
       heroTag: word.getHeroTag('sentence-$index-'),
+      closeButtonOnTap: selectedWordsViewModel.removeSelectedWord,
+      closeButtonOnLongPress: (_) {
+        selectedWordsViewModel.clearSelectedWordList();
+      },
+      hasReOrderButton: true,
+    );
+  }
+
+  Widget _buildSentenceTile(
+    Sentence sentence,
+    int index,
+  ) {
+    return SentenceTile(
+      key: ValueKey(index),
+      sentence: sentence,
+      heroTag: sentence.getHeroTag('sentence-$index-'),
       closeButtonOnTap: selectedWordsViewModel.removeSelectedWord,
       closeButtonOnLongPress: (_) {
         selectedWordsViewModel.clearSelectedWordList();

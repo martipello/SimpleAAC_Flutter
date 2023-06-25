@@ -141,7 +141,8 @@ class _AppShellState extends State<AppShell> {
       transitionOnUserGestures: true,
       child: FloatingActionButton(
         heroTag: null,
-        onPressed: () {},
+        onPressed: () {
+        },
         child: const Icon(
           Icons.play_arrow,
         ),

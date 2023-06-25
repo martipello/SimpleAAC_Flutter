@@ -11,7 +11,7 @@ import 'services/language_service.dart';
 import 'services/navigation_service.dart';
 import 'services/shared_preferences_service.dart';
 import 'services/theme_service.dart';
-import 'services/word_service.dart';
+import 'services/word_base_service.dart';
 import 'ui/theme/theme_controller.dart';
 import 'view_models/create_word/manage_word_view_model.dart';
 import 'view_models/file_picker/file_picker_view_model.dart';
@@ -34,7 +34,7 @@ Future<void> init() async {
   await getIt.isReady<PackageInfo>();
   await getIt.isReady<SharedPreferences>();
   getIt.registerLazySingleton(() => LanguageService(getIt(instanceName: kLanguageBox), getIt()));
-  getIt.registerLazySingleton(() => WordService(getIt()));
+  getIt.registerLazySingleton(() => WordBaseService(getIt()));
   getIt.registerLazySingleton(() => SharedPreferencesService(getIt()));
   getIt.registerLazySingleton(() => const FlutterSecureStorage());
   getIt.registerLazySingleton(NavigationService.new);
