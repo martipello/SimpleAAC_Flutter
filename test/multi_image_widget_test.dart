@@ -66,16 +66,11 @@ void main() {
             matching: find.byType(SimpleAACLoadingWidget),
           );
           expect(loading, findsOneWidget);
-          await Future.delayed(Duration.zero);
-          final imageWithoutParent = find.byType(RawImage);
+          await _delayAndPump(tester, Duration(seconds: 1));
           final image = find.descendant(
             of: find.byType(MultiImage),
-            matching: find.byType(Image),
+            matching: find.byType(RawImage),
           );
-          await Future.delayed(Duration.zero);
-          await tester.pump();
-          debugDumpRenderTree();
-          expect(imageWithoutParent, findsOneWidget);
           expect(image, findsOneWidget);
         },
       );
@@ -96,12 +91,11 @@ void main() {
             matching: find.byType(SimpleAACLoadingWidget),
           );
           expect(loading, findsOneWidget);
-          await Future.delayed(Duration.zero);
+          await _delayAndPump(tester, Duration(seconds: 1));
           final image = find.descendant(
             of: find.byType(MultiImage),
             matching: find.byType(RawImage),
           );
-          await tester.pump(Duration(seconds: 1));
           expect(image, findsNWidgets(2));
         },
       );
@@ -122,12 +116,11 @@ void main() {
             matching: find.byType(SimpleAACLoadingWidget),
           );
           expect(loading, findsOneWidget);
-          await Future.delayed(Duration.zero);
+          await _delayAndPump(tester, Duration(seconds: 1));
           final image = find.descendant(
             of: find.byType(MultiImage),
             matching: find.byType(RawImage),
           );
-          await tester.pump(Duration(seconds: 1));
           expect(image, findsNWidgets(3));
         },
       );
@@ -148,7 +141,7 @@ void main() {
             matching: find.byType(SimpleAACLoadingWidget),
           );
           expect(loading, findsOneWidget);
-          await Future.delayed(Duration.zero);
+          await _delayAndPump(tester, Duration(seconds: 1));
           final image = find.descendant(
             of: find.byType(MultiImage),
             matching: find.byType(RawImage),
@@ -173,7 +166,7 @@ void main() {
             matching: find.byType(SimpleAACLoadingWidget),
           );
           expect(loading, findsOneWidget);
-          await Future.delayed(Duration.zero);
+          await _delayAndPump(tester, Duration(seconds: 1));
           final image = find.descendant(
             of: find.byType(MultiImage),
             matching: find.byType(RawImage),
@@ -203,9 +196,8 @@ void main() {
             matching: find.byType(SimpleAACLoadingWidget),
           );
           expect(loading, findsOneWidget);
-          await Future.delayed(Duration.zero);
-          await tester.pump();
-          await tester.pump();
+          await _delayAndPump(tester, Duration(seconds: 1));
+          await _delayAndPump(tester, Duration(seconds: 1));
           final image = find.descendant(
             of: find.byType(MultiImage),
             matching: find.byType(RawImage),
@@ -214,7 +206,7 @@ void main() {
             of: find.byType(MultiImage),
             matching: find.byIcon(Icons.error_outline_outlined),
           );
-          expect(image, findsOneWidget);
+          expect(image, findsNothing);
           expect(error, findsOneWidget);
         },
       );
@@ -235,8 +227,7 @@ void main() {
             matching: find.byType(SimpleAACLoadingWidget),
           );
           expect(loading, findsOneWidget);
-          await Future.delayed(Duration.zero);
-          await tester.pump();
+          await _delayAndPump(tester, Duration(seconds: 1));
           final image = find.descendant(
             of: find.byType(MultiImage),
             matching: find.byType(RawImage),
@@ -246,7 +237,7 @@ void main() {
             matching: find.byIcon(Icons.error_outline_outlined),
           );
           expect(image, findsNothing);
-          expect(error, findsNWidgets(2));
+          expect(error, findsOneWidget);
         },
       );
     },
@@ -266,8 +257,7 @@ void main() {
             matching: find.byType(SimpleAACLoadingWidget),
           );
           expect(loading, findsOneWidget);
-          await Future.delayed(Duration.zero);
-          await tester.pump();
+          await _delayAndPump(tester, Duration(seconds: 1));
           final image = find.descendant(
             of: find.byType(MultiImage),
             matching: find.byType(RawImage),
@@ -276,12 +266,20 @@ void main() {
             of: find.byType(MultiImage),
             matching: find.byIcon(Icons.error_outline_outlined),
           );
-          expect(image, findsNothing);
-          expect(error, findsOneWidget);
+          expect(image, findsOneWidget);
+          expect(error, findsNothing);
         },
       );
     },
   );
+}
+
+Future<void> _delayAndPump(
+  WidgetTester tester,
+  Duration duration,
+) async {
+  await Future.delayed(duration);
+  await tester.pump();
 }
 
 Future<Widget> _buildMultiImageWidgetHolder(

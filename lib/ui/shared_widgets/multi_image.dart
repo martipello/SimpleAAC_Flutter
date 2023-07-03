@@ -110,6 +110,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   Widget _buildOneImage(ImageInfo imageInfo) {
     return _buildImage(
       imageInfo,
+      1,
     );
   }
 
@@ -120,12 +121,14 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
         Expanded(
           child: _buildImage(
             imageInfoList.first,
+            1,
           ),
         ),
         _buildSmallMargin,
         Expanded(
           child: _buildImage(
             imageInfoList[1],
+            2,
           ),
         ),
       ],
@@ -143,12 +146,14 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
               Expanded(
                 child: _buildImage(
                   imageInfoList.first,
+                  1,
                 ),
               ),
               _buildSmallMargin,
               Expanded(
                 child: _buildImage(
                   imageInfoList[1],
+                  2,
                 ),
               ),
             ],
@@ -162,6 +167,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
               Expanded(
                 child: _buildImage(
                   imageInfoList[2],
+                  3,
                 ),
               ),
             ],
@@ -184,12 +190,14 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
               Expanded(
                 child: _buildImage(
                   imageInfoList.first,
+                  1,
                 ),
               ),
               _buildSmallMargin,
               Expanded(
                 child: _buildImage(
                   imageInfoList[1],
+                  2,
                 ),
               ),
             ],
@@ -203,6 +211,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
               Expanded(
                 child: _buildImage(
                   imageInfoList[2],
+                  3,
                 ),
               ),
               _buildSmallMargin,
@@ -212,6 +221,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
                   children: [
                     _buildImage(
                       imageInfoList[3],
+                      4,
                     ),
                     if (isMoreThanFour)
                       Positioned.fill(
@@ -247,10 +257,14 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
     );
   }
 
-  Widget _buildImage(ImageInfo imageInfo) {
+  Widget _buildImage(
+    ImageInfo imageInfo,
+    int index,
+  ) {
     return FadeTransition(
       opacity: _controller,
       child: RawImage(
+        key: ValueKey('Image-$index'),
         image: imageInfo.image,
         fit: BoxFit.cover,
       ),
@@ -264,8 +278,6 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
       ),
     );
   }
-
-
 
   Widget get _buildSmallMargin => SizedBox(width: 4, height: 4);
 }
