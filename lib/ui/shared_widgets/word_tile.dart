@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:simple_aac/api/models/extensions/word_base_extension.dart';
+import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
 
 import '../../api/models/extensions/word_type_extension.dart';
 import '../../api/models/word.dart';
 import '../../extensions/build_context_extension.dart';
-import '../../extensions/iterable_extension.dart';
 import '../theme/simple_aac_text.dart';
 import '../word_detail_view.dart';
 import 'simple_aac_tile.dart';
@@ -44,8 +45,8 @@ class WordTile extends StatelessWidget {
         },
         longTapCallBack: () {
           Navigator.of(context).pushNamed(
-            WordDetailView.routeName,
-            arguments: WordDetailViewArguments(
+            WordBaseDetailView.routeName,
+            arguments: WordBaseDetailViewArguments(
               word: word,
               heroTag: heroTag,
             ),
@@ -82,18 +83,10 @@ class WordTile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Flexible(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(4),
-              ),
-              clipBehavior: Clip.hardEdge,
-              child: heroTag != null
-                  ? wrapWithHero(
-                      _buildImage(),
-                      heroTag!,
-                    )
-                  : _buildImage(),
+          Expanded(
+            child: MultiImage(
+              images: word.getImageList(),
+              heroTag: heroTag,
             ),
           ),
           const SizedBox(
@@ -110,20 +103,6 @@ class WordTile extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget wrapWithHero(Widget child, String heroTag) {
-    return Hero(
-      tag: heroTag,
-      child: child,
-    );
-  }
-
-  Widget _buildImage() {
-    return Image.network(
-      word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
-      fit: BoxFit.cover,
     );
   }
 }

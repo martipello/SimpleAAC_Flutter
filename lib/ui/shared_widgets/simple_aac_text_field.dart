@@ -84,7 +84,7 @@ class SimpleAACTextField extends StatelessWidget {
               child: SizedBox(
                 height: 18,
                 width: 18,
-                child: SimpleAACLoadingWidget(
+                child: SimpleAACLoadingWidget.circularProgressIndicator(
                   width: 2,
                 ),
               ),

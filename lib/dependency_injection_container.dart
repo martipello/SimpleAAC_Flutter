@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simple_aac/ui/shared_widgets/view_model/multi_image_view_model.dart';
 import 'package:simple_aac/view_models/language_view_model.dart';
 
 import 'api/hive_client.dart';
@@ -49,6 +51,12 @@ Future<void> init() async {
   getIt.registerFactory(() => ManageWordViewModel(getIt()));
   getIt.registerFactory(() => ThemeViewModel(getIt(), getIt()));
   getIt.registerFactory(() => FilePickerViewModel(getIt()));
+  getIt.registerFactory(() => MultiImageViewModel());
+}
+
+@visibleForTesting
+void initForTest(Object object){
+  getIt.registerFactory(() => object);
 }
 
 Future<void> allReady() {

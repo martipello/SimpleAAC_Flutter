@@ -49,9 +49,9 @@ class _WordSubTypeViewState extends State<WordSubTypeView> with AutomaticKeepAli
       builder: (context, snapshot) {
         final words = snapshot.data ?? BuiltList();
         return GridView.builder(
+          padding: const EdgeInsets.all(6),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            // calculate screen width
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
             childAspectRatio: 0.86,
@@ -82,29 +82,6 @@ class _WordSubTypeViewState extends State<WordSubTypeView> with AutomaticKeepAli
             }
           },
         );
-        // return Padding(
-        //   padding: const EdgeInsets.all(4.0),
-          //TODO - add a sliver grid view builder
-          // child: GridView.count(
-          //   crossAxisCount: 4,
-          //   // calculate screen width
-          //   mainAxisSpacing: 4,
-          //   crossAxisSpacing: 4,
-          //   childAspectRatio: 0.86,
-          //   children: words
-          //       .map(
-          //         (word) => WordTile(
-          //           word: word,
-          //           key: ValueKey(word.id),
-          //           heroTag: word.getHeroTag(
-          //             '${word.type}-${word.subType}-${word.id}',
-          //           ),
-          //           wordTapCallBack: selectedWordsViewModel.addSelectedWord,
-          //         ),
-          //       )
-          //       .toList(),
-          // ),
-        // );
       },
     );
   }

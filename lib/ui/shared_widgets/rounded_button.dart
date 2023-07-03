@@ -154,7 +154,7 @@ class RoundedButton extends StatelessWidget {
     return SizedBox(
       height: 16,
       width: 16,
-      child: SimpleAACLoadingWidget(
+      child: SimpleAACLoadingWidget.circularProgressIndicator(
         width: 2,
         valueColor: _getLoadingColor(context),
       ),

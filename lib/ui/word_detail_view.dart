@@ -1,11 +1,14 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:simple_aac/api/models/extensions/word_base_extension.dart';
+import 'package:simple_aac/api/models/sentence.dart';
+import 'package:simple_aac/api/models/word_base.dart';
+import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
 
 import '../../extensions/build_context_extension.dart';
 import '../api/models/word.dart';
 import '../dependency_injection_container.dart';
-import '../extensions/iterable_extension.dart';
 import '../view_models/words_view_model.dart';
 import 'dashboard/app_shell.dart';
 import 'dashboard/related_words_widget.dart';
@@ -15,31 +18,41 @@ import 'shared_widgets/simple_aac_dialog.dart';
 import 'shared_widgets/simple_aac_table.dart';
 import 'theme/simple_aac_text.dart';
 
-class WordDetailViewArguments {
-  WordDetailViewArguments({
+class WordBaseDetailViewArguments {
+  WordBaseDetailViewArguments({
     required this.word,
     this.heroTag,
   });
 
-  final Word word;
+  final WordBase word;
   final String? heroTag;
 }
 
 const kImageHeight = 350.0;
+const simpleAACLogo = 'assets/images/sealstudioslogocenter.png';
 
-class WordDetailView extends StatefulWidget {
+class WordBaseDetailView extends StatefulWidget {
   static const String routeName = '/word-detail';
 
   @override
-  State<WordDetailView> createState() => _WordDetailViewState();
+  State<WordBaseDetailView> createState() => _WordBaseDetailViewState();
 }
 
-class _WordDetailViewState extends State<WordDetailView> {
+//TODO decide how to display sentences
+class _WordBaseDetailViewState extends State<WordBaseDetailView> {
   final wordViewModel = getIt.get<WordsViewModel>();
 
-  WordDetailViewArguments get _wordDetailViewArguments => context.routeArguments as WordDetailViewArguments;
+  WordBaseDetailViewArguments get _wordDetailViewArguments => context.routeArguments as WordBaseDetailViewArguments;
 
-  Word get _word => _wordDetailViewArguments.word;
+  WordBase get _wordBase => _wordDetailViewArguments.word;
+
+  Word get word => _wordDetailViewArguments.word as Word;
+
+  Sentence get sentence => _wordDetailViewArguments.word as Sentence;
+
+  bool get isSentence => _wordDetailViewArguments.word is Sentence;
+
+  bool get isWord => _wordDetailViewArguments.word is Word;
 
   String? get heroTag => _wordDetailViewArguments.heroTag;
 
@@ -53,7 +66,7 @@ class _WordDetailViewState extends State<WordDetailView> {
           children: [
             Stack(
               children: [
-                _buildWordDetailImage(_word),
+                _buildWordBaseDetailImage(word),
                 _buildSpeechActionButton(),
                 Padding(
                   padding: EdgeInsets.only(top: context.topPadding),
@@ -72,7 +85,7 @@ class _WordDetailViewState extends State<WordDetailView> {
                         ),
                         OverlayButton(
                           onTap: Navigator.of(context).pop,
-                          iconData: _word.isFavourite == true ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+                          iconData: word.isFavourite == true ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
                           size: const Size(
                             kToolbarHeight,
                             kToolbarHeight,
@@ -103,27 +116,27 @@ class _WordDetailViewState extends State<WordDetailView> {
                   SimpleAACTable(
                     wordskiiTableRowInfoList: [
                       SimpleAACTableRowInfo(
-                        _word.word,
+                        word.word,
                         Icons.title,
                         'Word : ',
                       ),
                       SimpleAACTableRowInfo(
-                        _word.sound,
+                        word.sound,
                         Icons.volume_up,
                         'Speak : ',
                       ),
                       SimpleAACTableRowInfo(
-                        _word.subType.name,
+                        _wordBase.subType.name,
                         Icons.title,
                         'Description : ',
                       ),
                       SimpleAACTableRowInfo(
-                        _word.type.name,
+                        _wordBase.type.name,
                         Icons.title,
                         'Type : ',
                       ),
                       SimpleAACTableRowInfo(
-                        _word.usageCount != null ? '${_word.usageCount?.toString()} times' : '0 times',
+                        _wordBase.usageCount != null ? '${word.usageCount?.toString()} times' : '0 times',
                         Icons.title,
                         'Used : ',
                       ),
@@ -163,15 +176,16 @@ class _WordDetailViewState extends State<WordDetailView> {
                     height: 8,
                   ),
                   FutureBuilder<BuiltList<Word>>(
-                      future: wordViewModel.getWordsForIds(_word.extraRelatedWordIds),
-                      builder: (context, snapshot) {
-                        final extraRelatedWords = snapshot.data ?? BuiltList();
-                        return RelatedWordsWidget(
-                          onRelatedWordSelected: (_) {},
-                          relatedWords: extraRelatedWords,
-                          isExpanded: true,
-                        );
-                      }),
+                    future: wordViewModel.getWordsForIds(word.extraRelatedWordIds),
+                    builder: (context, snapshot) {
+                      final extraRelatedWords = snapshot.data ?? BuiltList();
+                      return RelatedWordsWidget(
+                        onRelatedWordSelected: (_) {},
+                        relatedWords: extraRelatedWords,
+                        isExpanded: true,
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -179,7 +193,7 @@ class _WordDetailViewState extends State<WordDetailView> {
         ),
       ),
       floatingActionButton: _buildEditDeleteWordActionButton(
-        _word,
+        word,
       ),
     );
   }
@@ -206,17 +220,18 @@ class _WordDetailViewState extends State<WordDetailView> {
     );
   }
 
-  Widget _buildWordDetailImage(Word _word) {
+  Widget _buildWordBaseDetailImage(WordBase wordBase) {
     return Padding(
-        padding: const EdgeInsets.only(
-          bottom: 24,
-        ),
-        child: heroTag != null
-            ? _wrapWithHero(
-                _buildImage(_word),
-                heroTag!,
-              )
-            : _buildImage(_word));
+      padding: const EdgeInsets.only(
+        bottom: 24,
+      ),
+      child: heroTag != null
+          ? _wrapWithHero(
+              _buildImage(),
+              heroTag!,
+            )
+          : _buildImage(),
+    );
   }
 
   Widget _wrapWithHero(
@@ -230,13 +245,16 @@ class _WordDetailViewState extends State<WordDetailView> {
     );
   }
 
-  Widget _buildImage(Word _word) {
-    return Image.asset(
-      _word.imageList.firstOrNull() ?? 'assets/images/sealstudioslogocenter.png',
-      fit: BoxFit.cover,
-      height: kImageHeight,
-      width: context.screenWidth,
+  Widget _buildImage() {
+    return MultiImage(
+      images: sentence.getImageList(),
     );
+    // return Image.asset(
+    //   word.imageList.firstOrNull() ?? 'assets/images/simple_aac.png',
+    //   fit: BoxFit.cover,
+    //   height: kImageHeight,
+    //   width: context.screenWidth,
+    // );
   }
 
   Widget _buildEditDeleteWordActionButton(
@@ -250,6 +268,7 @@ class _WordDetailViewState extends State<WordDetailView> {
       children: [
         SpeedDialChild(
           onTap: () {
+            //TODO decide how to edit sentences, maybe a new view? maybe the same as word groups
             Navigator.of(context).pushReplacementNamed(
               ManageWordView.routeName,
               arguments: ManageWordViewArguments(

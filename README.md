@@ -31,5 +31,7 @@ FIX add image buttons change icons for something friendlier
 Make the app friendlier and less cold
 ADD new colors for other themes https://m3.material.io/theme-builder#/custom
 ADD messaging and sign in
+IMPLEMENT backup - back up user words to profile 
+IMPLEMENT restore - restore user words from profile 
 
 

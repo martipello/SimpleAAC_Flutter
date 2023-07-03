@@ -5,6 +5,7 @@ import '../../api/models/extensions/word_type_extension.dart';
 import '../../extensions/build_context_extension.dart';
 import '../../extensions/iterable_extension.dart';
 import '../theme/simple_aac_text.dart';
+import '../word_detail_view.dart';
 import 'simple_aac_tile.dart';
 
 typedef SentenceCallBack = void Function(Sentence sentence);
@@ -42,13 +43,13 @@ class SentenceTile extends StatelessWidget {
           sentenceTapCallBack?.call(sentence);
         },
         longTapCallBack: () {
-          // Navigator.of(context).pushNamed(
-          //   WordDetailView.routeName,
-          //   arguments: WordDetailViewArguments(
-          //     word: word,
-          //     heroTag: heroTag,
-          //   ),
-          // );
+          Navigator.of(context).pushNamed(
+            WordBaseDetailView.routeName,
+            arguments: WordBaseDetailViewArguments(
+              word: sentence,
+              heroTag: heroTag,
+            ),
+          );
         },
         border: RoundedRectangleBorder(
           side: BorderSide(
@@ -120,8 +121,15 @@ class SentenceTile extends StatelessWidget {
   }
 
   Widget _buildImage() {
-    return Image.network(
-      sentence.words.first.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
+    final firstOrNullImageUrl = sentence.words.first.imageList.firstOrNull();
+    if (firstOrNullImageUrl != null) {
+      return Image.network(
+        firstOrNullImageUrl,
+        fit: BoxFit.cover,
+      );
+    }
+    return Image.asset(
+      'assets/images/simple_aac_white_background.png',
       fit: BoxFit.cover,
     );
   }

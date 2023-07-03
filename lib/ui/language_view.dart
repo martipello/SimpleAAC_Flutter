@@ -112,6 +112,6 @@ class _LanguageViewState extends State<LanguageView> {
   }
 
   Widget _buildLoading() => Center(
-        child: SimpleAACLoadingWidget(),
+        child: SimpleAACLoadingWidget.circularProgressIndicator(),
       );
 }

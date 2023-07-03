@@ -74,7 +74,7 @@ class _SimpleAACAppState extends State<SimpleAACApp> {
       initialRoute: AppShell.routeName,
       routes: {
         AppShell.routeName: (context) => const AppShell(),
-        WordDetailView.routeName: (context) => WordDetailView(),
+        WordBaseDetailView.routeName: (context) => WordBaseDetailView(),
         ManageWordView.routeName: (context) => ManageWordView(),
         SettingsView.routeName: (context) => SettingsView(),
         ThemeView.routeName: (context) => ThemeView(),
