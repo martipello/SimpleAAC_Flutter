@@ -69,7 +69,6 @@ dependencies:
   mockito: ^5.4.0
   sqflite_common_ffi: ^2.2.5
   file: ^6.1.4
-  animated_list_plus: ^0.4.3
   great_list_view: ^0.2.3
 
 

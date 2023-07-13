@@ -1,5 +1,4 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_aac/dependency_injection_container.dart';
 import 'package:simple_aac/extensions/build_context_extension.dart';

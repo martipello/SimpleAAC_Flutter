@@ -1,13 +1,8 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:file/memory.dart';
 import 'package:flutter/services.dart';
-import 'dart:convert' as convert;
-
 @GenerateNiceMocks([MockSpec<DefaultCacheManager>()])
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'dart:io';
-import 'package:file/memory.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';

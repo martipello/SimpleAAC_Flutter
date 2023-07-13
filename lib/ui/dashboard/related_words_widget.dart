@@ -5,7 +5,6 @@ import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
 
 import '../../api/models/word.dart';
 import '../../dependency_injection_container.dart';
-import '../../extensions/iterable_extension.dart';
 import '../../services/shared_preferences_service.dart';
 import '../shared_widgets/chip_group.dart';
 import '../shared_widgets/simple_aac_chip.dart';
