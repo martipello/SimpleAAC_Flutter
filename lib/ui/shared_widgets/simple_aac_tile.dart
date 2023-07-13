@@ -11,9 +11,10 @@ class SimpleAACTile extends StatelessWidget {
     this.isSelected = false,
     this.closeButtonOnTap,
     this.closeButtonOnLongPress,
-    this.hasReOrderButton = false,
+    this.handle,
     this.tapCallBack,
     this.longTapCallBack,
+    this.index,
   }) : super(key: key);
 
   final Widget child;
@@ -22,7 +23,9 @@ class SimpleAACTile extends StatelessWidget {
   final VoidCallback? closeButtonOnLongPress;
   final VoidCallback? tapCallBack;
   final VoidCallback? longTapCallBack;
-  final bool hasReOrderButton;
+  final Widget? handle;
+
+  final int? index;
   final RoundedRectangleBorder? border;
 
   @override
@@ -45,9 +48,22 @@ class SimpleAACTile extends StatelessWidget {
                 buildCloseButton(
                   closeButtonOnLongPress,
                 ),
-              if (hasReOrderButton) buildReOrderButton(),
+              _buildHandle(),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHandle() {
+
+    return Positioned.fill(
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: handle ?? SizedBox(),
         ),
       ),
     );
@@ -56,7 +72,7 @@ class SimpleAACTile extends StatelessWidget {
   Widget buildCloseButton(
     VoidCallback? closeButtonOnLongPress,
   ) {
-    return _buildTileOverlapButton(
+    return _buildTileOverlayButton(
       alignment: Alignment.topRight,
       iconData: Icons.close,
       onTap: closeButtonOnTap,
@@ -64,15 +80,7 @@ class SimpleAACTile extends StatelessWidget {
     );
   }
 
-  Widget buildReOrderButton() {
-    return _buildTileOverlapButton(
-      alignment: Alignment.topLeft,
-      iconData: Icons.menu,
-      onTap: () {},
-    );
-  }
-
-  Widget _buildTileOverlapButton({
+  Widget _buildTileOverlayButton({
     required Alignment alignment,
     required IconData iconData,
     VoidCallback? onTap,
@@ -94,7 +102,6 @@ class SimpleAACTile extends StatelessWidget {
   }
 
   RoundedRectangleBorder get defaultBorder => RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(4),
-  );
-
+        borderRadius: BorderRadius.circular(4),
+      );
 }

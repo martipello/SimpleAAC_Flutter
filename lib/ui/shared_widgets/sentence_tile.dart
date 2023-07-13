@@ -1,37 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:simple_aac/api/models/extensions/word_base_extension.dart';
 import 'package:simple_aac/api/models/sentence.dart';
 
 import '../../api/models/extensions/word_type_extension.dart';
 import '../../extensions/build_context_extension.dart';
-import '../../extensions/iterable_extension.dart';
 import '../theme/simple_aac_text.dart';
 import '../word_detail_view.dart';
+import 'multi_image.dart';
 import 'simple_aac_tile.dart';
 
 typedef SentenceCallBack = void Function(Sentence sentence);
 
 class SentenceTile extends StatelessWidget {
   const SentenceTile({
+    this.key,
     required this.sentence,
-    required this.key,
     this.heroTag,
     this.sentenceTapCallBack,
-    this.hasReOrderButton = false,
     this.isSelected = false,
     this.closeButtonOnTap,
     this.closeButtonOnLongPress,
-  });
+    this.handle,
+    this.fadeImageIn = true,
+    this.index,
+  }) : super(key: key);
 
+  final Key? key;
   final Sentence sentence;
-  final Key key;
   final String? heroTag;
+  final int? index;
 
   final SentenceCallBack? sentenceTapCallBack;
   final SentenceCallBack? closeButtonOnTap;
   final SentenceCallBack? closeButtonOnLongPress;
 
-  final bool hasReOrderButton;
+  final Widget? handle;
   final bool isSelected;
+  final bool fadeImageIn;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +44,14 @@ class SentenceTile extends StatelessWidget {
       aspectRatio: 1 / 1.3,
       child: SimpleAACTile(
         key: key,
+        border: RoundedRectangleBorder(
+          side: BorderSide(
+            color: sentence.type.getColor(context),
+          ),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        index: index,
+        isSelected: isSelected,
         tapCallBack: () {
           sentenceTapCallBack?.call(sentence);
         },
@@ -51,13 +64,6 @@ class SentenceTile extends StatelessWidget {
             ),
           );
         },
-        border: RoundedRectangleBorder(
-          side: BorderSide(
-            color: sentence.type.getColor(context),
-          ),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        isSelected: isSelected,
         closeButtonOnTap: closeButtonOnTap != null
             ? () {
                 closeButtonOnTap?.call(sentence);
@@ -68,7 +74,7 @@ class SentenceTile extends StatelessWidget {
                 closeButtonOnLongPress?.call(sentence);
               }
             : null,
-        hasReOrderButton: hasReOrderButton,
+        handle: handle,
         child: _buildWordTileContent(context),
       ),
     );
@@ -88,12 +94,7 @@ class SentenceTile extends StatelessWidget {
                 Radius.circular(4),
               ),
               clipBehavior: Clip.hardEdge,
-              child: heroTag != null
-                  ? wrapWithHero(
-                      _buildImage(),
-                      heroTag!,
-                    )
-                  : _buildImage(),
+              child: _buildImage(),
             ),
           ),
           const SizedBox(
@@ -113,24 +114,12 @@ class SentenceTile extends StatelessWidget {
     );
   }
 
-  Widget wrapWithHero(Widget child, String heroTag) {
-    return Hero(
-      tag: heroTag,
-      child: child,
-    );
-  }
-
   Widget _buildImage() {
-    final firstOrNullImageUrl = sentence.words.first.imageList.firstOrNull();
-    if (firstOrNullImageUrl != null) {
-      return Image.network(
-        firstOrNullImageUrl,
-        fit: BoxFit.cover,
-      );
-    }
-    return Image.asset(
-      'assets/images/simple_aac_white_background.png',
-      fit: BoxFit.cover,
+    return MultiImage(
+      key: ValueKey(sentence.hashCode),
+      images: sentence.getImageList(),
+      heroTag: heroTag,
+      fadeIn: fadeImageIn,
     );
   }
 }

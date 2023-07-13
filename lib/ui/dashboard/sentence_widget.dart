@@ -1,8 +1,9 @@
-import 'dart:ui';
-
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
+import 'package:great_list_view/great_list_view.dart';
 import 'package:simple_aac/ui/shared_widgets/sentence_tile.dart';
+import 'package:simple_aac/ui/shared_widgets/simple_aac_tile_handle.dart';
+import 'package:simple_aac/ui/theme/simple_aac_text.dart';
 
 import '../../api/models/extensions/word_base_extension.dart';
 import '../../api/models/sentence.dart';
@@ -12,14 +13,20 @@ import '../../dependency_injection_container.dart';
 import '../../view_models/selected_words_view_model.dart';
 import '../shared_widgets/word_tile.dart';
 
+typedef ReOrderCallBack = void Function(int oldIndex, int newIndex);
+typedef WordBaseWithIndexCallBack = Widget Function(WordBase wordBase, int index);
+
 class SentenceWidget extends StatefulWidget {
   @override
   State<SentenceWidget> createState() => _SentenceWidgetState();
 }
 
-class _SentenceWidgetState extends State<SentenceWidget> {
+class _SentenceWidgetState extends State<SentenceWidget> with SingleTickerProviderStateMixin {
   final selectedWordsViewModel = getIt.get<SelectedWordsViewModel>();
   final scrollController = ScrollController();
+  final animatedListController = AnimatedListController();
+
+  bool isReordering = false;
 
   @override
   void initState() {
@@ -29,6 +36,13 @@ class _SentenceWidgetState extends State<SentenceWidget> {
         _addSelectedFilterListener();
       },
     );
+  }
+
+  void onReorderFinished(List<Word> newItems) {
+    scrollController.jumpTo(scrollController.offset);
+    setState(() {
+      isReordering = false;
+    });
   }
 
   void _addSelectedFilterListener() {
@@ -58,69 +72,59 @@ class _SentenceWidgetState extends State<SentenceWidget> {
         final words = snapshot.data ?? BuiltList<Word>();
         return SizedBox(
           height: 150,
-          child: words.isEmpty
-              ? const Center(
-                  child: Text(
-                    'EMPTY SENTENCE',
-                  ),
-                )
-              : _buildListView(words),
+          child: words.isEmpty ? _buildEmptySentenceWidget() : _buildGreatList(words),
         );
       },
     );
   }
 
-  Widget _buildListView(
-    BuiltList<WordBase> words,
-  ) {
-    return ReorderableListView.builder(
-      scrollDirection: Axis.horizontal,
-      proxyDecorator: _proxyDecorator,
-      itemCount: words.length,
-      onReorder: selectedWordsViewModel.updatePositionSelectedWordList,
+  Widget _buildEmptySentenceWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Empty Sentence',
+          style: SimpleAACText.subtitle2Style,
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(
+          'Lets start Simple',
+          style: SimpleAACText.body4Style,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGreatList(BuiltList<WordBase> wordList) {
+    return AutomaticAnimatedListView<WordBase>(
+      list: wordList.toList(),
       padding: const EdgeInsets.fromLTRB(8, 8, 64, 8),
-      scrollController: scrollController,
-      itemBuilder: (context, index) {
-        final wordBase = words[index];
+      scrollDirection: Axis.horizontal,
+      comparator: AnimatedListDiffListComparator<WordBase>(
+        sameItem: (a, b) => a.id == b.id,
+        sameContent: (a, b) => a.getImageList() == b.getImageList(),
+      ),
+      itemBuilder: (context, wordBase, data) {
+        final index = wordList.indexOf(wordBase);
         if (wordBase is Word) {
-          return _buildWordTile(
-            wordBase,
-            index,
-          );
-        }  else if (wordBase is Sentence) {
-          return _buildSentenceTile(
-            wordBase,
-            index,
-          );
-        }  else {
+          return _buildWordTile(wordBase, index);
+        } else if (wordBase is Sentence) {
+          return _buildSentenceTile(wordBase, index);
+        } else {
           throw Exception('Unknown word type');
         }
       },
-    );
-  }
-
-  Widget _proxyDecorator(
-    Widget child,
-    int index,
-    Animation<double> animation,
-  ) {
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (context, child) {
-        final animValue = Curves.easeInOut.transform(
-          animation.value,
-        );
-        final elevation = lerpDouble(0, 8, animValue)!;
-        return Material(
-          elevation: elevation,
-          color: Colors.transparent,
-          shadowColor: Colors.grey.withOpacity(
-            0.1,
-          ),
-          child: child,
-        );
-      },
-      child: child,
+      listController: animatedListController,
+      scrollController: scrollController,
+      addLongPressReorderable: true,
+      reorderModel: AutomaticAnimatedListReorderModel(
+        wordList.toList(),
+      ),
+      detectMoves: true,
     );
   }
 
@@ -129,14 +133,17 @@ class _SentenceWidgetState extends State<SentenceWidget> {
     int index,
   ) {
     return WordTile(
-      key: ValueKey(index),
       word: word,
+      index: index,
       heroTag: word.getHeroTag('sentence-$index-'),
       closeButtonOnTap: selectedWordsViewModel.removeSelectedWord,
       closeButtonOnLongPress: (_) {
         selectedWordsViewModel.clearSelectedWordList();
       },
-      hasReOrderButton: true,
+      handle: SimpleAACTileHandle(
+        controller: animatedListController,
+      ),
+      fadeImageIn: false,
     );
   }
 
@@ -145,14 +152,17 @@ class _SentenceWidgetState extends State<SentenceWidget> {
     int index,
   ) {
     return SentenceTile(
-      key: ValueKey(index),
       sentence: sentence,
+      index: index,
       heroTag: sentence.getHeroTag('sentence-$index-'),
       closeButtonOnTap: selectedWordsViewModel.removeSelectedWord,
       closeButtonOnLongPress: (_) {
         selectedWordsViewModel.clearSelectedWordList();
       },
-      hasReOrderButton: true,
+      handle: SimpleAACTileHandle(
+        controller: animatedListController,
+      ),
+      fadeImageIn: false,
     );
   }
 }

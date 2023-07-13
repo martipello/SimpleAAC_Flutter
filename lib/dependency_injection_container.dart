@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
@@ -37,6 +38,7 @@ Future<void> init() async {
   await getIt.isReady<SharedPreferences>();
   getIt.registerLazySingleton(() => LanguageService(getIt(instanceName: kLanguageBox), getIt()));
   getIt.registerLazySingleton(() => WordBaseService(getIt()));
+  getIt.registerLazySingleton(DefaultCacheManager.new);
   getIt.registerLazySingleton(() => SharedPreferencesService(getIt()));
   getIt.registerLazySingleton(() => const FlutterSecureStorage());
   getIt.registerLazySingleton(NavigationService.new);
@@ -51,7 +53,7 @@ Future<void> init() async {
   getIt.registerFactory(() => ManageWordViewModel(getIt()));
   getIt.registerFactory(() => ThemeViewModel(getIt(), getIt()));
   getIt.registerFactory(() => FilePickerViewModel(getIt()));
-  getIt.registerFactory(() => MultiImageViewModel());
+  getIt.registerFactory(() => MultiImageViewModel(getIt()));
 }
 
 @visibleForTesting

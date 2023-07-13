@@ -6,14 +6,29 @@ class OverlayButton extends StatelessWidget {
   const OverlayButton({
     super.key,
     required this.iconData,
-    required this.onTap,
+    this.onTap,
     this.onLongPress,
     this.size,
-  });
+    this.onVerticalDragStart,
+    this.onVerticalDragUpdate,
+    this.onVerticalDragEnd,
+    this.onVerticalDragCancel,
+  }) : assert(
+          onTap != null ||
+              onLongPress != null ||
+              onVerticalDragStart != null ||
+              onVerticalDragUpdate != null ||
+              onVerticalDragEnd != null ||
+              onVerticalDragCancel != null,
+        );
 
   final IconData iconData;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
+  final GestureDragStartCallback? onVerticalDragStart;
+  final GestureDragUpdateCallback? onVerticalDragUpdate;
+  final GestureDragEndCallback? onVerticalDragEnd;
+  final GestureDragCancelCallback? onVerticalDragCancel;
   final Size? size;
 
   @override
@@ -32,14 +47,22 @@ class OverlayButton extends StatelessWidget {
         child: Material(
           type: MaterialType.transparency,
           child: InkWell(
-            onTap: onTap,
-            onLongPress: onLongPress,
-            child: SizedBox(
-              child: Center(
-                child: Icon(
-                  iconData,
-                  size: height * 0.7,
-                  color: context.themeColors.onBackground,
+            onTap: () {},
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: onTap,
+              onLongPress: onLongPress,
+              onVerticalDragStart: onVerticalDragStart,
+              onVerticalDragUpdate: onVerticalDragUpdate,
+              onVerticalDragEnd: onVerticalDragEnd,
+              onVerticalDragCancel: onVerticalDragCancel,
+              child: SizedBox(
+                child: Center(
+                  child: Icon(
+                    iconData,
+                    size: height * 0.75,
+                    color: context.themeColors.onBackground,
+                  ),
                 ),
               ),
             ),

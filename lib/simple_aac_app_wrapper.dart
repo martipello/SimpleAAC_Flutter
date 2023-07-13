@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'api/hive.dart';
 import 'dependency_injection_container.dart' as di;
+import 'dependency_injection_container.dart';
 import 'services/shared_preferences_service.dart';
 import 'simple_aac_app.dart';
 import 'ui/theme/theme_builder_widget.dart';
@@ -68,6 +69,14 @@ class SimpleAACAppWrapper extends StatefulWidget {
 }
 
 class _SimpleAACAppWrapperState extends State<SimpleAACAppWrapper> {
+  //ties its lifecyle to the app
+  final sharedPreferences = getIt.get<SharedPreferencesService>();
+
+  @override
+  void dispose() {
+    super.dispose();
+    sharedPreferences.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return ThemeBuilderWidget(

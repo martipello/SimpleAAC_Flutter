@@ -1,6 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:change_notifier_builder/change_notifier_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
 
 import '../../api/models/word.dart';
 import '../../dependency_injection_container.dart';
@@ -48,7 +49,7 @@ class RelatedWordsWidget extends StatelessWidget {
     return ListView.separated(
       shrinkWrap: true,
       padding: const EdgeInsets.only(
-        left: 4,
+        left: 12,
         right: 96,
       ),
       scrollDirection: Axis.horizontal,
@@ -91,9 +92,10 @@ class RelatedWordsWidget extends StatelessWidget {
         padding: const EdgeInsets.all(4.0),
         child: ClipOval(
           clipBehavior: Clip.hardEdge,
-          child: Image.asset(
-            word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
-            fit: BoxFit.contain,
+          child: MultiImage(
+            images: word.imageList,
+            fadeIn: false,
+            spacing: 1,
           ),
         ),
       ),

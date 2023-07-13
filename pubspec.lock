@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.11.1"
+  animated_list_plus:
+    dependency: "direct main"
+    description:
+      name: animated_list_plus
+      sha256: fe66f9c300d715254727fbdf050487844d17b013fec344fa28081d29bddbdf1a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.5"
   archive:
     dependency: transitive
     description:
@@ -330,7 +338,7 @@ packages:
     source: hosted
     version: "2.0.1"
   file:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: file
       sha256: "1b92bec4fc2a72f59a8e15af5f52cd441e4a7860b49499d69dfa817af20e925d"
@@ -423,7 +431,7 @@ packages:
     source: hosted
     version: "0.7.0"
   flutter_cache_manager:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_cache_manager
       sha256: "32cd900555219333326a2d0653aaaf8671264c29befa65bbd9856d204a4c9fb3"
@@ -597,6 +605,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  great_list_view:
+    dependency: "direct main"
+    description:
+      name: great_list_view
+      sha256: "4e528745d65c95d731b7c90af620822895233943ff531ad7a5d2b5a43e187b12"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.3"
   hive_built_value:
     dependency: "direct main"
     description:
@@ -789,6 +805,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  mockito:
+    dependency: "direct main"
+    description:
+      name: mockito
+      sha256: dd61809f04da1838a680926de50a9e87385c1de91c6579629c3d1723946e8059
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.4.0"
+  network_image_mock:
+    dependency: "direct dev"
+    description:
+      name: network_image_mock
+      sha256: "855cdd01d42440e0cffee0d6c2370909fc31b3bcba308a59829f24f64be42db7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
   node_preamble:
     dependency: transitive
     description:
@@ -1138,6 +1170,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.5+1"
+  sqflite_common_ffi:
+    dependency: "direct main"
+    description:
+      name: sqflite_common_ffi
+      sha256: f86de82d37403af491b21920a696b19f01465b596f545d1acd4d29a0a72418ad
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.5"
+  sqlite3:
+    dependency: transitive
+    description:
+      name: sqlite3
+      sha256: "281b672749af2edf259fc801f0fcba092257425bcd32a0ce1c8237130bc934c7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.11.2"
   stack_trace:
     dependency: transitive
     description:
@@ -1370,6 +1418,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.4"
+  worker_manager:
+    dependency: transitive
+    description:
+      name: worker_manager
+      sha256: "42501e49ee0acad9eeda562984e3dcfe6fe3d26f2d8dc410bd76308a86447eb5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.3"
   xdg_directories:
     dependency: transitive
     description:

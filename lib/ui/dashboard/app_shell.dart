@@ -46,19 +46,11 @@ class _AppShellState extends State<AppShell> {
   void initState() {
     super.initState();
     selectedWordsViewModel.selectedWords.listen((value) {
-      print('selectedWordsStream WORD $value');
+      // print('selectedWordsStream WORD $value');
     });
     selectedWordsViewModel.relatedWords.listen((value) {
-      print('predictionsForSelectedWord WORD $value');
+      // print('predictionsForSelectedWord WORD $value');
     });
-  }
-
-  @override
-  void dispose() {
-    if (widget.isHome) {
-      sharedPreferences.dispose();
-    }
-    super.dispose();
   }
 
   @override

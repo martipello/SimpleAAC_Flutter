@@ -1,11 +1,13 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_aac/api/models/extensions/word_base_extension.dart';
+import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
 
 import '../api/models/extensions/word_type_extension.dart';
 import '../api/models/word.dart';
+import '../api/models/word_base.dart';
 import '../dependency_injection_container.dart';
 import '../extensions/build_context_extension.dart';
-import '../extensions/iterable_extension.dart';
 import '../view_models/create_word/manage_word_view_model.dart';
 import 'dashboard/app_shell.dart';
 import 'dashboard/related_words_widget.dart';
@@ -92,6 +94,7 @@ class _ManageWordViewState extends State<ManageWordView> {
 
   @override
   Widget build(BuildContext context) {
+    //TODO(MS): scrolling changes the color of the app bar
     return StreamBuilder<Word?>(
       stream: _wordViewModel.wordStream,
       builder: (context, snapshot) {
@@ -288,9 +291,9 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildCreateWordImage(
-    Word? _word,
+    WordBase? _word,
   ) {
-    final imageUri = _word?.imageList.firstOrNull() ?? '';
+    final images = _word?.getImageList() ?? BuiltList<String>();
     return Flexible(
       child: ClipRRect(
         borderRadius: const BorderRadius.all(
@@ -305,14 +308,11 @@ class _ManageWordViewState extends State<ManageWordView> {
               onTap: () {
                 PickImageDialog.show(context);
               },
-              child: imageUri.isNotEmpty
-                  ? Hero(
-                      tag: heroTag ?? '',
-                      transitionOnUserGestures: true,
-                      child: Image.asset(
-                        imageUri,
-                        fit: BoxFit.contain,
-                      ),
+              child: images.isNotEmpty
+                  ? MultiImage(
+                      images: images,
+                      fadeIn: false,
+                      heroTag: heroTag ?? '',
                     )
                   : FittedBox(
                       child: Padding(
@@ -334,35 +334,34 @@ class _ManageWordViewState extends State<ManageWordView> {
     Word? word,
   ) {
     return StreamBuilder<BuiltList<Word>>(
-      stream: _wordViewModel.relatedWords,
-      builder: (context, snapshot) {
-        final relatedWords = snapshot.data ?? BuiltList<Word>();
-        return Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 8.0,
+        stream: _wordViewModel.relatedWords,
+        builder: (context, snapshot) {
+          final relatedWords = snapshot.data ?? BuiltList<Word>();
+          return Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 8.0,
+                ),
+                child: SizedBox(
+                  height: 32,
+                  child: word?.extraRelatedWordIds.isNotEmpty == true
+                      ? RelatedWordsWidget(
+                          relatedWords: relatedWords,
+                          onRelatedWordSelected: (_) {},
+                          onRelatedWordIdsChanged: _wordViewModel.setExtraRelatedWords,
+                          isExpanded: true,
+                        )
+                      : null,
+                ),
               ),
-              child: SizedBox(
-                height: 32,
-                child: word?.extraRelatedWordIds.isNotEmpty == true
-                    ? RelatedWordsWidget(
-                        relatedWords: relatedWords,
-                        onRelatedWordSelected: (_){},
-                        onRelatedWordIdsChanged: _wordViewModel.setExtraRelatedWords,
-                        isExpanded: true,
-                      )
-                    : null,
+              Align(
+                alignment: Alignment.centerRight,
+                child: _buildAddPredictionButton(),
               ),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: _buildAddPredictionButton(),
-            ),
-          ],
-        );
-      }
-    );
+            ],
+          );
+        });
   }
 
   Widget _buildAddPredictionButton() {

@@ -1,17 +1,21 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
+import 'package:network_image_mock/network_image_mock.dart';
 import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
 import 'package:simple_aac/ui/shared_widgets/simple_aac_loading_widget.dart';
 import 'package:simple_aac/ui/shared_widgets/view_model/multi_image_view_model.dart';
 
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+import 'fake_path_provider_platform.dart';
+
 void main() {
-  setUpAll(() {
-    final getIt = GetIt.instance;
-    getIt.registerFactory(() => MultiImageViewModel());
-  });
 
   const singleErrorImage = [
     'assets/images/error.png',
@@ -51,13 +55,19 @@ void main() {
     'assets/images/simple_aac.png',
   ];
 
+  setUpAll(() {
+    PathProviderPlatform.instance = FakePathProviderPlatform();
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  });
+
   testWidgets(
     'multi image test 1 image',
     (tester) async {
       await tester.runAsync(
         () async {
           final multiImageWidget = await _buildMultiImageWidgetHolder(singleImage);
-          await tester.pumpWidget(multiImageWidget);
+          await mockNetworkImagesFor(() => tester.pumpWidget(multiImageWidget));
           final multiImage = find.byType(MultiImage);
           expect(multiImage, findsOneWidget);
           await tester.pump();
@@ -82,8 +92,8 @@ void main() {
     (tester) async {
       await tester.runAsync(
         () async {
-          final multiImageWidget = await _buildMultiImageWidgetHolder(dualImages);
-          await tester.pumpWidget(multiImageWidget);
+          final multiImageWidget = await _buildMultiImageWidgetHolder(dualImages,);
+          await mockNetworkImagesFor(() => tester.pumpWidget(multiImageWidget),);
           final multiImage = find.byType(MultiImage);
           expect(multiImage, findsOneWidget);
           final loading = find.descendant(
@@ -107,8 +117,8 @@ void main() {
     (tester) async {
       await tester.runAsync(
         () async {
-          final multiImageWidget = await _buildMultiImageWidgetHolder(tripleImages);
-          await tester.pumpWidget(multiImageWidget);
+          final multiImageWidget = await _buildMultiImageWidgetHolder(tripleImages,);
+          await mockNetworkImagesFor(() => tester.pumpWidget(multiImageWidget),);
           final multiImage = find.byType(MultiImage);
           expect(multiImage, findsOneWidget);
           final loading = find.descendant(
@@ -132,7 +142,7 @@ void main() {
     (tester) async {
       await tester.runAsync(
         () async {
-          final multiImageWidget = await _buildMultiImageWidgetHolder(quadrupleImages);
+          final multiImageWidget = await _buildMultiImageWidgetHolder(quadrupleImages,);
           await tester.pumpWidget(multiImageWidget);
           final multiImage = find.byType(MultiImage);
           expect(multiImage, findsOneWidget);
@@ -157,7 +167,7 @@ void main() {
     (tester) async {
       await tester.runAsync(
         () async {
-          final multiImageWidget = await _buildMultiImageWidgetHolder(multipleImages);
+          final multiImageWidget = await _buildMultiImageWidgetHolder(multipleImages,);
           await tester.pumpWidget(multiImageWidget);
           final multiImage = find.byType(MultiImage);
           expect(multiImage, findsOneWidget);
@@ -187,7 +197,7 @@ void main() {
     (tester) async {
       await tester.runAsync(
         () async {
-          final multiImageWidget = await _buildMultiImageWidgetHolder(singleErrorImage);
+          final multiImageWidget = await _buildMultiImageWidgetHolder(singleErrorImage,);
           await tester.pumpWidget(multiImageWidget);
           final multiImage = find.byType(MultiImage);
           expect(multiImage, findsOneWidget);
@@ -218,7 +228,7 @@ void main() {
     (tester) async {
       await tester.runAsync(
         () async {
-          final multiImageWidget = await _buildMultiImageWidgetHolder(dualErrorImages);
+          final multiImageWidget = await _buildMultiImageWidgetHolder(dualErrorImages,);
           await tester.pumpWidget(multiImageWidget);
           final multiImage = find.byType(MultiImage);
           expect(multiImage, findsOneWidget);
@@ -248,7 +258,7 @@ void main() {
     (tester) async {
       await tester.runAsync(
         () async {
-          final multiImageWidget = await _buildMultiImageWidgetHolder(dualImageSingleErrorImages);
+          final multiImageWidget = await _buildMultiImageWidgetHolder(dualImageSingleErrorImages,);
           await tester.pumpWidget(multiImageWidget);
           final multiImage = find.byType(MultiImage);
           expect(multiImage, findsOneWidget);
@@ -285,6 +295,11 @@ Future<void> _delayAndPump(
 Future<Widget> _buildMultiImageWidgetHolder(
   List<String> imageList,
 ) async {
+  final getIt = GetIt.instance;
+  getIt.registerSingleton(DefaultCacheManager());
+  getIt.registerFactory(() => MultiImageViewModel(getIt()));
+  await getIt.allReady();
+
   return MaterialApp(
     theme: FlexThemeData.light(
       useMaterial3: true,

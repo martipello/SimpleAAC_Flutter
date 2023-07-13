@@ -13,14 +13,14 @@ class ThemeViewModel {
   final ThemeController themeController;
   final SharedPreferencesService sharedPreferencesService;
 
-  Future<void> init({bool doSetInitialTheme = true}) async {
+  Future<void> init({bool doSetSavedTheme = true}) async {
     await themeController.loadAll();
-    if (doSetInitialTheme) {
-      await setInitialTheme();
+    if (doSetSavedTheme) {
+      await setSavedTheme();
     }
   }
 
-  Future<void> setInitialTheme() async {
+  Future<void> setSavedTheme() async {
     final themeName = sharedPreferencesService.themeName;
     final theme = SimpleAACTheme.getTheme(themeName);
     setTheme(theme);

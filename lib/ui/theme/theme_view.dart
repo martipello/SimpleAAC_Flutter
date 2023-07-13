@@ -29,17 +29,6 @@ class _ThemeViewState extends State<ThemeView> {
   late bool isDark;
 
   @override
-  void dispose() {
-    _themeViewModelRed.dispose();
-    _themeViewModelYellow.dispose();
-    _themeViewModelGreen.dispose();
-    _themeViewModelBlue.dispose();
-    _themeViewModelPink.dispose();
-    _themeViewModelPurple.dispose();
-    super.dispose();
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     isDark = context.isDark;

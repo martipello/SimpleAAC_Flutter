@@ -13,34 +13,48 @@ typedef WordCallBack = void Function(Word word);
 
 class WordTile extends StatelessWidget {
   const WordTile({
+    this.key,
     required this.word,
-    required this.key,
     this.heroTag,
     this.wordTapCallBack,
-    this.hasReOrderButton = false,
     this.isSelected = false,
     this.closeButtonOnTap,
     this.closeButtonOnLongPress,
-  });
+    this.handle,
+    this.fadeImageIn = true,
+    this.index,
+  }) : super(key: key);
 
+  final Key? key;
   final Word word;
-  final Key key;
   final String? heroTag;
 
   final WordCallBack? wordTapCallBack;
   final WordCallBack? closeButtonOnTap;
   final WordCallBack? closeButtonOnLongPress;
+  final Widget? handle;
+  final int? index;
 
-  final bool hasReOrderButton;
   final bool isSelected;
+  final bool fadeImageIn;
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
+      key: key,
       aspectRatio: 1 / 1.3,
       child: SimpleAACTile(
         key: key,
+        border: RoundedRectangleBorder(
+          side: BorderSide(
+            color: word.type.getColor(context),
+          ),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        isSelected: isSelected,
+        index: index,
         tapCallBack: () {
+          print(word.hashCode);
           wordTapCallBack?.call(word);
         },
         longTapCallBack: () {
@@ -52,13 +66,6 @@ class WordTile extends StatelessWidget {
             ),
           );
         },
-        border: RoundedRectangleBorder(
-          side: BorderSide(
-            color: word.type.getColor(context),
-          ),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        isSelected: isSelected,
         closeButtonOnTap: closeButtonOnTap != null
             ? () {
                 closeButtonOnTap?.call(word);
@@ -69,7 +76,7 @@ class WordTile extends StatelessWidget {
                 closeButtonOnLongPress?.call(word);
               }
             : null,
-        hasReOrderButton: hasReOrderButton,
+        handle: handle,
         child: _buildWordTileContent(context),
       ),
     );
@@ -84,9 +91,17 @@ class WordTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            child: MultiImage(
-              images: word.getImageList(),
-              heroTag: heroTag,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(4),
+              ),
+              clipBehavior: Clip.hardEdge,
+              child: MultiImage(
+                key: ValueKey(word.hashCode),
+                images: word.getImageList(),
+                heroTag: heroTag,
+                fadeIn: fadeImageIn,
+              ),
             ),
           ),
           const SizedBox(

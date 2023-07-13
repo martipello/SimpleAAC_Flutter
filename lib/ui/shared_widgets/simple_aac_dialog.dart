@@ -45,7 +45,7 @@ class SimpleAACDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            color: context.themeColors.primary,
+            color: context.themeColors.surfaceVariant,
             height: 50,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

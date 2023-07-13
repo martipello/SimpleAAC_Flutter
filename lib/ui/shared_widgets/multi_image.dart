@@ -1,4 +1,5 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_aac/dependency_injection_container.dart';
 import 'package:simple_aac/extensions/build_context_extension.dart';
@@ -11,12 +12,16 @@ class MultiImage extends StatefulWidget {
     Key? key,
     required this.images,
     this.heroTag,
+    this.fadeIn = true,
+    this.spacing = 4.0,
   }) : super(key: key);
 
   final BuiltList<String> images;
 
   //Nullable because it's not always needed
   final String? heroTag;
+  final bool fadeIn;
+  final double spacing;
 
   @override
   State<MultiImage> createState() => _MultiImageState();
@@ -31,13 +36,13 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
     super.initState();
     multiImageViewModel.fourImages.listen(
       (event) {
-        if (event.isNotEmpty) {
+        if (event.isNotEmpty && widget.fadeIn) {
           _controller.forward();
         }
       },
     );
-    multiImageViewModel.requestFourImages(widget.images);
     _initAnimationController();
+    multiImageViewModel.requestFourImages(widget.images);
   }
 
   void _initAnimationController() {
@@ -51,28 +56,22 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
 
   @override
   void dispose() {
-    _controller.dispose();
-    multiImageViewModel.dispose();
+    // _controller.dispose();
+    // multiImageViewModel.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(
-        Radius.circular(4),
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: widget.heroTag != null
-          ? wrapWithHero(
-              _buildImageHolder(context),
-              widget.heroTag!,
-            )
-          : _buildImageHolder(context),
-    );
+    return widget.heroTag != null
+        ? wrapWithHero(
+            _buildImageLoader(context),
+            widget.heroTag!,
+          )
+        : _buildImageLoader(context);
   }
 
-  Widget _buildImageHolder(BuildContext context) {
+  Widget _buildImageLoader(BuildContext context) {
     return StreamBuilder<Iterable<ImageInfo?>>(
       stream: multiImageViewModel.fourImages,
       builder: (context, snapshot) {
@@ -81,7 +80,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
         return Stack(
           fit: StackFit.expand,
           children: [
-            _buildImageContent(imageInfoList),
+            _buildImageHolder(imageInfoList),
             if (isLoading) SimpleAACLoadingWidget.shimmer(),
           ],
         );
@@ -89,7 +88,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
     );
   }
 
-  Widget _buildImageContent(
+  Widget _buildImageHolder(
     BuiltList<ImageInfo?> imageInfoList,
   ) {
     final imageContent = imageInfoList.whereType<ImageInfo>().toBuiltList();
@@ -108,34 +107,35 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   }
 
   Widget _buildOneImage(ImageInfo imageInfo) {
-    return _buildImage(
+    return _buildImageMaybeFadeInWrapper(
       imageInfo,
-      1,
     );
   }
 
-  Widget _buildTwoImages(BuiltList<ImageInfo> imageInfoList) {
+  Widget _buildTwoImages(
+    BuiltList<ImageInfo> imageInfoList,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
-          child: _buildImage(
+          child: _buildImageMaybeFadeInWrapper(
             imageInfoList.first,
-            1,
           ),
         ),
         _buildSmallMargin,
         Expanded(
-          child: _buildImage(
+          child: _buildImageMaybeFadeInWrapper(
             imageInfoList[1],
-            2,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildThreeImages(BuiltList<ImageInfo> imageInfoList) {
+  Widget _buildThreeImages(
+    BuiltList<ImageInfo> imageInfoList,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -144,16 +144,14 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: _buildImage(
+                child: _buildImageMaybeFadeInWrapper(
                   imageInfoList.first,
-                  1,
                 ),
               ),
               _buildSmallMargin,
               Expanded(
-                child: _buildImage(
+                child: _buildImageMaybeFadeInWrapper(
                   imageInfoList[1],
-                  2,
                 ),
               ),
             ],
@@ -165,9 +163,8 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: _buildImage(
+                child: _buildImageMaybeFadeInWrapper(
                   imageInfoList[2],
-                  3,
                 ),
               ),
             ],
@@ -177,7 +174,9 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
     );
   }
 
-  Widget _buildFourOrMoreImages(BuiltList<ImageInfo> imageInfoList) {
+  Widget _buildFourOrMoreImages(
+    BuiltList<ImageInfo> imageInfoList,
+  ) {
     final isMoreThanFour = widget.images.length > 4;
 
     return Column(
@@ -188,16 +187,14 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: _buildImage(
+                child: _buildImageMaybeFadeInWrapper(
                   imageInfoList.first,
-                  1,
                 ),
               ),
               _buildSmallMargin,
               Expanded(
-                child: _buildImage(
+                child: _buildImageMaybeFadeInWrapper(
                   imageInfoList[1],
-                  2,
                 ),
               ),
             ],
@@ -209,9 +206,8 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: _buildImage(
+                child: _buildImageMaybeFadeInWrapper(
                   imageInfoList[2],
-                  3,
                 ),
               ),
               _buildSmallMargin,
@@ -219,9 +215,8 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    _buildImage(
+                    _buildImageMaybeFadeInWrapper(
                       imageInfoList[3],
-                      4,
                     ),
                     if (isMoreThanFour)
                       Positioned.fill(
@@ -253,21 +248,34 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   ) {
     return Hero(
       tag: heroTag,
+      transitionOnUserGestures: true,
       child: child,
     );
   }
 
+  Widget _buildImageMaybeFadeInWrapper(
+    ImageInfo imageInfo,
+  ) {
+    if (widget.fadeIn) {
+      return FadeTransition(
+        opacity: _controller,
+        child: _buildImage(
+          imageInfo,
+        ),
+      );
+    } else {
+      return _buildImage(
+        imageInfo,
+      );
+    }
+  }
+
   Widget _buildImage(
     ImageInfo imageInfo,
-    int index,
   ) {
-    return FadeTransition(
-      opacity: _controller,
-      child: RawImage(
-        key: ValueKey('Image-$index'),
-        image: imageInfo.image,
-        fit: BoxFit.cover,
-      ),
+    return RawImage(
+      image: imageInfo.image,
+      fit: BoxFit.cover,
     );
   }
 
@@ -279,5 +287,14 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
     );
   }
 
-  Widget get _buildSmallMargin => SizedBox(width: 4, height: 4);
+  Widget get _buildSmallMargin => SizedBox(width: widget.spacing, height: widget.spacing);
+
+// @override
+// void didUpdateWidget(covariant MultiImage oldWidget) {
+//   super.didUpdateWidget(oldWidget);
+//   final imagesChanged = !listEquals(oldWidget.images.toList(), widget.images.toList());
+//   if (imagesChanged) {
+//     multiImageViewModel.requestFourImages(widget.images);
+//   }
+// }
 }

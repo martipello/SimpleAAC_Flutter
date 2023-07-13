@@ -1,11 +1,17 @@
+import 'dart:io';
+
+import 'package:built_collection/built_collection.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:simple_aac/utils/stream_helper.dart';
-import 'package:built_collection/built_collection.dart';
 
 class MultiImageViewModel {
+  final DefaultCacheManager defaultCacheManager;
+
+  MultiImageViewModel(this.defaultCacheManager);
+
   final subscriptions = CompositeSubscription();
 
   final imageOne = BehaviorSubject<ImageInfo?>();
@@ -29,7 +35,8 @@ class MultiImageViewModel {
         ],
       );
     },
-  ).publishValue()..connect().addTo(subscriptions);
+  ).publishValue()
+    ..connect().addTo(subscriptions);
 
   Future<void> requestFourImages(BuiltList<String> imagePaths) async {
     final paddedList = [...imagePaths, '', '', '', ''];
@@ -52,27 +59,36 @@ class MultiImageViewModel {
   }
 
   Future<ImageStream?> imageStream(String imagePath, int index) async {
-    //TODO(MS): images shouldn't be assets fix this when we support importing images
+    //TODO(MS): images shouldn't be assets remove this when we support importing images
     //TODO(MS): Check the cache first
-    if (imagePath.startsWith('assets') | imagePath.startsWith('File')) {
-      try {
-        final imageData = await rootBundle.load(imagePath);
-        final imageProvider = MemoryImage(imageData.buffer.asUint8List());
-        return imageProvider.resolve(
-          ImageConfiguration.empty,
-        );
-      } catch (e) {
-        return Future.value(null);
-      }
-    } else {
-      final imageProvider = CachedNetworkImageProvider(imagePath);
-      return imageProvider.resolve(
-        ImageConfiguration.empty,
+    ImageProvider? imageProvider;
+
+    final fileInfo = await defaultCacheManager.getFileFromCache(imagePath);
+
+    if (fileInfo != null) {
+      imageProvider = FileImage(fileInfo.file);
+    } else if (imagePath.startsWith('assets')) {
+      imageProvider = AssetImage(imagePath);
+    } else if (imagePath.startsWith('File')) {
+      imageProvider = FileImage(File(imagePath));
+    } else if (imagePath.startsWith('http')) {
+      imageProvider = CachedNetworkImageProvider(
+        imagePath,
+        cacheManager: defaultCacheManager,
       );
+    } else {
+      return Future.value(null);
     }
+    return imageProvider.resolve(
+      ImageConfiguration.empty,
+    );
+
   }
 
-  ImageStreamListener imageStreamListener(ImageStream imageStream, int index) {
+  ImageStreamListener imageStreamListener(
+    ImageStream imageStream,
+    int index,
+  ) {
     return ImageStreamListener(
       (image, _) {
         _updateImageResponse(image, index);
@@ -107,10 +123,18 @@ class MultiImageViewModel {
   }
 
   void dispose() {
-    imageOne.close();
-    imageTwo.close();
-    imageThree.close();
-    imageFour.close();
-    subscriptions.dispose();
+    final imageOneInfo = imageOne.valueOrNull;
+    final imageTwoInfo = imageTwo.valueOrNull;
+    final imageThreeInfo = imageThree.valueOrNull;
+    final imageFourInfo = imageFour.valueOrNull;
+    imageOneInfo?.dispose();
+    imageTwoInfo?.dispose();
+    imageThreeInfo?.dispose();
+    imageFourInfo?.dispose();
+    // imageOne.close();
+    // imageTwo.close();
+    // imageThree.close();
+    // imageFour.close();
+    // subscriptions.dispose();
   }
 }

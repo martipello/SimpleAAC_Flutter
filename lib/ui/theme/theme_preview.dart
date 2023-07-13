@@ -28,10 +28,12 @@ class _ThemePreviewState extends State<ThemePreview> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await widget.themeViewModel.init(doSetInitialTheme: false);
-      widget.themeViewModel.setTheme(widget.theme);
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async {
+        await widget.themeViewModel.init(doSetSavedTheme: false);
+        widget.themeViewModel.setTheme(widget.theme);
+      },
+    );
   }
 
   @override

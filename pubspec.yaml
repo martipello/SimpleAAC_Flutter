@@ -64,7 +64,14 @@ dependencies:
   change_notifier_builder: ^1.1.2
   extended_image: ^7.0.2
   cached_network_image: ^3.2.3
+  flutter_cache_manager: ^3.3.0
   flutter_animate: ^2.0.1
+  mockito: ^5.4.0
+  sqflite_common_ffi: ^2.2.5
+  file: ^6.1.4
+  animated_list_plus: ^0.4.3
+  great_list_view: ^0.2.3
+
 
 
 dev_dependencies:
@@ -82,6 +89,7 @@ dev_dependencies:
   built_value_generator: ^8.5.0
   hive_built_value_generator: ^2.3.1
   flutter_native_splash: ^2.2.19
+  network_image_mock: ^2.0.1
 
   flutter_launcher_icons: ^0.13.1
 

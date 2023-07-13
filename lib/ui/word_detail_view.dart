@@ -56,8 +56,11 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
 
   String? get heroTag => _wordDetailViewArguments.heroTag;
 
+  double get toolbarMinusPadding => kToolbarHeight - 16;
+
   @override
   Widget build(BuildContext context) {
+    //TODO(MS): refactor this to keep the app bar icons visible when scrolling in some way
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -75,20 +78,26 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        OverlayButton(
-                          onTap: Navigator.of(context).pop,
-                          iconData: Icons.arrow_back,
-                          size: const Size(
-                            kToolbarHeight,
-                            kToolbarHeight,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: OverlayButton(
+                            onTap: Navigator.of(context).pop,
+                            iconData: Icons.arrow_back,
+                            size: Size(
+                              toolbarMinusPadding,
+                              toolbarMinusPadding,
+                            ),
                           ),
                         ),
-                        OverlayButton(
-                          onTap: Navigator.of(context).pop,
-                          iconData: word.isFavourite == true ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
-                          size: const Size(
-                            kToolbarHeight,
-                            kToolbarHeight,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: OverlayButton(
+                            onTap: Navigator.of(context).pop,
+                            iconData: word.isFavourite == true ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+                            size: Size(
+                              toolbarMinusPadding,
+                              toolbarMinusPadding,
+                            ),
                           ),
                         ),
                       ],
@@ -220,41 +229,28 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
     );
   }
 
-  Widget _buildWordBaseDetailImage(WordBase wordBase) {
-    return Padding(
+  Widget _buildWordBaseDetailImage(
+    WordBase wordBase,
+  ) {
+    return Container(
+      height: kImageHeight,
       padding: const EdgeInsets.only(
         bottom: 24,
       ),
-      child: heroTag != null
-          ? _wrapWithHero(
-              _buildImage(),
-              heroTag!,
-            )
-          : _buildImage(),
+      child: _buildImage(
+        wordBase,
+      ),
     );
   }
 
-  Widget _wrapWithHero(
-    Widget child,
-    String heroTag,
+  Widget _buildImage(
+    WordBase wordBase,
   ) {
-    return Hero(
-      tag: heroTag,
-      transitionOnUserGestures: true,
-      child: child,
-    );
-  }
-
-  Widget _buildImage() {
     return MultiImage(
-      images: sentence.getImageList(),
+      images: wordBase.getImageList(),
+      heroTag: heroTag,
+      fadeIn: false,
     );
-    // return Image.asset(
-    //   word.imageList.firstOrNull() ?? 'assets/images/simple_aac.png',
-    //   fit: BoxFit.cover,
-    //   height: kImageHeight,
-    //   width: context.screenWidth,
-    // );
   }
 
   Widget _buildEditDeleteWordActionButton(
