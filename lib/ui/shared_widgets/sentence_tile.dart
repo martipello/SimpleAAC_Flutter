@@ -22,13 +22,11 @@ class SentenceTile extends StatelessWidget {
     this.closeButtonOnLongPress,
     this.handle,
     this.fadeImageIn = true,
-    this.index,
   }) : super(key: key);
 
   final Key? key;
   final Sentence sentence;
   final String? heroTag;
-  final int? index;
 
   final SentenceCallBack? sentenceTapCallBack;
   final SentenceCallBack? closeButtonOnTap;
@@ -50,7 +48,6 @@ class SentenceTile extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(4),
         ),
-        index: index,
         isSelected: isSelected,
         tapCallBack: () {
           sentenceTapCallBack?.call(sentence);

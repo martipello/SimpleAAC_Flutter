@@ -14,7 +14,6 @@ class SimpleAACTile extends StatelessWidget {
     this.handle,
     this.tapCallBack,
     this.longTapCallBack,
-    this.index,
   }) : super(key: key);
 
   final Widget child;
@@ -25,7 +24,6 @@ class SimpleAACTile extends StatelessWidget {
   final VoidCallback? longTapCallBack;
   final Widget? handle;
 
-  final int? index;
   final RoundedRectangleBorder? border;
 
   @override

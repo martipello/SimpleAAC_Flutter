@@ -19,21 +19,31 @@ extension WordExtension on WordBase {
     return BuiltList<String>();
   }
 
-  WordBase copy() {
+  BuiltList<String> getWords() {
+    final wordBase = this;
+    if (wordBase is Word) {
+      return BuiltList<String>.of([wordBase.word]);
+    } else if (wordBase is Sentence) {
+      return wordBase.words.map((word) => word.word).toBuiltList();
+    }
+    return BuiltList<String>();
+  }
+
+  WordBase copy({String? id}) {
     final wordBase = this;
     if(wordBase is Word) {
-      return wordBase._fromWord(wordBase);
+      return wordBase._fromWord(wordBase, id: id);
     } else if(wordBase is Sentence) {
-      return wordBase._fromSentence(wordBase);
+      return wordBase._fromSentence(wordBase, id: id);
     } else {
       return wordBase;
     }
   }
 
-  Word _fromWord(Word word) {
+  Word _fromWord(Word word, {String? id}) {
     return Word(
           (b) => b
-        ..id = word.id
+        ..id = id ?? word.id
         ..usageCount = word.usageCount
         ..type = word.type
         ..subType = word.subType
@@ -49,10 +59,10 @@ extension WordExtension on WordBase {
     );
   }
 
-  Sentence _fromSentence(Sentence sentence) {
+  Sentence _fromSentence(Sentence sentence,{String? id}) {
     return Sentence(
           (b) => b
-        ..id = sentence.id
+        ..id = id ?? sentence.id
         ..usageCount = sentence.usageCount
         ..type = sentence.type
         ..subType = sentence.subType

@@ -34,7 +34,13 @@ class SelectedWordsViewModel {
     if (words != null) {
       selectedWords.add(
         words.rebuild(
-          (wb) => wb.add(word.copy()),
+          (wb) => wb.add(
+            word.copy(
+              //Here we give it a new id so that duplicate words can be added to the list
+              // and the lists animation comparator will still work
+              id: (words.length + 1).toString(),
+            ),
+          ),
         ),
       );
       if (word is Word) {
@@ -53,7 +59,7 @@ class SelectedWordsViewModel {
       if (wordToRemove != null) {
         selectedWords.add(
           words.rebuild(
-                (wb) => wb.remove(wordToRemove),
+            (wb) => wb.remove(wordToRemove),
           ),
         );
       }
@@ -66,13 +72,10 @@ class SelectedWordsViewModel {
   ) {
     final words = selectedWords.valueOrNull;
     if (words != null) {
-      if (oldIndex < newIndex) {
-        newIndex -= 1;
-      }
       final word = words[oldIndex];
       selectedWords.add(
         words.rebuild(
-              (wb) => wb
+          (wb) => wb
             ..remove(word)
             ..insert(newIndex, word),
         ),

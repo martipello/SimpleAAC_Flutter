@@ -22,7 +22,6 @@ class WordTile extends StatelessWidget {
     this.closeButtonOnLongPress,
     this.handle,
     this.fadeImageIn = true,
-    this.index,
   }) : super(key: key);
 
   final Key? key;
@@ -33,7 +32,6 @@ class WordTile extends StatelessWidget {
   final WordCallBack? closeButtonOnTap;
   final WordCallBack? closeButtonOnLongPress;
   final Widget? handle;
-  final int? index;
 
   final bool isSelected;
   final bool fadeImageIn;
@@ -52,7 +50,6 @@ class WordTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
         ),
         isSelected: isSelected,
-        index: index,
         tapCallBack: () {
           print(word.hashCode);
           wordTapCallBack?.call(word);
