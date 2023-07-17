@@ -33,6 +33,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+    _initAnimationController();
     multiImageViewModel.fourImages.listen(
       (event) {
         if (event.isNotEmpty && widget.fadeIn) {
@@ -40,7 +41,6 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
         }
       },
     );
-    _initAnimationController();
     multiImageViewModel.requestFourImages(widget.images);
   }
 
@@ -55,6 +55,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
 
   @override
   void dispose() {
+    //TODO the below needs to be uncommented
     // _controller.dispose();
     // multiImageViewModel.dispose();
     super.dispose();

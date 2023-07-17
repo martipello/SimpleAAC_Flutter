@@ -98,7 +98,7 @@ class SentenceTile extends StatelessWidget {
             height: 4,
           ),
           Text(
-            sentence.words.join(''),
+            sentence.words.map((wb) => wb.word).join(' '),
             maxLines: 2,
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,

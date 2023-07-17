@@ -13,8 +13,12 @@ class WordBaseService {
 
   Future<BuiltList<WordBase>> getAllForType(WordSubType wordSubType) async {
     final currentLanguage = await languageService.getCurrentLanguage();
-    final wordsAndSentences = [...currentLanguage.words, ...currentLanguage.sentences];
-    return wordsAndSentences.where((w) => w.subType == wordSubType).toBuiltList();
+    final allWordBases = [
+      ...currentLanguage.words,
+      ...currentLanguage.sentences,
+      ...currentLanguage.wordGroups,
+    ];
+    return allWordBases.where((w) => w.subType == wordSubType).toBuiltList();
   }
 
   Future<BuiltList<Word>> getExtraRelatedWords(Word word) async {

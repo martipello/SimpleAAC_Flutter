@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../api/models/word.dart';
+import '../../api/models/word_group.dart';
 import '../../api/models/word_type.dart';
 import '../../dependency_injection_container.dart';
 import '../../extensions/string_extension.dart';
@@ -13,6 +14,8 @@ import '../intro/intro_page.dart';
 import '../manage_word_view.dart';
 import '../settings_view.dart';
 import '../shared_widgets/app_bar.dart';
+import '../shared_widgets/word_group_tile_expanded.dart';
+import '../shared_widgets/word_group_tile_expanded_view_model.dart';
 import '../theme/simple_aac_text.dart';
 import '../word_type_views/word_type_view.dart';
 import 'related_words_widget.dart';
@@ -39,6 +42,8 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   final sharedPreferences = getIt.get<SharedPreferencesService>();
   final selectedWordsViewModel = getIt.get<SelectedWordsViewModel>();
+
+  final wordGroupTileExpandedViewModel = getIt.get<WordGroupTileExpandedViewModel>();
 
   var _selectedIndex = 0;
 
@@ -72,17 +77,50 @@ class _AppShellState extends State<AppShell> {
   }
 
   Widget _buildAppBody() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Stack(
       children: [
-        _buildHeroHolder(),
-        WordType.values
-            .map(
-              (wordType) => WordTypeView(
-                wordType: wordType,
-              ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildHeroHolder(),
+            WordType.values
+                .map(
+                  (wordType) =>
+                  WordTypeView(
+                    wordType: wordType,
+                    wordGroupTapCallBack: (word){
+                        wordGroupTileExpandedViewModel.setWordGroup(word);
+                        wordGroupTileExpandedViewModel.toggleExpandedUIState();
+                      }
+                  ),
             )
-            .elementAt(_selectedIndex)
+                .elementAt(_selectedIndex)
+          ],
+        ),
+
+        StreamBuilder<bool>(
+            stream: wordGroupTileExpandedViewModel.isExpanded,
+            builder: (context, isExpandedSnapshot) {
+              return StreamBuilder<WordGroup>(
+                stream: wordGroupTileExpandedViewModel.selectedWordGroup,
+                builder: (context, selectedWordGroupSnapshot) {
+                  final selectedWordGroup = selectedWordGroupSnapshot.data;
+                  final isExpanded = isExpandedSnapshot.data == true;
+                  if (isExpanded)
+                    return Positioned.fill(
+                      child: WordGroupTileExpanded(
+                        selectedWordGroup: selectedWordGroup,
+                        isExpanded: isExpanded,
+                        onClose: () {
+                          wordGroupTileExpandedViewModel.toggleExpandedUIState();
+                        },
+                      ),
+                    );
+                  return const SizedBox();
+                },
+              );
+            }
+        ),
       ],
     );
   }
@@ -133,8 +171,7 @@ class _AppShellState extends State<AppShell> {
       transitionOnUserGestures: true,
       child: FloatingActionButton(
         heroTag: null,
-        onPressed: () {
-        },
+        onPressed: () {},
         child: const Icon(
           Icons.play_arrow,
         ),
@@ -223,7 +260,7 @@ class _AppShellState extends State<AppShell> {
       currentIndex: _selectedIndex,
       onTap: (index) {
         setState(
-          () {
+              () {
             _selectedIndex = index;
           },
         );
@@ -234,11 +271,12 @@ class _AppShellState extends State<AppShell> {
   List<BottomNavigationBarItem> _bottomNavigationBarItems() {
     return WordType.values
         .map(
-          (e) => BottomNavigationBarItem(
+          (e) =>
+          BottomNavigationBarItem(
             icon: const Icon(Icons.add),
             label: e.name.capitalize(),
           ),
-        )
+    )
         .toList();
   }
 
@@ -288,11 +326,9 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  Widget _buildMenuItem(
-    BuildContext context,
-    String label,
-    IconData icon,
-  ) {
+  Widget _buildMenuItem(BuildContext context,
+      String label,
+      IconData icon,) {
     return Row(
       children: [
         Icon(

@@ -3,6 +3,7 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:hive_built_value/hive_built_value.dart';
 import 'package:simple_aac/api/models/word.dart';
+import 'package:simple_aac/api/models/word_base.dart';
 import 'package:simple_aac/api/models/word_sub_type.dart';
 import 'package:simple_aac/api/models/word_type.dart';
 
@@ -11,7 +12,7 @@ import '../serializers/serializers.dart';
 part 'word_group.g.dart';
 
 @HiveType(typeId: 5)
-abstract class WordGroup implements Built<WordGroup, WordGroupBuilder> {
+abstract class WordGroup with WordBase implements Built<WordGroup, WordGroupBuilder> {
 
   factory WordGroup([void Function(WordGroupBuilder) updates]) = _$WordGroup;
   WordGroup._();
@@ -32,13 +33,16 @@ abstract class WordGroup implements Built<WordGroup, WordGroupBuilder> {
   WordSubType get subType;
 
   @HiveField(5)
-  BuiltList<Word> get words;
+  BuiltList<WordBase> get words;
 
   @HiveField(6)
   bool? get isBackedUp;
 
   @HiveField(7)
   bool? get isFavourite;
+
+  @HiveField(8)
+  double? get usageCount;
 
   Map<String, dynamic> toJson() {
     return serializers.serializeWith(WordGroup.serializer, this) as Map<String, dynamic>;

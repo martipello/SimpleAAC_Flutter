@@ -1,6 +1,7 @@
 import 'package:simple_aac/api/models/word.dart';
 import 'package:simple_aac/api/models/word_base.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:simple_aac/api/models/word_group.dart';
 
 import '../sentence.dart';
 
@@ -14,7 +15,17 @@ extension WordExtension on WordBase {
     if (wordBase is Word) {
       return wordBase.imageList;
     } else if (wordBase is Sentence) {
-      return BuiltList<String>.from(wordBase.words.map((word) => word.imageList.first));
+      return BuiltList<String>.from(
+        wordBase.words.map(
+          (word) => word.imageList.first,
+        ),
+      );
+    } else if (wordBase is WordGroup) {
+      return BuiltList<String>.from(
+        wordBase.words.map(
+          (word) => word.getImageList().first,
+        ),
+      );
     }
     return BuiltList<String>();
   }
@@ -31,9 +42,9 @@ extension WordExtension on WordBase {
 
   WordBase copy({String? id}) {
     final wordBase = this;
-    if(wordBase is Word) {
+    if (wordBase is Word) {
       return wordBase._fromWord(wordBase, id: id);
-    } else if(wordBase is Sentence) {
+    } else if (wordBase is Sentence) {
       return wordBase._fromSentence(wordBase, id: id);
     } else {
       return wordBase;
@@ -42,7 +53,7 @@ extension WordExtension on WordBase {
 
   Word _fromWord(Word word, {String? id}) {
     return Word(
-          (b) => b
+      (b) => b
         ..id = id ?? word.id
         ..usageCount = word.usageCount
         ..type = word.type
@@ -59,9 +70,9 @@ extension WordExtension on WordBase {
     );
   }
 
-  Sentence _fromSentence(Sentence sentence,{String? id}) {
+  Sentence _fromSentence(Sentence sentence, {String? id}) {
     return Sentence(
-          (b) => b
+      (b) => b
         ..id = id ?? sentence.id
         ..usageCount = sentence.usageCount
         ..type = sentence.type

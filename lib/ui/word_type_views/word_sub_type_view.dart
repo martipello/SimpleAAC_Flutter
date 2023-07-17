@@ -11,15 +11,19 @@ import '../../../api/models/word_sub_type.dart';
 import '../../../dependency_injection_container.dart';
 import '../../../view_models/selected_words_view_model.dart';
 import '../../../view_models/words_view_model.dart';
+import '../../api/models/word_group.dart';
+import '../shared_widgets/word_group_tile.dart';
 import '../shared_widgets/word_tile.dart';
 
 class WordSubTypeView extends StatefulWidget {
   const WordSubTypeView({
     super.key,
     required this.wordSubType,
+    required this.wordGroupTapCallBack,
   });
 
   final WordSubType wordSubType;
+  final WordGroupCallBack wordGroupTapCallBack;
 
   @override
   State<WordSubTypeView> createState() => _WordSubTypeViewState();
@@ -48,41 +52,63 @@ class _WordSubTypeViewState extends State<WordSubTypeView> with AutomaticKeepAli
       stream: wordsViewModel.wordsOfType,
       builder: (context, snapshot) {
         final words = snapshot.data ?? BuiltList();
-        return GridView.builder(
-          padding: const EdgeInsets.all(6),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            mainAxisSpacing: 4,
-            crossAxisSpacing: 4,
-            childAspectRatio: 0.86,
-          ),
-          itemCount: words.length,
-          itemBuilder: (context, index) {
-            final word = words[index];
-            if (word is Word) {
-              return WordTile(
-                word: word,
-                key: ValueKey(word.id),
-                heroTag: word.getHeroTag(
-                  '${word.type}-${word.subType}-${word.id}',
-                ),
-                wordTapCallBack: selectedWordsViewModel.addSelectedWord,
-              );
-            } else if (word is Sentence) {
-              return SentenceTile(
-                sentence: word,
-                key: ValueKey(word.id),
-                heroTag: word.getHeroTag(
-                  '${word.type}-${word.subType}-${word.id}',
-                ),
-                sentenceTapCallBack: selectedWordsViewModel.addSelectedWord,
-              );
-            } else {
-              return const SizedBox();
-            }
-          },
+        return Stack(
+          children: [
+            GridView.builder(
+              itemCount: words.length,
+              padding: const EdgeInsets.all(6),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                childAspectRatio: 0.86,
+              ),
+              itemBuilder: (context, index) {
+                final wordBase = words[index];
+                if (wordBase is Word) {
+                  return _buildWordTile(wordBase);
+                } else if (wordBase is Sentence) {
+                  return _buildSentenceTile(wordBase);
+                } else if (wordBase is WordGroup) {
+                  return _buildWordGroup(wordBase);
+                } else {
+                  return const SizedBox();
+                }
+              },
+            ),
+          ],
         );
       },
+    );
+  }
+
+  Widget _buildWordTile(Word word) {
+    return WordTile(
+      word: word,
+      key: ValueKey(word.id),
+      heroTag: word.getHeroTag(
+        '${word.type}-${word.subType}-${word.id}',
+      ),
+      wordTapCallBack: selectedWordsViewModel.addSelectedWord,
+    );
+  }
+
+  Widget _buildSentenceTile(Sentence word) {
+    return SentenceTile(
+      sentence: word,
+      key: ValueKey(word.id),
+      heroTag: word.getHeroTag(
+        '${word.type}-${word.subType}-${word.id}',
+      ),
+      sentenceTapCallBack: selectedWordsViewModel.addSelectedWord,
+    );
+  }
+
+  Widget _buildWordGroup(WordGroup word) {
+    return WordGroupTile(
+      word: word,
+      key: ValueKey(word.id),
+      onWordGroupTap: widget.wordGroupTapCallBack,
     );
   }
 

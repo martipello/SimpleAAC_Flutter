@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_aac/ui/shared_widgets/word_tile.dart';
 
 import '../../api/models/extensions/word_sub_type_extension.dart';
 import '../../api/models/extensions/word_type_extension.dart';
@@ -7,12 +8,18 @@ import '../../api/models/word_type.dart';
 import '../../dependency_injection_container.dart';
 import '../../extensions/build_context_extension.dart';
 import '../../view_models/utils/tab_bar_view_model.dart';
+import '../shared_widgets/word_group_tile.dart';
 import 'word_sub_type_view.dart';
 
 class WordTypeView extends StatefulWidget {
-  const WordTypeView({super.key, required this.wordType});
+  const WordTypeView({
+    super.key,
+    required this.wordType,
+    required this.wordGroupTapCallBack,
+  });
 
   final WordType wordType;
+  final WordGroupCallBack wordGroupTapCallBack;
 
   @override
   State<WordTypeView> createState() => _WordTypeViewState();
@@ -72,6 +79,7 @@ class _WordTypeViewState extends State<WordTypeView> with SingleTickerProviderSt
                       .map(
                         (e) => WordSubTypeView(
                           wordSubType: e,
+                          wordGroupTapCallBack: widget.wordGroupTapCallBack,
                         ),
                       )
                       .toList(),
