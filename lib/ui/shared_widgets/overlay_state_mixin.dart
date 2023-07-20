@@ -41,9 +41,9 @@ mixin OverlayStateMixin<T extends StatefulWidget> on SingleTickerProviderStateMi
   Widget _dismissibleOverlay(Widget child) {
     return Stack(
       children: [
-        FadeTransition(
-          opacity: _expandedGroupRevealAnimationController,
-          child: Positioned.fill(
+        Positioned.fill(
+          child: FadeTransition(
+            opacity: _expandedGroupRevealAnimationController,
             child: ColoredBox(
               color: context.themeColors.shadow.withOpacity(0.6),
               child: GestureDetector(

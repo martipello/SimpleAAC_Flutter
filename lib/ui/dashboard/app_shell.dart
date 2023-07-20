@@ -54,12 +54,6 @@ class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin
   }
 
   @override
-  void dispose() {
-    // _expandedGroupRevealAnimationController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final isFirstTime = sharedPreferences.isFirstTime;
     if (isFirstTime == true) {

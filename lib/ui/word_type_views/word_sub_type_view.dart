@@ -91,21 +91,22 @@ class _WordSubTypeViewState extends State<WordSubTypeView> with AutomaticKeepAli
     );
   }
 
-  Widget _buildSentenceTile(Sentence word) {
+  Widget _buildSentenceTile(Sentence sentence) {
     return SentenceTile(
-      sentence: word,
-      key: ValueKey(word.id),
-      heroTag: word.getHeroTag(
-        '${word.type}-${word.subType}-${word.id}',
+      sentence: sentence,
+      key: ValueKey(sentence.id),
+      heroTag: sentence.getHeroTag(
+        '${sentence.type}-${sentence.subType}-${sentence.id}',
       ),
       sentenceTapCallBack: selectedWordsViewModel.addSelectedWord,
     );
   }
 
-  Widget _buildWordGroup(WordGroup word) {
+  Widget _buildWordGroup(WordGroup wordGroup) {
     return WordGroupTile(
-      word: word,
-      key: ValueKey(word.id),
+      wordGroup: wordGroup,
+      key: ValueKey(wordGroup.id),
+      onWordTap: selectedWordsViewModel.addSelectedWord,
     );
   }
 

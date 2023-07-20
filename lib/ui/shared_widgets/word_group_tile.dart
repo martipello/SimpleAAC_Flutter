@@ -13,15 +13,15 @@ typedef WordGroupCallBack = void Function(WordGroup word);
 class WordGroupTile extends StatefulWidget {
   const WordGroupTile({
     this.key,
-    required this.word,
+    required this.wordGroup,
     this.heroTag,
-    this.onWordGroupTap,
+    required this.onWordTap,
   }) : super(key: key);
 
   final Key? key;
-  final WordGroup word;
+  final WordGroup wordGroup;
   final String? heroTag;
-  final WordGroupCallBack? onWordGroupTap;
+  final WordBaseCallBack onWordTap;
 
   @override
   State<WordGroupTile> createState() => _WordGroupTileState();
@@ -62,19 +62,19 @@ class _WordGroupTileState extends State<WordGroupTile> with SingleTickerProvider
                       onTap: () {
                         toggleOverlay(
                           WordGroupTileExpanded(
-                            selectedWordGroup: widget.word,
+                            selectedWordGroup: widget.wordGroup,
                             onClose: removeOverlay,
                             onRemoveWord: (_) {},
                             onTitleChange: (_) {
                               //TODO(MS): implement text controller with a listener that updates this widget on change
                             },
-                            onWordTap: (_){},
+                            onWordTap: widget.onWordTap,
                           ),
                         );
                       },
                       child: MultiImage(
-                        key: ValueKey(widget.word.hashCode),
-                        images: widget.word.getImageList(),
+                        key: ValueKey(widget.wordGroup.hashCode),
+                        images: widget.wordGroup.getImageList(),
                         heroTag: widget.heroTag,
                         fadeIn: true,
                       ),
@@ -86,7 +86,7 @@ class _WordGroupTileState extends State<WordGroupTile> with SingleTickerProvider
           ),
           _buildSmallMargin(),
           Text(
-            widget.word.displayName,
+            widget.wordGroup.displayName,
             maxLines: 2,
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
