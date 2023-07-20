@@ -19,11 +19,9 @@ class WordSubTypeView extends StatefulWidget {
   const WordSubTypeView({
     super.key,
     required this.wordSubType,
-    required this.wordGroupTapCallBack,
   });
 
   final WordSubType wordSubType;
-  final WordGroupCallBack wordGroupTapCallBack;
 
   @override
   State<WordSubTypeView> createState() => _WordSubTypeViewState();
@@ -108,7 +106,6 @@ class _WordSubTypeViewState extends State<WordSubTypeView> with AutomaticKeepAli
     return WordGroupTile(
       word: word,
       key: ValueKey(word.id),
-      onWordGroupTap: widget.wordGroupTapCallBack,
     );
   }
 

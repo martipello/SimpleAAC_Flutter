@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:simple_aac/api/models/sentence.dart';
 import 'package:simple_aac/api/models/word.dart';
 import 'package:simple_aac/api/models/word_group.dart';
-import 'package:simple_aac/ui/shared_widgets/overlay_state_mixin.dart';
 import 'package:simple_aac/ui/shared_widgets/sentence_tile.dart';
 import 'package:simple_aac/ui/shared_widgets/simple_aac_tile.dart';
 import 'package:simple_aac/ui/shared_widgets/word_tile.dart';
@@ -15,7 +14,7 @@ import '../theme/simple_aac_text.dart';
 typedef WordBaseCallBack = void Function(WordBase wordBase);
 typedef StringCallBack = void Function(String string);
 
-class WordGroupTileExpanded extends StatefulWidget {
+class WordGroupTileExpanded extends StatelessWidget {
   const WordGroupTileExpanded({
     Key? key,
     required this.onClose,
@@ -31,13 +30,8 @@ class WordGroupTileExpanded extends StatefulWidget {
   final WordBaseCallBack onWordTap;
   final StringCallBack onTitleChange;
 
-  @override
-  State<WordGroupTileExpanded> createState() => _WordGroupTileExpandedState();
-}
-
-class _WordGroupTileExpandedState extends State<WordGroupTileExpanded> with OverlayStateMixin {
   Widget build(BuildContext context) {
-    final selectedWordGroup = this.widget.selectedWordGroup;
+    final selectedWordGroup = this.selectedWordGroup;
       return _buildWordGroupExpandedContent(
         context,
         selectedWordGroup,
@@ -97,7 +91,7 @@ class _WordGroupTileExpandedState extends State<WordGroupTileExpanded> with Over
               icon: const Icon(
                 Icons.close,
               ),
-              onPressed: removeOverlay,
+              onPressed: onClose,
             ),
           )
         ],
@@ -122,15 +116,15 @@ class _WordGroupTileExpandedState extends State<WordGroupTileExpanded> with Over
           return WordTile(
             word: word,
             fadeImageIn: false,
-            closeButtonOnTap: widget.onRemoveWord,
-            wordTapCallBack: widget.onWordTap,
+            closeButtonOnTap: onRemoveWord,
+            wordTapCallBack: onWordTap,
           );
         } else if (word is Sentence) {
           return SentenceTile(
             sentence: word,
             fadeImageIn: false,
-            closeButtonOnTap: widget.onRemoveWord,
-            sentenceTapCallBack: widget.onWordTap,
+            closeButtonOnTap: onRemoveWord,
+            sentenceTapCallBack: onWordTap,
           );
         }
         throw Exception('Unknown word type');

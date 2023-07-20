@@ -1,13 +1,8 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:great_list_view/ticker_mixin.dart';
-import 'package:simple_aac/extensions/build_context_extension.dart';
-import 'package:simple_aac/ui/shared_widgets/view_constraint.dart';
 
 import '../../api/models/word.dart';
-import '../../api/models/word_group.dart';
 import '../../api/models/word_type.dart';
 import '../../dependency_injection_container.dart';
 import '../../extensions/string_extension.dart';
@@ -18,8 +13,6 @@ import '../intro/intro_page.dart';
 import '../manage_word_view.dart';
 import '../settings_view.dart';
 import '../shared_widgets/app_bar.dart';
-import '../shared_widgets/word_group_tile_expanded.dart';
-import '../shared_widgets/word_group_tile_expanded_view_model.dart';
 import '../theme/simple_aac_text.dart';
 import '../word_type_views/word_type_view.dart';
 import 'related_words_widget.dart';
@@ -47,20 +40,6 @@ class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin
   final sharedPreferences = getIt.get<SharedPreferencesService>();
   final selectedWordsViewModel = getIt.get<SelectedWordsViewModel>();
 
-  final wordGroupTileExpandedViewModel = getIt.get<WordGroupTileExpandedViewModel>();
-  late final _expandedGroupRevealAnimationController = AnimationController(
-    vsync: this,
-    duration: _duration,
-    lowerBound: 0.0,
-    upperBound: 1.0,
-  );
-
-  late final _circleRevealAnimation = CurvedAnimation(
-    parent: _expandedGroupRevealAnimationController,
-    curve: Curves.easeIn,
-  );
-
-  final _duration = const Duration(milliseconds: 300);
   var _selectedIndex = 0;
 
   @override
@@ -72,18 +51,11 @@ class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin
     selectedWordsViewModel.relatedWords.listen((value) {
       // print('predictionsForSelectedWord WORD $value');
     });
-    wordGroupTileExpandedViewModel.isExpanded.listen((value) {
-      if (value) {
-        _expandedGroupRevealAnimationController.forward();
-      } else {
-        _expandedGroupRevealAnimationController.reverse();
-      }
-    });
   }
 
   @override
   void dispose() {
-    _expandedGroupRevealAnimationController.dispose();
+    // _expandedGroupRevealAnimationController.dispose();
     super.dispose();
   }
 
@@ -106,57 +78,18 @@ class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin
   }
 
   Widget _buildAppBody() {
-    return Stack(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeroHolder(),
-            WordType.values
-                .map(
-                  (wordType) => WordTypeView(
-                    wordType: wordType,
-                    wordGroupTapCallBack: (word) {
-                      wordGroupTileExpandedViewModel.setWordGroup(word);
-                      wordGroupTileExpandedViewModel.toggleExpandedUIState();
-                    },
-                  ),
-                )
-                .elementAt(_selectedIndex)
-          ],
-        ),
-        //This is where the layout converges as our WordGroupTileExpanded needs to take the entire screen
-        //TODO(MS): Future improvement would be to allow for 2 groups to be open and having drop targets for editing groups on the fly
-        StreamBuilder<WordGroup>(
-          stream: wordGroupTileExpandedViewModel.selectedWordGroup,
-          builder: (context, selectedWordGroupSnapshot) {
-            final selectedWordGroup = selectedWordGroupSnapshot.data;
-            return Positioned.fill(
-              child: ViewConstraint(
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: CircularRevealAnimation(
-                    animation: _circleRevealAnimation,
-                    child: selectedWordGroup != null
-                        ? _buildWordGroupTileExpanded(selectedWordGroup)
-                        : const SizedBox(),
-                  ),
-                ),
+        _buildHeroHolder(),
+        WordType.values
+            .map(
+              (wordType) => WordTypeView(
+                wordType: wordType,
               ),
-            );
-          },
-        ),
+            )
+            .elementAt(_selectedIndex)
       ],
-    );
-  }
-
-  Widget _buildWordGroupTileExpanded(WordGroup selectedWordGroup) {
-    return WordGroupTileExpanded(
-      selectedWordGroup: selectedWordGroup,
-      onClose: wordGroupTileExpandedViewModel.toggleExpandedUIState,
-      onRemoveWord: (_) {},
-      onTitleChange: (_) {},
-      onWordTap: selectedWordsViewModel.addSelectedWord,
     );
   }
 

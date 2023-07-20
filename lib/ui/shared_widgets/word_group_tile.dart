@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:simple_aac/api/models/extensions/word_base_extension.dart';
 import 'package:simple_aac/api/models/word_group.dart';
 import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
+import 'package:simple_aac/ui/shared_widgets/overlay_state_mixin.dart';
+import 'package:simple_aac/ui/shared_widgets/word_group_tile_expanded.dart';
 
 import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 
 typedef WordGroupCallBack = void Function(WordGroup word);
 
-class WordGroupTile extends StatelessWidget {
+class WordGroupTile extends StatefulWidget {
   const WordGroupTile({
     this.key,
     required this.word,
-    this.heroTag, this.onWordGroupTap,
+    this.heroTag,
+    this.onWordGroupTap,
   }) : super(key: key);
 
   final Key? key;
@@ -21,9 +24,15 @@ class WordGroupTile extends StatelessWidget {
   final WordGroupCallBack? onWordGroupTap;
 
   @override
+  State<WordGroupTile> createState() => _WordGroupTileState();
+}
+
+class _WordGroupTileState extends State<WordGroupTile> with SingleTickerProviderStateMixin, OverlayStateMixin {
+
+  @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      key: key,
+      key: widget.key,
       aspectRatio: 1 / 1.3,
       child: _buildWordTileContent(context),
     );
@@ -50,13 +59,23 @@ class WordGroupTile extends StatelessWidget {
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: (){
-                        onWordGroupTap?.call(word);
+                      onTap: () {
+                        toggleOverlay(
+                          WordGroupTileExpanded(
+                            selectedWordGroup: widget.word,
+                            onClose: removeOverlay,
+                            onRemoveWord: (_) {},
+                            onTitleChange: (_) {
+                              //TODO(MS): implement text controller with a listener that updates this widget on change
+                            },
+                            onWordTap: (_){},
+                          ),
+                        );
                       },
                       child: MultiImage(
-                        key: ValueKey(word.hashCode),
-                        images: word.getImageList(),
-                        heroTag: heroTag,
+                        key: ValueKey(widget.word.hashCode),
+                        images: widget.word.getImageList(),
+                        heroTag: widget.heroTag,
                         fadeIn: true,
                       ),
                     ),
@@ -67,7 +86,7 @@ class WordGroupTile extends StatelessWidget {
           ),
           _buildSmallMargin(),
           Text(
-            word.displayName,
+            widget.word.displayName,
             maxLines: 2,
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
@@ -83,7 +102,7 @@ class WordGroupTile extends StatelessWidget {
 
   SizedBox _buildSmallMargin() {
     return const SizedBox(
-          height: 4,
-        );
+      height: 4,
+    );
   }
 }

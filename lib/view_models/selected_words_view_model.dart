@@ -17,7 +17,7 @@ class SelectedWordsViewModel {
   final WordBaseService wordService;
 
   final selectedWords = BehaviorSubject<BuiltList<WordBase>>.seeded(
-    BuiltList<Word>.of([]),
+    BuiltList<WordBase>.of([]),
   );
 
   final relatedWords = BehaviorSubject<BuiltList<Word>>.seeded(
