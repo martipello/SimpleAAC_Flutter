@@ -1,6 +1,10 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:great_list_view/ticker_mixin.dart';
+import 'package:simple_aac/extensions/build_context_extension.dart';
+import 'package:simple_aac/ui/shared_widgets/view_constraint.dart';
 
 import '../../api/models/word.dart';
 import '../../api/models/word_group.dart';
@@ -39,12 +43,24 @@ class AppShell extends StatefulWidget {
   _AppShellState createState() => _AppShellState();
 }
 
-class _AppShellState extends State<AppShell> {
+class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin {
   final sharedPreferences = getIt.get<SharedPreferencesService>();
   final selectedWordsViewModel = getIt.get<SelectedWordsViewModel>();
 
   final wordGroupTileExpandedViewModel = getIt.get<WordGroupTileExpandedViewModel>();
+  late final _expandedGroupRevealAnimationController = AnimationController(
+    vsync: this,
+    duration: _duration,
+    lowerBound: 0.0,
+    upperBound: 1.0,
+  );
 
+  late final _circleRevealAnimation = CurvedAnimation(
+    parent: _expandedGroupRevealAnimationController,
+    curve: Curves.easeIn,
+  );
+
+  final _duration = const Duration(milliseconds: 300);
   var _selectedIndex = 0;
 
   @override
@@ -56,6 +72,19 @@ class _AppShellState extends State<AppShell> {
     selectedWordsViewModel.relatedWords.listen((value) {
       // print('predictionsForSelectedWord WORD $value');
     });
+    wordGroupTileExpandedViewModel.isExpanded.listen((value) {
+      if (value) {
+        _expandedGroupRevealAnimationController.forward();
+      } else {
+        _expandedGroupRevealAnimationController.reverse();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _expandedGroupRevealAnimationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -85,43 +114,49 @@ class _AppShellState extends State<AppShell> {
             _buildHeroHolder(),
             WordType.values
                 .map(
-                  (wordType) =>
-                  WordTypeView(
+                  (wordType) => WordTypeView(
                     wordType: wordType,
-                    wordGroupTapCallBack: (word){
-                        wordGroupTileExpandedViewModel.setWordGroup(word);
-                        wordGroupTileExpandedViewModel.toggleExpandedUIState();
-                      }
+                    wordGroupTapCallBack: (word) {
+                      wordGroupTileExpandedViewModel.setWordGroup(word);
+                      wordGroupTileExpandedViewModel.toggleExpandedUIState();
+                    },
                   ),
-            )
+                )
                 .elementAt(_selectedIndex)
           ],
         ),
-
-        StreamBuilder<bool>(
-            stream: wordGroupTileExpandedViewModel.isExpanded,
-            builder: (context, isExpandedSnapshot) {
-              return StreamBuilder<WordGroup>(
-                stream: wordGroupTileExpandedViewModel.selectedWordGroup,
-                builder: (context, selectedWordGroupSnapshot) {
-                  final selectedWordGroup = selectedWordGroupSnapshot.data;
-                  final isExpanded = isExpandedSnapshot.data == true;
-                  if (isExpanded)
-                    return Positioned.fill(
-                      child: WordGroupTileExpanded(
-                        selectedWordGroup: selectedWordGroup,
-                        isExpanded: isExpanded,
-                        onClose: () {
-                          wordGroupTileExpandedViewModel.toggleExpandedUIState();
-                        },
-                      ),
-                    );
-                  return const SizedBox();
-                },
-              );
-            }
+        //This is where the layout converges as our WordGroupTileExpanded needs to take the entire screen
+        //TODO(MS): Future improvement would be to allow for 2 groups to be open and having drop targets for editing groups on the fly
+        StreamBuilder<WordGroup>(
+          stream: wordGroupTileExpandedViewModel.selectedWordGroup,
+          builder: (context, selectedWordGroupSnapshot) {
+            final selectedWordGroup = selectedWordGroupSnapshot.data;
+            return Positioned.fill(
+              child: ViewConstraint(
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: CircularRevealAnimation(
+                    animation: _circleRevealAnimation,
+                    child: selectedWordGroup != null
+                        ? _buildWordGroupTileExpanded(selectedWordGroup)
+                        : const SizedBox(),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ],
+    );
+  }
+
+  Widget _buildWordGroupTileExpanded(WordGroup selectedWordGroup) {
+    return WordGroupTileExpanded(
+      selectedWordGroup: selectedWordGroup,
+      onClose: wordGroupTileExpandedViewModel.toggleExpandedUIState,
+      onRemoveWord: (_) {},
+      onTitleChange: (_) {},
+      onWordTap: selectedWordsViewModel.addSelectedWord,
     );
   }
 
@@ -260,7 +295,7 @@ class _AppShellState extends State<AppShell> {
       currentIndex: _selectedIndex,
       onTap: (index) {
         setState(
-              () {
+          () {
             _selectedIndex = index;
           },
         );
@@ -271,12 +306,11 @@ class _AppShellState extends State<AppShell> {
   List<BottomNavigationBarItem> _bottomNavigationBarItems() {
     return WordType.values
         .map(
-          (e) =>
-          BottomNavigationBarItem(
+          (e) => BottomNavigationBarItem(
             icon: const Icon(Icons.add),
             label: e.name.capitalize(),
           ),
-    )
+        )
         .toList();
   }
 
@@ -326,9 +360,11 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  Widget _buildMenuItem(BuildContext context,
-      String label,
-      IconData icon,) {
+  Widget _buildMenuItem(
+    BuildContext context,
+    String label,
+    IconData icon,
+  ) {
     return Row(
       children: [
         Icon(

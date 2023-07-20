@@ -56,7 +56,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   @override
   void dispose() {
     //TODO the below needs to be uncommented
-    // _controller.dispose();
+    _controller.dispose();
     // multiImageViewModel.dispose();
     super.dispose();
   }
