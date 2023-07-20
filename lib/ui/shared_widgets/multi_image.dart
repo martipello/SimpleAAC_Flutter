@@ -1,15 +1,15 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_aac/dependency_injection_container.dart';
-import 'package:simple_aac/extensions/build_context_extension.dart';
-import 'package:simple_aac/ui/shared_widgets/simple_aac_loading_widget.dart';
-import 'package:simple_aac/ui/shared_widgets/view_model/multi_image_view_model.dart';
-import 'package:simple_aac/ui/theme/simple_aac_text.dart';
+import '../../dependency_injection_container.dart';
+import '../../extensions/build_context_extension.dart';
+import 'simple_aac_loading_widget.dart';
+import 'view_model/multi_image_view_model.dart';
+import '../theme/simple_aac_text.dart';
 
 class MultiImage extends StatefulWidget {
   const MultiImage({
-    Key? key,
     required this.images,
+    final Key? key,
     this.heroTag,
     this.fadeIn = true,
     this.spacing = 4.0,
@@ -35,7 +35,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
     super.initState();
     _initAnimationController();
     multiImageViewModel.fourImages.listen(
-      (event) {
+      (final event) {
         if (event.isNotEmpty && widget.fadeIn) {
           _controller.forward();
         }
@@ -48,8 +48,8 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
-      lowerBound: 0.0,
-      upperBound: 1.0,
+      lowerBound: 0,
+      upperBound: 1,
     );
   }
 
@@ -62,7 +62,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return widget.heroTag != null
         ? wrapWithHero(
             _buildImageLoader(context),
@@ -71,10 +71,10 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
         : _buildImageLoader(context);
   }
 
-  Widget _buildImageLoader(BuildContext context) {
+  Widget _buildImageLoader(final BuildContext context) {
     return StreamBuilder<Iterable<ImageInfo?>>(
       stream: multiImageViewModel.fourImages,
-      builder: (context, snapshot) {
+      builder: (final context, final snapshot) {
         final isLoading = snapshot.connectionState == ConnectionState.waiting;
         final imageInfoList = BuiltList.of(snapshot.data ?? <ImageInfo>[]);
         return Stack(
@@ -89,7 +89,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   }
 
   Widget _buildImageHolder(
-    BuiltList<ImageInfo?> imageInfoList,
+    final BuiltList<ImageInfo?> imageInfoList,
   ) {
     final imageContent = imageInfoList.whereType<ImageInfo>().toBuiltList();
     switch (imageContent.length) {
@@ -106,14 +106,14 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
     }
   }
 
-  Widget _buildOneImage(ImageInfo imageInfo) {
+  Widget _buildOneImage(final ImageInfo imageInfo) {
     return _buildImageMaybeFadeInWrapper(
       imageInfo,
     );
   }
 
   Widget _buildTwoImages(
-    BuiltList<ImageInfo> imageInfoList,
+    final BuiltList<ImageInfo> imageInfoList,
   ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -134,7 +134,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   }
 
   Widget _buildThreeImages(
-    BuiltList<ImageInfo> imageInfoList,
+    final BuiltList<ImageInfo> imageInfoList,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -175,7 +175,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   }
 
   Widget _buildFourOrMoreImages(
-    BuiltList<ImageInfo> imageInfoList,
+    final BuiltList<ImageInfo> imageInfoList,
   ) {
     final isMoreThanFour = widget.images.length > 4;
 
@@ -220,7 +220,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
                     ),
                     if (isMoreThanFour)
                       Positioned.fill(
-                        child: Container(
+                        child: ColoredBox(
                           color: context.themeColors.background.withOpacity(0.5),
                           child: Center(
                             child: Text(
@@ -243,8 +243,8 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   }
 
   Widget wrapWithHero(
-    Widget child,
-    String heroTag,
+    final Widget child,
+    final String heroTag,
   ) {
     return Hero(
       tag: heroTag,
@@ -254,7 +254,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   }
 
   Widget _buildImageMaybeFadeInWrapper(
-    ImageInfo imageInfo,
+    final ImageInfo imageInfo,
   ) {
     if (widget.fadeIn) {
       return FadeTransition(
@@ -271,7 +271,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   }
 
   Widget _buildImage(
-    ImageInfo imageInfo,
+    final ImageInfo imageInfo,
   ) {
     return RawImage(
       image: imageInfo.image,

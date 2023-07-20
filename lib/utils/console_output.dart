@@ -6,18 +6,18 @@ class ConsoleOutput extends LogOutput {
   final String? tag;
 
   @override
-  void output(OutputEvent event) {
+  void output(final OutputEvent event) {
     // ignore: avoid_function_literals_in_foreach_calls
-    event.lines.forEach((e) => printWrapped('$tag $e'));
+    event.lines.forEach((final e) => printWrapped('$tag $e'));
   }
 
-  void printWrapped(String text) {
+  void printWrapped(final String text) {
     final pattern = RegExp('.{1,800}');
-    pattern.allMatches(text).forEach((match) => print(match.group(0)));
+    pattern.allMatches(text).forEach((final match) => print(match.group(0)));
   }
 }
 
-Logger log(String? tag) {
+Logger log(final String? tag) {
   return Logger(
     printer: PrettyPrinter(
       colors: true, // Colorful log messages

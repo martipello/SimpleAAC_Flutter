@@ -8,7 +8,7 @@ class ChipGroup extends StatelessWidget {
   final List<Widget> chips;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Wrap(
       alignment: WrapAlignment.start,
       crossAxisAlignment: WrapCrossAlignment.start,

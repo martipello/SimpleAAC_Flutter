@@ -1,5 +1,5 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:simple_aac/api/models/word_group.dart';
+import '../api/models/word_group.dart';
 
 import '../api/models/word_sub_type.dart';
 import 'language_service.dart';
@@ -11,10 +11,10 @@ class SentenceService {
 
   final LanguageService languageService;
 
-  Future<BuiltList<WordGroup>> getAllForType(WordSubType wordSubType) async {
+  Future<BuiltList<WordGroup>> getAllForType(final WordSubType wordSubType) async {
     final currentLanguage = await languageService.getCurrentLanguage();
     final wordGroups = currentLanguage.wordGroups;
-    return wordGroups.where((w) => w.subType == wordSubType).toBuiltList();
+    return wordGroups.where((final w) => w.subType == wordSubType).toBuiltList();
   }
 
   // Future<BuiltList<Sentence>> getExtraRelatedWords(Sentence sentence) async {
@@ -41,19 +41,19 @@ class SentenceService {
   //   return <Word>{...extraRelatedWords, ...relatedWords}.toBuiltList();
   // }
 
-  Future<BuiltList<WordGroup>> getWordGroupsForIds(BuiltList<String> ids) async {
+  Future<BuiltList<WordGroup>> getWordGroupsForIds(final BuiltList<String> ids) async {
     final currentLanguage = await languageService.getCurrentLanguage();
     return currentLanguage.wordGroups
         .where(
-          (wordGroup) => ids.any(
-            (id) => wordGroup.id == id,
+          (final wordGroup) => ids.any(
+            (final id) => wordGroup.id == id,
           ),
         )
         .toBuiltList();
   }
 
   void addListener(
-    WordGroupListCallBack wordGroupListCallBack,
+    final WordGroupListCallBack wordGroupListCallBack,
   ) {
     languageService.addListener(
       _getSentenceListCallbackWrapper(
@@ -63,7 +63,7 @@ class SentenceService {
   }
 
   void removeListener(
-    WordGroupListCallBack wordGroupListCallBack,
+    final WordGroupListCallBack wordGroupListCallBack,
   ) {
     languageService.removeListener(
       _getSentenceListCallbackWrapper(
@@ -73,9 +73,9 @@ class SentenceService {
   }
 
   LanguageCallBack _getSentenceListCallbackWrapper(
-    WordGroupListCallBack wordGroupListCallBack,
+    final WordGroupListCallBack wordGroupListCallBack,
   ) {
-    return (language) {
+    return (final language) {
       wordGroupListCallBack.call(
         language.wordGroups,
       );

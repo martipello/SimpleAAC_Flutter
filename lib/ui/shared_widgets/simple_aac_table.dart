@@ -32,8 +32,8 @@ class SimpleAACTable extends StatelessWidget {
   final List<SimpleAACTableRowInfo> wordskiiTableRowInfoList;
 
   @override
-  Widget build(BuildContext context) {
-    return wordskiiTableRowInfoList.any((element) => element.label.isNotEmpty || element.child != null)
+  Widget build(final BuildContext context) {
+    return wordskiiTableRowInfoList.any((final element) => element.label.isNotEmpty || element.child != null)
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -57,8 +57,8 @@ class SimpleAACTable extends StatelessWidget {
                   2: const FlexColumnWidth(1),
                 },
                 children: [
-                  ...wordskiiTableRowInfoList.where((element) => element.label.isNotEmpty || element.child != null).map(
-                    (e) {
+                  ...wordskiiTableRowInfoList.where((final element) => element.label.isNotEmpty || element.child != null).map(
+                    (final e) {
                       return _buildTableRow(
                         context,
                         e.label,
@@ -78,20 +78,20 @@ class SimpleAACTable extends StatelessWidget {
   }
 
   TableRow _buildTableRow(
-    BuildContext context,
-    String label,
-    String? iconLabel,
-    IconData icon, {
-    VoidCallback? onPressed,
-    Widget? child,
-    Color? borderColor,
-    TextAlign? labelTextAlign,
+    final BuildContext context,
+    final String label,
+    final String? iconLabel,
+    final IconData icon, {
+    final VoidCallback? onPressed,
+    final Widget? child,
+    final Color? borderColor,
+    final TextAlign? labelTextAlign,
   }) {
     return TableRow(
       children: [
         Padding(
           padding: const EdgeInsets.only(
-            top: 8.0,
+            top: 8,
             right: 8,
           ),
           child: Row(
@@ -106,7 +106,7 @@ class SimpleAACTable extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(
-            top: 8.0,
+            top: 8,
             right: 8,
           ),
           child: Row(
@@ -135,7 +135,7 @@ class SimpleAACTable extends StatelessWidget {
                       ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: child ??
                           Text(
                             label,
@@ -153,7 +153,7 @@ class SimpleAACTable extends StatelessWidget {
     );
   }
 
-  Widget _buildBookingSubTitle(String? label, BuildContext context) {
+  Widget _buildBookingSubTitle(final String? label, final BuildContext context) {
     return Text(
       label ?? '',
       style: tableTitleTextStyle ??

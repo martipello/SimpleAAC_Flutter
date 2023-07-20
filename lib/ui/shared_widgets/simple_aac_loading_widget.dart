@@ -11,20 +11,10 @@ enum LoadingType {
 }
 
 class SimpleAACLoadingWidget extends StatelessWidget {
-  const SimpleAACLoadingWidget._({
-    Key? key,
-    this.valueColor,
-    this.width,
-    required this.loadingType,
-  }) : super(key: key);
-
-  final Color? valueColor;
-  final double? width;
-  final LoadingType loadingType;
 
   const SimpleAACLoadingWidget.circularProgressIndicator({
-    Color? valueColor,
-    double? width,
+    final Color? valueColor,
+    final double? width,
   }) : this._(
           valueColor: valueColor,
           width: width,
@@ -37,9 +27,19 @@ class SimpleAACLoadingWidget extends StatelessWidget {
           width: null,
           loadingType: LoadingType.shimmer,
         );
+  const SimpleAACLoadingWidget._({
+    required this.loadingType,
+    final Key? key,
+    this.valueColor,
+    this.width,
+  }) : super(key: key);
+
+  final Color? valueColor;
+  final double? width;
+  final LoadingType loadingType;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     switch (loadingType) {
       case LoadingType.circularProgressIndicator:
         return _buildCircularProgressIndicator(context);
@@ -49,7 +49,7 @@ class SimpleAACLoadingWidget extends StatelessWidget {
   }
 
   CircularProgressIndicator _buildCircularProgressIndicator(
-    BuildContext context,
+    final BuildContext context,
   ) {
     return CircularProgressIndicator(
       strokeWidth: width ?? 4.0,
@@ -63,12 +63,12 @@ class SimpleAACLoadingWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildShimmer(BuildContext context) {
+  Widget _buildShimmer(final BuildContext context) {
     return Container(
       color: context.themeColors.primaryContainer,
     )
         .animate(
-          onPlay: (controller) => controller.repeat(),
+          onPlay: (final controller) => controller.repeat(),
         )
         .shimmer(
           duration: 1300.ms,

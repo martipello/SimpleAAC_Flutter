@@ -2,7 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:hive_built_value/hive_built_value.dart';
-import 'package:simple_aac/api/models/word_base.dart';
+import 'word_base.dart';
 
 import '../serializers/serializers.dart';
 import 'word_sub_type.dart';
@@ -13,7 +13,7 @@ part 'word.g.dart';
 @HiveType(typeId: 1)
 abstract class Word with WordBase implements Built<Word, WordBuilder> {
 
-  factory Word([void Function(WordBuilder) updates]) = _$Word;
+  factory Word([final void Function(WordBuilder) updates]) = _$Word;
   Word._();
 
   @HiveField(0)
@@ -59,7 +59,7 @@ abstract class Word with WordBase implements Built<Word, WordBuilder> {
     return serializers.serializeWith(Word.serializer, this) as Map<String, dynamic>;
   }
 
-  static Word fromJson(Map<String, dynamic> json) {
+  static Word fromJson(final Map<String, dynamic> json) {
     return serializers.deserializeWith(Word.serializer, json)!;
   }
 

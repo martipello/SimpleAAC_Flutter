@@ -13,7 +13,7 @@ void main() {
     sharedPreferencesService.addListener(() {
       expect(sharedPreferencesService.hasRelatedWordsEnabled, true);
     });
-    var hasRelatedWordsEnabled = sharedPreferencesService.hasRelatedWordsEnabled;
+    final hasRelatedWordsEnabled = sharedPreferencesService.hasRelatedWordsEnabled;
     expect(hasRelatedWordsEnabled, false);
     sharedPreferencesService.setRelatedWordsEnabled(true);
   });

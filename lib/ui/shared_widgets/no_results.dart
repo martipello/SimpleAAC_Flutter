@@ -4,7 +4,7 @@ import '../theme/simple_aac_text.dart';
 
 class NoResults extends StatelessWidget {
   const NoResults({
-    Key? key,
+    final Key? key,
     this.emptyMessage,
     this.emptyImage,
   }) : super(key: key);
@@ -13,10 +13,10 @@ class NoResults extends StatelessWidget {
   final Widget? emptyImage;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -31,7 +31,7 @@ class NoResults extends StatelessWidget {
             ),
             const Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: 36.0,
+                horizontal: 36,
               ),
               child: Text(
                 'No results. Try swiping down to refresh.',

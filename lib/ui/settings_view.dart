@@ -23,22 +23,22 @@ class _SettingsViewState extends State<SettingsView> {
   final _languageViewModel = getIt.get<LanguageViewModel>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ChangeNotifierBuilder(
       notifier: _sharedPreferenceService,
-      builder: (context, _, __) {
+      builder: (final context, final _, final __) {
         final _hasRelatedWordsEnabled = _sharedPreferenceService.hasRelatedWordsEnabled;
         return Scaffold(
           appBar: _settingsAppBar(),
           body: FutureBuilder<Language>(
             future: _languageViewModel.getCurrentLanguage(),
-            builder: (context, snapshot) {
+            builder: (final context, final snapshot) {
               final _currentLanguage = snapshot.data;
               return _buildSettingsList(
                 _currentLanguage,
                 _hasRelatedWordsEnabled,
               );
-            }
+            },
           ),
         );
       },
@@ -46,8 +46,8 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   Widget _buildSettingsList(
-    Language? currentLanguage,
-    bool _hasRelatedWordsEnabled,
+    final Language? currentLanguage,
+    final bool _hasRelatedWordsEnabled,
   ) {
     return SettingsList(
       sections: [
@@ -74,7 +74,7 @@ class _SettingsViewState extends State<SettingsView> {
       tiles: [
         SettingsTile.switchTile(
           initialValue: isDark,
-          onToggle: (_) {
+          onToggle: (final _) {
             if (isDark) {
               context.themeViewModel.setThemeMode(ThemeMode.light);
             } else {
@@ -103,7 +103,7 @@ class _SettingsViewState extends State<SettingsView> {
             'Current theme $currentThemeName',
             style: SimpleAACText.body1Style,
           ),
-          onPressed: (_) {
+          onPressed: (final _) {
             Navigator.of(context).pushNamed(ThemeView.routeName);
           },
         ),
@@ -112,7 +112,7 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   SettingsSection _buildLanguageSettingsSection(
-    Language? currentLanguage,
+    final Language? currentLanguage,
   ) {
     return SettingsSection(
       title: const Text(
@@ -125,7 +125,7 @@ class _SettingsViewState extends State<SettingsView> {
             'Current Language is ${currentLanguage?.displayName ?? 'Default'}',
             style: SimpleAACText.body1Style,
           ),
-          onPressed: (_) {
+          onPressed: (final _) {
             Navigator.of(context).pushNamed(
               LanguageView.routeName,
             );
@@ -136,7 +136,7 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   SettingsSection _buildPredictionsSettingsSection(
-    bool _hasRelatedWordsEnabled,
+    final bool _hasRelatedWordsEnabled,
   ) {
     return SettingsSection(
       title: const Text(

@@ -38,7 +38,7 @@ class FilePickerViewModel {
     }
   }
 
-  void removeImage(XFile imageFile) {
+  void removeImage(final XFile imageFile) {
     final _pickedFileList = pickedFileList.value;
     _pickedFileList?.remove(imageFile);
     pickedFileList.add(_pickedFileList);

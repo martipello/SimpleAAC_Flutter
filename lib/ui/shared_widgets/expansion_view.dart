@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class ExpansionView extends StatefulWidget {
   const ExpansionView({
+    required this.title,
     required this.child,
     this.expandedTitle,
-    required this.title,
     this.alignment = MainAxisAlignment.center,
   });
 
@@ -31,7 +31,7 @@ class _ExpansionViewState extends State<ExpansionView> with TickerProviderStateM
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -76,7 +76,7 @@ class _ExpansionViewState extends State<ExpansionView> with TickerProviderStateM
             });
           },
           child: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+            padding: const EdgeInsets.only(top: 8),
             child: Row(
               mainAxisAlignment: widget.alignment,
               children: <Widget>[
@@ -85,7 +85,7 @@ class _ExpansionViewState extends State<ExpansionView> with TickerProviderStateM
                   width: 8,
                 ),
                 RotationTransition(
-                  turns: Tween(begin: 0.0, end: 0.5).animate(_controller),
+                  turns: Tween<double>(begin: 0, end: 0.5).animate(_controller),
                   child: const Icon(
                     Icons.keyboard_arrow_down,
                   ),

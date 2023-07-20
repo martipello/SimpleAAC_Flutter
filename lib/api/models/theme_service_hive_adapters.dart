@@ -7,13 +7,13 @@ import '../../ui/theme/adaptive_theme.dart';
 /// A Hive data type adapter for enum [ThemeMode].
 class ThemeModeAdapter extends TypeAdapter<ThemeMode> {
   @override
-  ThemeMode read(BinaryReader reader) {
+  ThemeMode read(final BinaryReader reader) {
     final index = reader.readInt();
     return ThemeMode.values[index];
   }
 
   @override
-  void write(BinaryWriter writer, ThemeMode obj) {
+  void write(final BinaryWriter writer, final ThemeMode obj) {
     writer.writeInt(obj.index);
   }
 
@@ -24,13 +24,13 @@ class ThemeModeAdapter extends TypeAdapter<ThemeMode> {
 /// A Hive data type adapter for class [Color].
 class ColorAdapter extends TypeAdapter<Color> {
   @override
-  Color read(BinaryReader reader) {
+  Color read(final BinaryReader reader) {
     final value = reader.readInt();
     return Color(value);
   }
 
   @override
-  void write(BinaryWriter writer, Color obj) {
+  void write(final BinaryWriter writer, final Color obj) {
     writer.writeInt(obj.value);
   }
 
@@ -41,13 +41,13 @@ class ColorAdapter extends TypeAdapter<Color> {
 /// A Hive data type adapter for enum [FlexScheme].
 class FlexSchemeAdapter extends TypeAdapter<FlexScheme> {
   @override
-  FlexScheme read(BinaryReader reader) {
+  FlexScheme read(final BinaryReader reader) {
     final index = reader.readInt();
     return FlexScheme.values[index];
   }
 
   @override
-  void write(BinaryWriter writer, FlexScheme obj) {
+  void write(final BinaryWriter writer, final FlexScheme obj) {
     writer.writeInt(obj.index);
   }
 
@@ -58,13 +58,13 @@ class FlexSchemeAdapter extends TypeAdapter<FlexScheme> {
 /// A Hive data type adapter for enum [FlexSurfaceMode].
 class FlexSurfaceModeAdapter extends TypeAdapter<FlexSurfaceMode> {
   @override
-  FlexSurfaceMode read(BinaryReader reader) {
+  FlexSurfaceMode read(final BinaryReader reader) {
     final index = reader.readInt();
     return FlexSurfaceMode.values[index];
   }
 
   @override
-  void write(BinaryWriter writer, FlexSurfaceMode obj) {
+  void write(final BinaryWriter writer, final FlexSurfaceMode obj) {
     writer.writeInt(obj.index);
   }
 
@@ -75,13 +75,13 @@ class FlexSurfaceModeAdapter extends TypeAdapter<FlexSurfaceMode> {
 /// A Hive data type adapter for enum [FlexInputBorderType].
 class FlexInputBorderTypeAdapter extends TypeAdapter<FlexInputBorderType> {
   @override
-  FlexInputBorderType read(BinaryReader reader) {
+  FlexInputBorderType read(final BinaryReader reader) {
     final index = reader.readInt();
     return FlexInputBorderType.values[index];
   }
 
   @override
-  void write(BinaryWriter writer, FlexInputBorderType obj) {
+  void write(final BinaryWriter writer, final FlexInputBorderType obj) {
     writer.writeInt(obj.index);
   }
 
@@ -92,13 +92,13 @@ class FlexInputBorderTypeAdapter extends TypeAdapter<FlexInputBorderType> {
 /// A Hive data type adapter for enum [FlexAppBarStyle].
 class FlexAppBarStyleAdapter extends TypeAdapter<FlexAppBarStyle> {
   @override
-  FlexAppBarStyle read(BinaryReader reader) {
+  FlexAppBarStyle read(final BinaryReader reader) {
     final index = reader.readInt();
     return FlexAppBarStyle.values[index];
   }
 
   @override
-  void write(BinaryWriter writer, FlexAppBarStyle obj) {
+  void write(final BinaryWriter writer, final FlexAppBarStyle obj) {
     writer.writeInt(obj.index);
   }
 
@@ -112,7 +112,7 @@ class FlexAppBarStyleAdapter extends TypeAdapter<FlexAppBarStyle> {
 /// index range as null value.
 class FlexTabBarStyleAdapter extends TypeAdapter<FlexTabBarStyle?> {
   @override
-  FlexTabBarStyle? read(BinaryReader reader) {
+  FlexTabBarStyle? read(final BinaryReader reader) {
     final index = reader.readInt();
     if (index < 0 || index >= FlexTabBarStyle.values.length) {
       return null;
@@ -122,7 +122,7 @@ class FlexTabBarStyleAdapter extends TypeAdapter<FlexTabBarStyle?> {
   }
 
   @override
-  void write(BinaryWriter writer, FlexTabBarStyle? obj) {
+  void write(final BinaryWriter writer, final FlexTabBarStyle? obj) {
     writer.writeInt(obj?.index ?? -1);
   }
 
@@ -133,13 +133,13 @@ class FlexTabBarStyleAdapter extends TypeAdapter<FlexTabBarStyle?> {
 /// A Hive data type adapter for enum [FlexSystemNavBarStyle].
 class FlexSystemNavBarStyleAdapter extends TypeAdapter<FlexSystemNavBarStyle> {
   @override
-  FlexSystemNavBarStyle read(BinaryReader reader) {
+  FlexSystemNavBarStyle read(final BinaryReader reader) {
     final index = reader.readInt();
     return FlexSystemNavBarStyle.values[index];
   }
 
   @override
-  void write(BinaryWriter writer, FlexSystemNavBarStyle obj) {
+  void write(final BinaryWriter writer, final FlexSystemNavBarStyle obj) {
     writer.writeInt(obj.index);
   }
 
@@ -153,7 +153,7 @@ class FlexSystemNavBarStyleAdapter extends TypeAdapter<FlexSystemNavBarStyle> {
 /// index range as null value.
 class FlexSchemeColorAdapter extends TypeAdapter<SchemeColor?> {
   @override
-  SchemeColor? read(BinaryReader reader) {
+  SchemeColor? read(final BinaryReader reader) {
     final index = reader.readInt();
     if (index < 0 || index >= SchemeColor.values.length) {
       return null;
@@ -163,7 +163,7 @@ class FlexSchemeColorAdapter extends TypeAdapter<SchemeColor?> {
   }
 
   @override
-  void write(BinaryWriter writer, SchemeColor? obj) {
+  void write(final BinaryWriter writer, final SchemeColor? obj) {
     writer.writeInt(obj?.index ?? -1);
   }
 
@@ -175,13 +175,13 @@ class FlexSchemeColorAdapter extends TypeAdapter<SchemeColor?> {
 class NavigationDestinationLabelBehaviorAdapter
     extends TypeAdapter<NavigationDestinationLabelBehavior> {
   @override
-  NavigationDestinationLabelBehavior read(BinaryReader reader) {
+  NavigationDestinationLabelBehavior read(final BinaryReader reader) {
     final index = reader.readInt();
     return NavigationDestinationLabelBehavior.values[index];
   }
 
   @override
-  void write(BinaryWriter writer, NavigationDestinationLabelBehavior obj) {
+  void write(final BinaryWriter writer, final NavigationDestinationLabelBehavior obj) {
     writer.writeInt(obj.index);
   }
 
@@ -193,13 +193,13 @@ class NavigationDestinationLabelBehaviorAdapter
 class NavigationRailLabelTypeAdapter
     extends TypeAdapter<NavigationRailLabelType> {
   @override
-  NavigationRailLabelType read(BinaryReader reader) {
+  NavigationRailLabelType read(final BinaryReader reader) {
     final index = reader.readInt();
     return NavigationRailLabelType.values[index];
   }
 
   @override
-  void write(BinaryWriter writer, NavigationRailLabelType obj) {
+  void write(final BinaryWriter writer, final NavigationRailLabelType obj) {
     writer.writeInt(obj.index);
   }
 
@@ -214,7 +214,7 @@ class NavigationRailLabelTypeAdapter
 class FlexSliderIndicatorTypeAdapter
     extends TypeAdapter<FlexSliderIndicatorType?> {
   @override
-  FlexSliderIndicatorType? read(BinaryReader reader) {
+  FlexSliderIndicatorType? read(final BinaryReader reader) {
     final index = reader.readInt();
     if (index < 0 || index >= FlexSliderIndicatorType.values.length) {
       return null;
@@ -224,7 +224,7 @@ class FlexSliderIndicatorTypeAdapter
   }
 
   @override
-  void write(BinaryWriter writer, FlexSliderIndicatorType? obj) {
+  void write(final BinaryWriter writer, final FlexSliderIndicatorType? obj) {
     writer.writeInt(obj?.index ?? -1);
   }
 
@@ -238,7 +238,7 @@ class FlexSliderIndicatorTypeAdapter
 /// index range as null value.
 class ShowValueIndicatorAdapter extends TypeAdapter<ShowValueIndicator?> {
   @override
-  ShowValueIndicator? read(BinaryReader reader) {
+  ShowValueIndicator? read(final BinaryReader reader) {
     final index = reader.readInt();
     if (index < 0 || index >= ShowValueIndicator.values.length) {
       return null;
@@ -248,7 +248,7 @@ class ShowValueIndicatorAdapter extends TypeAdapter<ShowValueIndicator?> {
   }
 
   @override
-  void write(BinaryWriter writer, ShowValueIndicator? obj) {
+  void write(final BinaryWriter writer, final ShowValueIndicator? obj) {
     writer.writeInt(obj?.index ?? -1);
   }
 
@@ -266,7 +266,7 @@ class ShowValueIndicatorAdapter extends TypeAdapter<ShowValueIndicator?> {
 /// index range as null value.
 class TabBarIndicatorSizeAdapter extends TypeAdapter<TabBarIndicatorSize?> {
   @override
-  TabBarIndicatorSize? read(BinaryReader reader) {
+  TabBarIndicatorSize? read(final BinaryReader reader) {
     final index = reader.readInt();
     if (index < 0 || index >= TabBarIndicatorSize.values.length) {
       return null;
@@ -276,7 +276,7 @@ class TabBarIndicatorSizeAdapter extends TypeAdapter<TabBarIndicatorSize?> {
   }
 
   @override
-  void write(BinaryWriter writer, TabBarIndicatorSize? obj) {
+  void write(final BinaryWriter writer, final TabBarIndicatorSize? obj) {
     writer.writeInt(obj?.index ?? -1);
   }
 
@@ -290,7 +290,7 @@ class TabBarIndicatorSizeAdapter extends TypeAdapter<TabBarIndicatorSize?> {
 /// index range as null value.
 class AdaptiveThemeAdapter extends TypeAdapter<AdaptiveTheme?> {
   @override
-  AdaptiveTheme? read(BinaryReader reader) {
+  AdaptiveTheme? read(final BinaryReader reader) {
     final index = reader.readInt();
     if (index < 0 || index >= AdaptiveTheme.values.length) {
       return null;
@@ -300,7 +300,7 @@ class AdaptiveThemeAdapter extends TypeAdapter<AdaptiveTheme?> {
   }
 
   @override
-  void write(BinaryWriter writer, AdaptiveTheme? obj) {
+  void write(final BinaryWriter writer, final AdaptiveTheme? obj) {
     writer.writeInt(obj?.index ?? -1);
   }
 

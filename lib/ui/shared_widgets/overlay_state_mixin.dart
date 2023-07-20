@@ -1,7 +1,7 @@
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_aac/extensions/build_context_extension.dart';
-import 'package:simple_aac/ui/shared_widgets/view_constraint.dart';
+import '../../extensions/build_context_extension.dart';
+import 'view_constraint.dart';
 
 //TODO(MS): check if we need to be checking for isMounted
 mixin OverlayStateMixin<T extends StatefulWidget> on SingleTickerProviderStateMixin<T> {
@@ -10,8 +10,8 @@ mixin OverlayStateMixin<T extends StatefulWidget> on SingleTickerProviderStateMi
   late final _expandedGroupRevealAnimationController = AnimationController(
     vsync: this,
     duration: _duration,
-    lowerBound: 0.0,
-    upperBound: 1.0,
+    lowerBound: 0,
+    upperBound: 1,
   );
 
   late final _circleRevealAnimation = CurvedAnimation(
@@ -23,7 +23,7 @@ mixin OverlayStateMixin<T extends StatefulWidget> on SingleTickerProviderStateMi
 
   bool get isOverlayShown => _overlayEntry != null;
 
-  void toggleOverlay(Widget child) => isOverlayShown ? removeOverlay() : _insertOverlay(child);
+  void toggleOverlay(final Widget child) => isOverlayShown ? removeOverlay() : _insertOverlay(child);
 
   @override
   void dispose() {
@@ -38,7 +38,7 @@ mixin OverlayStateMixin<T extends StatefulWidget> on SingleTickerProviderStateMi
     super.didChangeDependencies();
   }
 
-  Widget _dismissibleOverlay(Widget child) {
+  Widget _dismissibleOverlay(final Widget child) {
     return Stack(
       children: [
         Positioned.fill(
@@ -56,7 +56,7 @@ mixin OverlayStateMixin<T extends StatefulWidget> on SingleTickerProviderStateMi
           alignment: Alignment.center,
           child: ViewConstraint(
             child: Padding(
-              padding: const EdgeInsets.all(32.0),
+              padding: const EdgeInsets.all(32),
               child: CircularRevealAnimation(
                 animation: _circleRevealAnimation,
                 child: child,
@@ -68,16 +68,16 @@ mixin OverlayStateMixin<T extends StatefulWidget> on SingleTickerProviderStateMi
     );
   }
 
-  void _insertOverlay(Widget child) {
+  void _insertOverlay(final Widget child) {
     _overlayEntry = OverlayEntry(
-      builder: (_) => _dismissibleOverlay(child),
+      builder: (final _) => _dismissibleOverlay(child),
     );
     Overlay.of(context).insert(_overlayEntry!);
     _expandedGroupRevealAnimationController.forward();
   }
 
 void removeOverlay() {
-    _expandedGroupRevealAnimationController.reverse().then((_) {
+    _expandedGroupRevealAnimationController.reverse().then((final _) {
       _removeOverlay();
     });
   }

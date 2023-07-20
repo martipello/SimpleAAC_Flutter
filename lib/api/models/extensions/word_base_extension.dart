@@ -1,12 +1,12 @@
-import 'package:simple_aac/api/models/word.dart';
-import 'package:simple_aac/api/models/word_base.dart';
+import '../word.dart';
+import '../word_base.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:simple_aac/api/models/word_group.dart';
+import '../word_group.dart';
 
 import '../sentence.dart';
 
 extension WordExtension on WordBase {
-  String getHeroTag(String suffix) {
+  String getHeroTag(final String suffix) {
     return '$suffix$id';
   }
 
@@ -17,13 +17,13 @@ extension WordExtension on WordBase {
     } else if (wordBase is Sentence) {
       return BuiltList<String>.from(
         wordBase.words.map(
-          (word) => word.imageList.first,
+          (final word) => word.imageList.first,
         ),
       );
     } else if (wordBase is WordGroup) {
       return BuiltList<String>.from(
         wordBase.words.map(
-          (word) => word.getImageList().first,
+          (final word) => word.getImageList().first,
         ),
       );
     }
@@ -35,12 +35,12 @@ extension WordExtension on WordBase {
     if (wordBase is Word) {
       return BuiltList<String>.of([wordBase.word]);
     } else if (wordBase is Sentence) {
-      return wordBase.words.map((word) => word.word).toBuiltList();
+      return wordBase.words.map((final word) => word.word).toBuiltList();
     }
     return BuiltList<String>();
   }
 
-  WordBase copy({String? id}) {
+  WordBase copy({final String? id}) {
     final wordBase = this;
     if (wordBase is Word) {
       return wordBase._fromWord(wordBase, id: id);
@@ -51,9 +51,9 @@ extension WordExtension on WordBase {
     }
   }
 
-  Word _fromWord(Word word, {String? id}) {
+  Word _fromWord(final Word word, {final String? id}) {
     return Word(
-      (b) => b
+      (final b) => b
         ..id = id ?? word.id
         ..usageCount = word.usageCount
         ..type = word.type
@@ -70,9 +70,9 @@ extension WordExtension on WordBase {
     );
   }
 
-  Sentence _fromSentence(Sentence sentence, {String? id}) {
+  Sentence _fromSentence(final Sentence sentence, {final String? id}) {
     return Sentence(
-      (b) => b
+      (final b) => b
         ..id = id ?? sentence.id
         ..usageCount = sentence.usageCount
         ..type = sentence.type

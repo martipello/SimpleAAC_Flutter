@@ -1,11 +1,11 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:simple_aac/api/models/word_group.dart';
+import '../../api/models/word_group.dart';
 
 class WordGroupTileExpandedViewModel {
   final isExpanded = BehaviorSubject<bool>.seeded(false);
   final selectedWordGroup = BehaviorSubject<WordGroup>();
 
-  void setWordGroup(WordGroup wordGroup) {
+  void setWordGroup(final WordGroup wordGroup) {
     selectedWordGroup.add(wordGroup);
   }
 

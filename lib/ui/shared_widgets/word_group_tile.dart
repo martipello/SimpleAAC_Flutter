@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:simple_aac/api/models/extensions/word_base_extension.dart';
-import 'package:simple_aac/api/models/word_group.dart';
-import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
-import 'package:simple_aac/ui/shared_widgets/overlay_state_mixin.dart';
-import 'package:simple_aac/ui/shared_widgets/word_group_tile_expanded.dart';
+import '../../api/models/extensions/word_base_extension.dart';
+import '../../api/models/word_group.dart';
+import 'multi_image.dart';
+import 'overlay_state_mixin.dart';
+import 'word_group_tile_expanded.dart';
 
 import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
@@ -12,10 +12,10 @@ typedef WordGroupCallBack = void Function(WordGroup word);
 
 class WordGroupTile extends StatefulWidget {
   const WordGroupTile({
-    this.key,
-    required this.wordGroup,
-    this.heroTag,
     required this.onWordTap,
+    required this.wordGroup,
+    this.key,
+    this.heroTag,
   }) : super(key: key);
 
   final Key? key;
@@ -30,7 +30,7 @@ class WordGroupTile extends StatefulWidget {
 class _WordGroupTileState extends State<WordGroupTile> with SingleTickerProviderStateMixin, OverlayStateMixin {
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AspectRatio(
       key: widget.key,
       aspectRatio: 1 / 1.3,
@@ -39,10 +39,10 @@ class _WordGroupTileState extends State<WordGroupTile> with SingleTickerProvider
   }
 
   Widget _buildWordTileContent(
-    BuildContext context,
+    final BuildContext context,
   ) {
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -64,8 +64,8 @@ class _WordGroupTileState extends State<WordGroupTile> with SingleTickerProvider
                           WordGroupTileExpanded(
                             selectedWordGroup: widget.wordGroup,
                             onClose: removeOverlay,
-                            onRemoveWord: (_) {},
-                            onTitleChange: (_) {
+                            onRemoveWord: (final _) {},
+                            onTitleChange: (final _) {
                               //TODO(MS): implement text controller with a listener that updates this widget on change
                             },
                             onWordTap: widget.onWordTap,

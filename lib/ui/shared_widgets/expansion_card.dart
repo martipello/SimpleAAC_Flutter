@@ -1,16 +1,16 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_aac/extensions/build_context_extension.dart';
-import 'package:simple_aac/ui/theme/simple_aac_text.dart';
+import '../../extensions/build_context_extension.dart';
+import '../theme/simple_aac_text.dart';
 
 typedef ExpansionCardBuilder = Widget Function(bool isExpanded);
 
 class ExpansionCard extends StatefulWidget {
   ExpansionCard({
-    Key? key,
+    required this.expandedChildren,
+    final Key? key,
     this.onTap,
     this.title,
-    required this.expandedChildren,
     this.subtitle,
     this.bottomWidgetBuilder,
     this.titleWidget,
@@ -54,7 +54,7 @@ class _ExpansionCardState extends State<ExpansionCard> with TickerProviderStateM
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(
@@ -136,7 +136,7 @@ class _ExpansionCardState extends State<ExpansionCard> with TickerProviderStateM
   Widget _buildSubtitle() {
     return Flexible(
       child: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
+        padding: const EdgeInsets.only(top: 8),
         child: Text(
           widget.subtitle ?? '',
           style: SimpleAACText.body1Style.copyWith(
@@ -149,7 +149,7 @@ class _ExpansionCardState extends State<ExpansionCard> with TickerProviderStateM
 
   Widget _buildRotatingIconButton() {
     return RotationTransition(
-      turns: Tween(begin: 0.0, end: 0.5).animate(_controller),
+      turns: Tween<double>(begin: 0, end: 0.5).animate(_controller),
       child: IconButton(
         icon: Icon(
           Icons.keyboard_arrow_down,

@@ -8,7 +8,7 @@ class ThemeService {
 
   final HiveClient<dynamic> hiveClient;
 
-  Future<void> put<T>(String key, T value) async {
+  Future<void> put<T>(final String key, final T value) async {
     return hiveClient.put(
       key,
       value,
@@ -16,8 +16,8 @@ class ThemeService {
   }
 
   Future<T> get<T>(
-    String key,
-    T defaultValue,
+    final String key,
+    final T defaultValue,
   ) async {
     final value = await hiveClient.get(
       key,
@@ -27,6 +27,6 @@ class ThemeService {
   }
 
   Future<void> dispose() async {
-    hiveClient.dispose();
+    await hiveClient.dispose();
   }
 }

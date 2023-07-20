@@ -4,10 +4,10 @@ import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 
 extension SimpleAACDialogExtension on Widget {
-  Future<bool?> show(BuildContext context) {
+  Future<bool?> show(final BuildContext context) {
     return showDialog<bool>(
       context: context,
-      builder: (context) {
+      builder: (final context) {
         return this;
       },
     );
@@ -16,8 +16,8 @@ extension SimpleAACDialogExtension on Widget {
 
 class SimpleAACDialog extends StatelessWidget {
   const SimpleAACDialog({
-    this.title,
     required this.content,
+    this.title,
     this.dialogActions,
     this.dialogButtonBar,
     this.showOkButton = false,
@@ -32,7 +32,7 @@ class SimpleAACDialog extends StatelessWidget {
   final Widget? dialogButtonBar;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Dialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -53,7 +53,7 @@ class SimpleAACDialog extends StatelessWidget {
                 title != null
                     ? Padding(
                         padding: const EdgeInsets.only(
-                          left: 16.0,
+                          left: 16,
                         ),
                         child: Text(
                           title!,
@@ -63,7 +63,7 @@ class SimpleAACDialog extends StatelessWidget {
                     : const SizedBox(),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
+                    horizontal: 8,
                   ),
                   child: IconButton(
                     splashRadius: 12,
@@ -87,7 +87,7 @@ class SimpleAACDialog extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
+              horizontal: 16,
             ),
             child: content,
           ),
@@ -124,11 +124,11 @@ class SimpleAACDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildPickerButtons(BuildContext context, List<Widget> actions) {
+  Widget _buildPickerButtons(final BuildContext context, final List<Widget> actions) {
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
-        padding: const EdgeInsets.only(right: 16.0, bottom: 8.0),
+        padding: const EdgeInsets.only(right: 16, bottom: 8),
         child: Wrap(
           spacing: actions.length > 2 ? 0 : 16,
           runSpacing: 12,
@@ -143,12 +143,12 @@ class SimpleAACDialog extends StatelessWidget {
   }
 
   List<Widget> _getActions(
-    BuildContext context,
-    List<DialogAction>? dialogActions,
+    final BuildContext context,
+    final List<DialogAction>? dialogActions,
   ) {
     return dialogActions
             ?.map(
-              (action) => _buildDialogAction(
+              (final action) => _buildDialogAction(
                 action,
                 context,
               ),
@@ -158,8 +158,8 @@ class SimpleAACDialog extends StatelessWidget {
   }
 
   Widget _buildDialogAction(
-    DialogAction action,
-    BuildContext context,
+    final DialogAction action,
+    final BuildContext context,
   ) {
     return TextButton(
       onPressed: action.actionVoidCallback,

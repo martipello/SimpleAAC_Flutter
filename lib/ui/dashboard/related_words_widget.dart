@@ -1,7 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:change_notifier_builder/change_notifier_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
+import '../shared_widgets/multi_image.dart';
 
 import '../../api/models/word.dart';
 import '../../dependency_injection_container.dart';
@@ -15,9 +15,9 @@ typedef WordIDListCallBack = void Function(BuiltList<String> word);
 
 class RelatedWordsWidget extends StatelessWidget {
   RelatedWordsWidget({
-    Key? key,
     required this.relatedWords,
     required this.onRelatedWordSelected,
+    final Key? key,
     this.onRelatedWordIdsChanged,
     this.isExpanded = false,
   }) : super(key: key);
@@ -30,10 +30,10 @@ class RelatedWordsWidget extends StatelessWidget {
   final _sharedPreferencesService = getIt.get<SharedPreferencesService>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ChangeNotifierBuilder(
       notifier: _sharedPreferencesService,
-      builder: (context, _, __) {
+      builder: (final context, final _, final __) {
         final hasRelatedWordsEnabled = _sharedPreferencesService.hasRelatedWordsEnabled;
         if (hasRelatedWordsEnabled) {
           return isExpanded ? _buildExpandedChipGroup() : _buildRelatedWordListView();
@@ -53,14 +53,14 @@ class RelatedWordsWidget extends StatelessWidget {
       ),
       scrollDirection: Axis.horizontal,
       itemCount: relatedWords.length,
-      itemBuilder: (context, index) {
+      itemBuilder: (final context, final index) {
         final word = relatedWords[index];
         return _buildRelatedWordChip(
           word,
           onDeleteWordFunction(word),
         );
       },
-      separatorBuilder: (context, index) {
+      separatorBuilder: (final context, final index) {
         return const SizedBox(
           width: 12,
         );
@@ -72,7 +72,7 @@ class RelatedWordsWidget extends StatelessWidget {
     return ChipGroup(
       chips: relatedWords
           .map(
-            (word) => _buildRelatedWordChip(
+            (final word) => _buildRelatedWordChip(
               word,
               onDeleteWordFunction(word),
             ),
@@ -82,13 +82,13 @@ class RelatedWordsWidget extends StatelessWidget {
   }
 
   Widget _buildRelatedWordChip(
-    Word word,
-    VoidCallback? onDelete,
+    final Word word,
+    final VoidCallback? onDelete,
   ) {
     return SimpleAACChip(
       label: word.word,
       icon: Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(4),
         child: ClipOval(
           clipBehavior: Clip.hardEdge,
           child: MultiImage(
@@ -107,7 +107,7 @@ class RelatedWordsWidget extends StatelessWidget {
   }
 
   VoidCallback? onDeleteWordFunction(
-    Word word,
+    final Word word,
   ) {
     final onDeleteWord = onRelatedWordIdsChanged;
     if (onDeleteWord != null) {
@@ -115,9 +115,9 @@ class RelatedWordsWidget extends StatelessWidget {
         onDeleteWord.call(
           relatedWords
               .rebuild(
-                (pb) => pb.remove(word),
+                (final pb) => pb.remove(word),
               )
-              .map((p0) => p0.id)
+              .map((final p0) => p0.id)
               .toBuiltList(),
         );
       };

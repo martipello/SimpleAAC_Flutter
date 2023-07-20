@@ -1,19 +1,19 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_aac/extensions/build_context_extension.dart';
-import 'package:simple_aac/ui/theme/theme_builder_widget.dart';
-import 'package:simple_aac/ui/theme/theme_controller.dart';
+import '../../extensions/build_context_extension.dart';
+import 'theme_builder_widget.dart';
+import 'theme_controller.dart';
 
 import '../../view_models/theme_view_model.dart';
 import '../dashboard/app_shell.dart';
 
 class ThemePreview extends StatefulWidget {
   const ThemePreview({
-    Key? key,
     required this.themeViewModel,
     required this.theme,
     required this.isDark,
+    final Key? key,
   }) : super(key: key);
 
   final ThemeViewModel themeViewModel;
@@ -29,7 +29,7 @@ class _ThemePreviewState extends State<ThemePreview> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) async {
+      (final _) async {
         await widget.themeViewModel.init(doSetSavedTheme: false);
         widget.themeViewModel.setTheme(widget.theme);
       },
@@ -37,7 +37,7 @@ class _ThemePreviewState extends State<ThemePreview> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return _buildConstrainedSizeAppWrapper(
       widget.themeViewModel,
       widget.theme,
@@ -45,8 +45,8 @@ class _ThemePreviewState extends State<ThemePreview> {
   }
 
   Widget _buildConstrainedSizeAppWrapper(
-    ThemeViewModel themeViewModel,
-    SimpleAACTheme theme,
+    final ThemeViewModel themeViewModel,
+    final SimpleAACTheme theme,
   ) {
     return Center(
       child: SizedBox(
@@ -61,13 +61,13 @@ class _ThemePreviewState extends State<ThemePreview> {
   }
 
   Widget _buildUnTappableAppWrapper(
-    ThemeViewModel themeViewModel,
-    SimpleAACTheme theme,
+    final ThemeViewModel themeViewModel,
+    final SimpleAACTheme theme,
   ) {
     return IgnorePointer(
       child: ThemeBuilderWidget(
         themeViewModel: themeViewModel,
-        themeBuilder: (themeController) {
+        themeBuilder: (final themeController) {
           return _buildApp(themeController, theme);
         },
       ),
@@ -75,8 +75,8 @@ class _ThemePreviewState extends State<ThemePreview> {
   }
 
   Widget _buildApp(
-    ThemeController themeController,
-    SimpleAACTheme theme,
+    final ThemeController themeController,
+    final SimpleAACTheme theme,
   ) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -91,7 +91,7 @@ class _ThemePreviewState extends State<ThemePreview> {
   }
 
   ThemeData _buildFlexThemeDataDark(
-    ThemeController themeController,
+    final ThemeController themeController,
   ) {
     return FlexThemeData.dark(
       useMaterial3: themeController.useMaterial3,
@@ -107,7 +107,7 @@ class _ThemePreviewState extends State<ThemePreview> {
   }
 
   ThemeData _buildFlexThemeDataLight(
-    ThemeController themeController,
+    final ThemeController themeController,
   ) {
     return FlexThemeData.light(
       useMaterial3: themeController.useMaterial3,

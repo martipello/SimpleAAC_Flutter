@@ -26,48 +26,48 @@ class SharedPreferencesService extends ChangeNotifier {
 
   bool get useBiometrics => sharedPreferences.getBool(Constants.BIOMETRIC_KEY) == true;
 
-  void setFirstTime({required bool isFirstTime}) {
+  void setFirstTime({required final bool isFirstTime}) {
     sharedPreferences.setBool(Constants.FIRST_TIME, isFirstTime);
     notifyListeners();
   }
 
   //ignore: avoid_positional_boolean_parameters
-  void setRelatedWordsEnabled(bool hasRelatedWordsEnabled) {
+  void setRelatedWordsEnabled(final bool hasRelatedWordsEnabled) {
     sharedPreferences.setBool(Constants.RELATED_WORDS, hasRelatedWordsEnabled);
     notifyListeners();
   }
 
-  void setBiometrics({required bool useBiometrics}) {
+  void setBiometrics({required final bool useBiometrics}) {
     sharedPreferences.setBool(Constants.BIOMETRIC_KEY, useBiometrics);
     notifyListeners();
   }
 
-  void setEmail(String email) {
+  void setEmail(final String email) {
     sharedPreferences.setString(Constants.EMAIL_KEY, email);
     notifyListeners();
   }
 
-  void setUserName(String userName) {
+  void setUserName(final String userName) {
     sharedPreferences.setString(Constants.USER_FIRST_NAME, userName);
     notifyListeners();
   }
 
-  void setUserLastName(String userLastName) {
+  void setUserLastName(final String userLastName) {
     sharedPreferences.setString(Constants.USER_LAST_NAME, userLastName);
     notifyListeners();
   }
 
-  void setThemeName(String themeName) {
+  void setThemeName(final String themeName) {
     sharedPreferences.setString(Constants.THEME_NAME, themeName);
     notifyListeners();
   }
 
-  void setLanguageId(String languageId) {
+  void setLanguageId(final String languageId) {
     sharedPreferences.setString(Constants.LANGUAGE_ID, languageId);
     notifyListeners();
   }
 
   static Future<bool> get firstTime => SharedPreferences.getInstance().then(
-        (sharedPreferences) => sharedPreferences.getBool(Constants.FIRST_TIME) ?? true,
+        (final sharedPreferences) => sharedPreferences.getBool(Constants.FIRST_TIME) ?? true,
       );
 }

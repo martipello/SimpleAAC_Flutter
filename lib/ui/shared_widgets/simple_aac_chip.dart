@@ -30,11 +30,11 @@ class SimpleAACChip extends StatelessWidget {
   bool get isRemovable => onDelete != null;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return _buildChipWrapper(context);
   }
 
-  Widget _buildChipWrapper(BuildContext context) {
+  Widget _buildChipWrapper(final BuildContext context) {
     return SizedBox(
       height: 32,
       child: chipType == ChipType.filter
@@ -46,7 +46,7 @@ class SimpleAACChip extends StatelessWidget {
   }
 
   Widget _buildInputChip(
-    BuildContext context,
+    final BuildContext context,
   ) {
     return InputChip(
       avatar: icon,

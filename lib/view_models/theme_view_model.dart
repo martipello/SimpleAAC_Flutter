@@ -13,7 +13,7 @@ class ThemeViewModel {
   final ThemeController themeController;
   final SharedPreferencesService sharedPreferencesService;
 
-  Future<void> init({bool doSetSavedTheme = true}) async {
+  Future<void> init({final bool doSetSavedTheme = true}) async {
     await themeController.loadAll();
     if (doSetSavedTheme) {
       await setSavedTheme();
@@ -26,14 +26,14 @@ class ThemeViewModel {
     setTheme(theme);
   }
 
-  void setTheme(SimpleAACTheme simpleAACTheme) {
+  void setTheme(final SimpleAACTheme simpleAACTheme) {
     sharedPreferencesService.setThemeName(simpleAACTheme.name);
     themeController.setUsedScheme(
       simpleAACTheme.color,
     );
   }
 
-  void setThemeMode(ThemeMode themeMode) {
+  void setThemeMode(final ThemeMode themeMode) {
     themeController.setThemeMode(
       themeMode,
     );
@@ -62,9 +62,9 @@ enum SimpleAACTheme {
 
   final FlexScheme color;
 
-  static SimpleAACTheme getTheme(String themeName) {
+  static SimpleAACTheme getTheme(final String themeName) {
     return SimpleAACTheme.values.firstWhere(
-      (theme) => theme.name == themeName,
+      (final theme) => theme.name == themeName,
       orElse: () => SimpleAACTheme.red,
     );
   }

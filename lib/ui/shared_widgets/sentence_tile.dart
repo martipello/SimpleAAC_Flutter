@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:simple_aac/api/models/extensions/word_base_extension.dart';
-import 'package:simple_aac/api/models/sentence.dart';
+import '../../api/models/extensions/word_base_extension.dart';
+import '../../api/models/sentence.dart';
 
 import '../../api/models/extensions/word_type_extension.dart';
 import '../../extensions/build_context_extension.dart';
@@ -13,8 +13,8 @@ typedef SentenceCallBack = void Function(Sentence sentence);
 
 class SentenceTile extends StatelessWidget {
   const SentenceTile({
-    this.key,
     required this.sentence,
+    this.key,
     this.heroTag,
     this.sentenceTapCallBack,
     this.isSelected = false,
@@ -37,7 +37,7 @@ class SentenceTile extends StatelessWidget {
   final bool fadeImageIn;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AspectRatio(
       aspectRatio: 1 / 1.3,
       child: SimpleAACTile(
@@ -78,10 +78,10 @@ class SentenceTile extends StatelessWidget {
   }
 
   Widget _buildWordTileContent(
-    BuildContext context,
+    final BuildContext context,
   ) {
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -98,7 +98,7 @@ class SentenceTile extends StatelessWidget {
             height: 4,
           ),
           Text(
-            sentence.words.map((wb) => wb.word).join(' '),
+            sentence.words.map((final wb) => wb.word).join(' '),
             maxLines: 2,
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,

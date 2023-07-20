@@ -19,12 +19,12 @@ class WordTypePicker extends StatelessWidget {
   final WordType? wordType;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return _buildReasonPicker(context);
   }
 
   Widget _buildReasonPicker(
-    BuildContext context,
+    final BuildContext context,
   ) {
     return DropdownButtonFormField<WordType>(
       hint: Text(
@@ -37,13 +37,13 @@ class WordTypePicker extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: wordType.getColor(context),
-            width: 2.0,
+            width: 2,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: wordType.getColor(context),
-            width: 2.0,
+            width: 2,
           ),
         ),
       ),
@@ -57,7 +57,7 @@ class WordTypePicker extends StatelessWidget {
   List<DropdownMenuItem<WordType>> _getDropdownMenuItems() {
     return WordType.values
         .map(
-          (e) => DropdownMenuItem<WordType>(
+          (final e) => DropdownMenuItem<WordType>(
             value: e,
             child: Text(
               e.name.toUpperCase(),

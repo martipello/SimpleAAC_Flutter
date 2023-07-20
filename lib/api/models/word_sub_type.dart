@@ -9,7 +9,7 @@ part 'word_sub_type.g.dart';
 
 @HiveType(typeId: 3)
 class WordSubType extends EnumClass {
-  const WordSubType._(String name) : super(name);
+  const WordSubType._(final String name) : super(name);
 
   static const WordSubType people = _$people;
   static const WordSubType animals = _$animals;
@@ -47,13 +47,13 @@ class WordSubType extends EnumClass {
   static const WordSubType learning = _$learning;
 
   static BuiltSet<WordSubType> get values => _$wordSubTypeValues;
-  static WordSubType valueOf(String name) => _$wordSubTypeValueOf(name);
+  static WordSubType valueOf(final String name) => _$wordSubTypeValueOf(name);
 
   String serialize() {
     return serializers.serializeWith(WordSubType.serializer, this) as String;
   }
 
-  static WordSubType deserialize(String string) {
+  static WordSubType deserialize(final String string) {
     return serializers.deserializeWith(WordSubType.serializer, string)!;
   }
 

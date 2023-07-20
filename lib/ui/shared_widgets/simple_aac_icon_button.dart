@@ -3,9 +3,9 @@ import '../../extensions/build_context_extension.dart';
 
 class SimpleAACIconButton extends StatelessWidget {
   SimpleAACIconButton({
-    Key? key,
     required this.callback,
     required this.iconData,
+    final Key? key,
     this.iconColor,
     this.iconSize,
     this.disabledColor,
@@ -18,7 +18,7 @@ class SimpleAACIconButton extends StatelessWidget {
   final double? iconSize;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ClipRRect(
       clipBehavior: Clip.hardEdge,
       borderRadius: BorderRadius.circular(90),

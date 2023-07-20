@@ -14,12 +14,12 @@ class NavigationService {
     }
   }
 
-  bool isSameRoute(String newRouteName) {
+  bool isSameRoute(final String newRouteName) {
     final currentState = navigatorKey.currentState;
     var isNewRouteSameAsCurrent = false;
     if (currentState != null) {
       currentState.popUntil(
-        (route) {
+        (final route) {
           if (route.settings.name == newRouteName) {
             isNewRouteSameAsCurrent = true;
           }
@@ -31,8 +31,8 @@ class NavigationService {
   }
 
   Future<bool?> navigateTo(
-    String routeName, {
-    dynamic arguments,
+    final String routeName, {
+    final arguments,
   }) async {
     final currentState = navigatorKey.currentState;
     if (currentState != null) {
@@ -46,7 +46,7 @@ class NavigationService {
   }
 
   Future<bool?> showDialog(
-    Widget child,
+    final Widget child,
   ) async {
     final currentState = navigatorKey.currentState;
     if (currentState != null) {
@@ -57,8 +57,8 @@ class NavigationService {
   }
 
   Future<bool> pushReplacementNamed(
-    String routeName, {
-    dynamic arguments,
+    final String routeName, {
+    final arguments,
   }) async {
     final currentState = navigatorKey.currentState;
     if (currentState != null) {

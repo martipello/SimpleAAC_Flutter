@@ -1,7 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_aac/api/models/extensions/word_base_extension.dart';
-import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
+import '../api/models/extensions/word_base_extension.dart';
+import 'shared_widgets/multi_image.dart';
 
 import '../api/models/extensions/word_type_extension.dart';
 import '../api/models/word.dart';
@@ -55,7 +55,7 @@ class _ManageWordViewState extends State<ManageWordView> {
     super.initState();
     _addTextListeners();
     Future.delayed(Duration.zero).then(
-      (value) => _wordViewModel.setWord(
+      (final value) => _wordViewModel.setWord(
         _createWordViewArguments.word,
       ),
     );
@@ -71,7 +71,7 @@ class _ManageWordViewState extends State<ManageWordView> {
 
   void _addTextListeners() {
     Future.delayed(Duration.zero).then(
-      (value) {
+      (final value) {
         _wordWordController.text = _createWordViewArguments.word?.word ?? '';
         _wordSoundController.text = _createWordViewArguments.word?.sound ?? '';
         _wordWordController.addListener(
@@ -93,11 +93,11 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     //TODO(MS): scrolling changes the color of the app bar
     return StreamBuilder<Word?>(
       stream: _wordViewModel.wordStream,
-      builder: (context, snapshot) {
+      builder: (final context, final snapshot) {
         final _word = snapshot.data;
         return Scaffold(
           appBar: SimpleAACAppBar(
@@ -113,7 +113,7 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildCreateWordViewBody(
-    Word? _word,
+    final Word? _word,
   ) {
     return Form(
       key: _formKey,
@@ -123,7 +123,7 @@ class _ManageWordViewState extends State<ManageWordView> {
           _buildMediumMargin(),
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
+              horizontal: 16,
             ),
             child: _buildPickerBar(
               _word,
@@ -144,7 +144,7 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildPickerBar(
-    Word? _word,
+    final Word? _word,
   ) {
     return Row(
       children: [
@@ -167,12 +167,12 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildSimpleAACTile(
-    BuildContext context,
-    Word? _word,
+    final BuildContext context,
+    final Word? _word,
   ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(
-        horizontal: 12.0,
+        horizontal: 12,
       ),
       child: Column(
         children: [
@@ -194,9 +194,9 @@ class _ManageWordViewState extends State<ManageWordView> {
     );
   }
 
-  Widget _buildWordTileContent(Word? _word) {
+  Widget _buildWordTileContent(final Word? _word) {
     return Padding(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(12),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -212,7 +212,7 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildImageAndButtonStack(
-    Word? _word,
+    final Word? _word,
   ) {
     return Stack(
       children: [
@@ -259,11 +259,11 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildCreateWordWordSound(
-    Word? _word,
+    final Word? _word,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 4.0,
+        horizontal: 4,
       ),
       child: SimpleAACTextField(
         labelText: _word?.sound ?? 'Word Sound',
@@ -275,11 +275,11 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildCreateWordWordLabel(
-    Word? _word,
+    final Word? _word,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 4.0,
+        horizontal: 4,
       ),
       child: SimpleAACTextField(
         labelText: _word?.word ?? 'Word Label',
@@ -291,7 +291,7 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildCreateWordImage(
-    WordBase? _word,
+    final WordBase? _word,
   ) {
     final images = _word?.getImageList() ?? BuiltList<String>();
     return Flexible(
@@ -331,24 +331,24 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildExtraRelatedWords(
-    Word? word,
+    final Word? word,
   ) {
     return StreamBuilder<BuiltList<Word>>(
         stream: _wordViewModel.relatedWords,
-        builder: (context, snapshot) {
+        builder: (final context, final snapshot) {
           final relatedWords = snapshot.data ?? BuiltList<Word>();
           return Stack(
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                  top: 8.0,
+                  top: 8,
                 ),
                 child: SizedBox(
                   height: 32,
                   child: word?.extraRelatedWordIds.isNotEmpty == true
                       ? RelatedWordsWidget(
                           relatedWords: relatedWords,
-                          onRelatedWordSelected: (_) {},
+                          onRelatedWordSelected: (final _) {},
                           onRelatedWordIdsChanged: _wordViewModel.setExtraRelatedWords,
                           isExpanded: true,
                         )
@@ -361,7 +361,7 @@ class _ManageWordViewState extends State<ManageWordView> {
               ),
             ],
           );
-        });
+        },);
   }
 
   Widget _buildAddPredictionButton() {
@@ -399,7 +399,7 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildCancelButton(
-    BuildContext context,
+    final BuildContext context,
   ) {
     return RoundedButton(
       label: 'Cancel',

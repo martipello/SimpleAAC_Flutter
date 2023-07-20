@@ -213,7 +213,7 @@ class AppColor {
   /// dark mode scheme. This simplifies our logic in the MaterialApp
   /// of example 5 and we get right dark colors in ThemeSelector and Popup too.
   static FlexSchemeData schemeAtIndex(
-      final int index, final ThemeController controller) {
+      final int index, final ThemeController controller,) {
     if (index == schemes.length - 1) {
       return controller.customScheme.copyWith(
           // TODO(rydmike): Something fishy here! On copy dark to custom.
@@ -227,15 +227,15 @@ class AppColor {
               : controller.useToDarkMethod
                   ? controller.customScheme.light.defaultError.toDark(
                       controller.darkMethodLevel,
-                      controller.toDarkSwapPrimaryAndContainer)
-                  : null);
+                      controller.toDarkSwapPrimaryAndContainer,)
+                  : null,);
     }
     return schemes[index].copyWith(
         dark: controller.useToDarkMethod
             ? schemes[index].light.defaultError.toDark(
                 controller.darkMethodLevel,
-                controller.toDarkSwapPrimaryAndContainer)
-            : null);
+                controller.toDarkSwapPrimaryAndContainer,)
+            : null,);
   }
 
   /// Used by example 5, the Themes Playground.
@@ -245,7 +245,7 @@ class AppColor {
   /// Normally this is local to the widget where it is used, but I needed
   /// this explanation in different places so I tucked it in here.
   /// It could be placed anywhere as simple top level function too.
-  static String explainUsedColors(ThemeController controller) {
+  static String explainUsedColors(final ThemeController controller) {
     if (!controller.useKeyColors) {
       return 'Material 3 ColorScheme seeding from key colors is OFF and not '
           'used. The effective ColorScheme is based directly on the selected '

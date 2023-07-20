@@ -5,7 +5,7 @@ import 'intro_view.dart';
 
 class WelcomeView extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return IntroView(
       title: context.strings?.welcome ?? 'Welcome',
       bodyWidget: _buildWelcomeBody(context),
@@ -13,7 +13,7 @@ class WelcomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeBody(BuildContext context) {
+  Widget _buildWelcomeBody(final BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints(
         maxWidth: 150,

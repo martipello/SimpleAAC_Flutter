@@ -1,5 +1,5 @@
-import 'package:simple_aac/api/models/word_sub_type.dart';
-import 'package:simple_aac/api/models/word_type.dart';
+import 'word_sub_type.dart';
+import 'word_type.dart';
 
 mixin WordBase {
   String get id;

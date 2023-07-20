@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_built_value/hive_built_value.dart';
-import 'package:simple_aac/api/models/sentence.dart';
-import 'package:simple_aac/api/models/sentences_response.dart';
-import 'package:simple_aac/api/models/word_groups_response.dart';
+import 'models/sentence.dart';
+import 'models/sentences_response.dart';
+import 'models/word_groups_response.dart';
 
 import '../dependency_injection_container.dart' as di;
 import '../services/language_service.dart';
@@ -16,13 +17,11 @@ import 'models/word.dart';
 import 'models/word_group.dart';
 import 'models/word_sub_type.dart';
 import 'models/word_type.dart';
-import 'package:built_collection/built_collection.dart';
 
 Future<void> initHive(
-  Directory appDocumentDir,
+  final Directory appDocumentDir,
 ) async {
-  Hive.init(appDocumentDir.path);
-  Hive
+  Hive..init(appDocumentDir.path)
     ..registerAdapter<Word>(WordAdapter())
     ..registerAdapter<Sentence>(SentenceAdapter())
     ..registerAdapter<WordGroup>(WordGroupAdapter())
@@ -72,16 +71,16 @@ Future<void> populateInitialData() async {
     wordGroups,
   );
 
-  languageService.putAll(rebuiltFirstLanguage);
+  await languageService.putAll(rebuiltFirstLanguage);
 }
 
 BuiltList<Language> _replaceFirstLanguagesSentencesAndWordGroups(
-  BuiltList<Language> languages,
-  BuiltList<Sentence> sentences,
-  BuiltList<WordGroup> wordGroups,
+  final BuiltList<Language> languages,
+  final BuiltList<Sentence> sentences,
+  final BuiltList<WordGroup> wordGroups,
 ) {
   final languageWithSentenceAndWordGroupData = languages.first.rebuild(
-    (l) => l
+    (final l) => l
       ..sentences.replace(sentences)
       ..wordGroups.replace(wordGroups),
   );

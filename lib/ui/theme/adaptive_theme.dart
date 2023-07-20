@@ -89,7 +89,7 @@ enum AdaptiveTheme {
   final String code;
   final IconData icon;
 
-  FlexAdaptive setting({bool? overrideIsWeb}) {
+  FlexAdaptive setting({final bool? overrideIsWeb}) {
     switch (this) {
       case AdaptiveTheme.off:
         return FlexAdaptive.off(overrideIsWeb: overrideIsWeb);
@@ -107,7 +107,7 @@ enum AdaptiveTheme {
         return FlexAdaptive.excludeAndroidFuchsia(overrideIsWeb: overrideIsWeb);
       case AdaptiveTheme.excludeWebAndroidFuchsia:
         return FlexAdaptive.excludeWebAndroidFuchsia(
-            overrideIsWeb: overrideIsWeb);
+            overrideIsWeb: overrideIsWeb,);
     }
   }
 }

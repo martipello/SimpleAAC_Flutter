@@ -26,13 +26,13 @@ extension StringExtension on String? {
   }
 
   String toEmailUri({
-    Map<String, dynamic>? queryParameters,
+    final Map<String, dynamic>? queryParameters,
   }) {
     final stringBuffer = StringBuffer();
     if (queryParameters?.isNotEmpty == true) {
       queryParameters?.entries
           .map(
-            (e) => stringBuffer.write(
+            (final e) => stringBuffer.write(
               '${e.key}=${e.value.toString().replaceAll('=', 'EQUAL').replaceAll('&', 'AMP')}&',
             ),
           )

@@ -63,7 +63,7 @@ void main() {
 
   testWidgets(
     'multi image test 1 image',
-    (tester) async {
+    (final tester) async {
       await tester.runAsync(
         () async {
           final multiImageWidget = await _buildMultiImageWidgetHolder(singleImage);
@@ -89,7 +89,7 @@ void main() {
 
   testWidgets(
     'multi image test 2 images',
-    (tester) async {
+    (final tester) async {
       await tester.runAsync(
         () async {
           final multiImageWidget = await _buildMultiImageWidgetHolder(dualImages,);
@@ -114,7 +114,7 @@ void main() {
 
   testWidgets(
     'multi image test 3 images',
-    (tester) async {
+    (final tester) async {
       await tester.runAsync(
         () async {
           final multiImageWidget = await _buildMultiImageWidgetHolder(tripleImages,);
@@ -139,7 +139,7 @@ void main() {
 
   testWidgets(
     'multi image test 4 images',
-    (tester) async {
+    (final tester) async {
       await tester.runAsync(
         () async {
           final multiImageWidget = await _buildMultiImageWidgetHolder(quadrupleImages,);
@@ -164,7 +164,7 @@ void main() {
 
   testWidgets(
     'multi image test 6 images',
-    (tester) async {
+    (final tester) async {
       await tester.runAsync(
         () async {
           final multiImageWidget = await _buildMultiImageWidgetHolder(multipleImages,);
@@ -194,7 +194,7 @@ void main() {
 
   testWidgets(
     'multi image single image error test',
-    (tester) async {
+    (final tester) async {
       await tester.runAsync(
         () async {
           final multiImageWidget = await _buildMultiImageWidgetHolder(singleErrorImage,);
@@ -225,7 +225,7 @@ void main() {
 
   testWidgets(
     'multi image dual image error test',
-    (tester) async {
+    (final tester) async {
       await tester.runAsync(
         () async {
           final multiImageWidget = await _buildMultiImageWidgetHolder(dualErrorImages,);
@@ -255,7 +255,7 @@ void main() {
 
   testWidgets(
     'multi image dual image single error test',
-    (tester) async {
+    (final tester) async {
       await tester.runAsync(
         () async {
           final multiImageWidget = await _buildMultiImageWidgetHolder(dualImageSingleErrorImages,);
@@ -285,17 +285,18 @@ void main() {
 }
 
 Future<void> _delayAndPump(
-  WidgetTester tester,
-  Duration duration,
+  final WidgetTester tester,
+  final Duration duration,
 ) async {
   await Future.delayed(duration);
   await tester.pump();
 }
 
 Future<Widget> _buildMultiImageWidgetHolder(
-  List<String> imageList,
+  final List<String> imageList,
 ) async {
   final getIt = GetIt.instance;
+  //ignore_for_file: cascade_invocations
   getIt.registerSingleton(DefaultCacheManager());
   getIt.registerFactory(() => MultiImageViewModel(getIt()));
   await getIt.allReady();

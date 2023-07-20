@@ -58,13 +58,13 @@ void main() {
           );
 
           multiImageViewModel.fourImages.listen(
-            (images) {
+            (final images) {
               expect(images.length, 4);
-              final notNullImages = images.where((element) => element != null);
+              final notNullImages = images.where((final element) => element != null);
               expect(notNullImages.length, 4);
             },
           );
-          multiImageViewModel.requestFourImages(assetImageList);
+          await multiImageViewModel.requestFourImages(assetImageList);
           await Future.delayed(Duration(seconds: 10));
         },
       );
@@ -79,13 +79,13 @@ void main() {
           );
 
           multiImageViewModel.fourImages.listen(
-            (images) {
+            (final images) {
               expect(images.length, 4);
-              final notNullImages = images.where((element) => element != null);
+              final notNullImages = images.where((final element) => element != null);
               expect(notNullImages.length, 0);
             },
           );
-          multiImageViewModel.requestFourImages(assetImageErrorList);
+          await multiImageViewModel.requestFourImages(assetImageErrorList);
           await Future.delayed(Duration(seconds: 10));
         },
       );
@@ -99,13 +99,13 @@ void main() {
             mockDefaultCacheManager,
           );
           multiImageViewModel.fourImages.listen(
-            (images) {
+            (final images) {
               expect(images.length, 4);
-              final notNullImages = images.where((element) => element != null);
+              final notNullImages = images.where((final element) => element != null);
               expect(notNullImages.length, 2);
             },
           );
-          multiImageViewModel.requestFourImages(assetImageHalfErrorList);
+          await multiImageViewModel.requestFourImages(assetImageHalfErrorList);
           await Future.delayed(Duration(seconds: 10));
         },
       );
@@ -119,13 +119,13 @@ void main() {
             mockDefaultCacheManager,
           );
           multiImageViewModel.fourImages.listen(
-            (images) {
+            (final images) {
               expect(images.length, 4);
-              final notNullImages = images.where((element) => element != null);
+              final notNullImages = images.where((final element) => element != null);
               expect(notNullImages.length, 0);
             },
           );
-          multiImageViewModel.requestFourImages(fileImageErrorList);
+          await multiImageViewModel.requestFourImages(fileImageErrorList);
           await Future.delayed(Duration(seconds: 10));
         },
       );
@@ -134,7 +134,7 @@ void main() {
 }
 
 Future<MockDefaultCacheManager> setUpMockCacheManager(
-  BuiltList<String> assetImageList,
+  final BuiltList<String> assetImageList,
 ) async {
   final mockDefaultCacheManager = MockDefaultCacheManager();
   final fileSystem = MemoryFileSystem();
@@ -150,7 +150,7 @@ Future<MockDefaultCacheManager> setUpMockCacheManager(
 
   for (var image in assetImageList) {
     when(mockDefaultCacheManager.getFileFromCache(image)).thenAnswer(
-      (_) async {
+      (final _) async {
         final outputFile = tempDirectory.childFile(image);
         return FileInfo(
           outputFile,

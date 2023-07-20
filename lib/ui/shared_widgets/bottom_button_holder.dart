@@ -4,8 +4,8 @@ import '../../extensions/build_context_extension.dart';
 
 class BottomButtonHolder extends StatelessWidget {
   const BottomButtonHolder({
-    Key? key,
     required this.child,
+    final Key? key,
     this.hasShadow = false,
     this.color,
     this.padding,
@@ -19,7 +19,7 @@ class BottomButtonHolder extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Container(
       decoration: hasShadow
           ? BoxDecoration(

@@ -16,10 +16,10 @@ class IntroPage extends StatelessWidget {
   final _sharedPreferences = getIt.get<SharedPreferencesService>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AnimatedBuilder(
       animation: controller,
-      builder: (context, child) {
+      builder: (final context, final child) {
         final color = controller.hasClients ? controller.page! / 2 : .0;
         return DecoratedBox(
           decoration: BoxDecoration(
@@ -29,14 +29,14 @@ class IntroPage extends StatelessWidget {
                   begin: Colors.white,
                   end: context.themeColors.primary,
                 ),
-                weight: 1.0,
+                weight: 1,
               ),
               TweenSequenceItem(
                 tween: ColorTween(
                   begin: Colors.white,
                   end: context.themeColors.primary,
                 ),
-                weight: 1.0,
+                weight: 1,
               ),
             ]).evaluate(
               AlwaysStoppedAnimation(color),
@@ -47,7 +47,7 @@ class IntroPage extends StatelessWidget {
       },
       child: StreamBuilder<int>(
         stream: _introViewModel.currentPageStream,
-        builder: (context, snapshot) {
+        builder: (final context, final snapshot) {
           final pageIndex = snapshot.data ?? 0;
           return SafeArea(
             bottom: true,
@@ -80,14 +80,14 @@ class IntroPage extends StatelessWidget {
   }
 
   Widget _buildBottomNavigationBar(
-    BuildContext context,
-    bool showPreviousButton,
-    bool showNextButton,
-    int pageIndex,
+    final BuildContext context,
+    final bool showPreviousButton,
+    final bool showNextButton,
+    final int pageIndex,
   ) {
     return FutureBuilder<bool>(
       future: Future.value(true),
-      builder: (context, snapshot) {
+      builder: (final context, final snapshot) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -118,7 +118,7 @@ class IntroPage extends StatelessWidget {
                     label: 'Done',
                     onPressed: () async {
                       _sharedPreferences.setFirstTime(isFirstTime: false);
-                      Navigator.of(context).pushReplacementNamed(AppShell.routeName);
+                      await Navigator.of(context).pushReplacementNamed(AppShell.routeName);
                     },
                   )
                 : IconButton(

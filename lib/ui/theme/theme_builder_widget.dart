@@ -14,7 +14,7 @@ class ThemeBuilderWidget extends InheritedWidget {
   }) : super(
           child: ChangeNotifierBuilder(
             notifier: themeViewModel.themeController,
-            builder: (context, _, child) {
+            builder: (final context, final _, final child) {
               return themeBuilder.call(
                 themeViewModel.themeController,
               );
@@ -25,7 +25,7 @@ class ThemeBuilderWidget extends InheritedWidget {
   final ThemeBuilder themeBuilder;
   final ThemeViewModel themeViewModel;
 
-  static ThemeBuilderWidget of(BuildContext context) {
+  static ThemeBuilderWidget of(final BuildContext context) {
     final result =
         context.dependOnInheritedWidgetOfExactType<ThemeBuilderWidget>();
     assert(result != null, 'No ThemeBuilderWidget found in context');
@@ -33,7 +33,7 @@ class ThemeBuilderWidget extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(ThemeBuilderWidget old) {
+  bool updateShouldNotify(final ThemeBuilderWidget old) {
     return false;
   }
 }

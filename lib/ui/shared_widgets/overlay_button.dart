@@ -4,8 +4,8 @@ import '../../extensions/build_context_extension.dart';
 
 class OverlayButton extends StatelessWidget {
   const OverlayButton({
-    super.key,
     required this.iconData,
+    super.key,
     this.onTap,
     this.onLongPress,
     this.size,
@@ -32,7 +32,7 @@ class OverlayButton extends StatelessWidget {
   final Size? size;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final height = size?.height ?? 24;
     final width = size?.width ?? 24;
     return ClipOval(

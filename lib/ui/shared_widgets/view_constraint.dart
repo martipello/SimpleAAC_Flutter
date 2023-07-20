@@ -12,7 +12,7 @@ class ViewConstraint extends StatelessWidget {
   final BoxConstraints? constraints;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Center(
       child: Container(
         clipBehavior: Clip.hardEdge,

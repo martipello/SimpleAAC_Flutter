@@ -6,13 +6,13 @@ import 'simple_aac_loading_widget.dart';
 
 class RoundedButton extends StatelessWidget {
   const RoundedButton({
-    Key? key,
+    required this.label,
+    final Key? key,
     this.onPressed,
     this.fillColor,
     this.isLoading = false,
     this.isFilled = true,
     this.disableShadow = false,
-    required this.label,
     this.leadingIcon,
     this.trailingIcon,
     this.outlineColor,
@@ -33,10 +33,10 @@ class RoundedButton extends StatelessWidget {
   final TextStyle? textStyle;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18.0),
+        borderRadius: BorderRadius.circular(18),
       ),
       child: TextButton(
         style: ButtonStyle(
@@ -56,7 +56,7 @@ class RoundedButton extends StatelessWidget {
           ),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18.0),
+              borderRadius: BorderRadius.circular(18),
             ),
           ),
           side: MaterialStateProperty.all(
@@ -68,7 +68,7 @@ class RoundedButton extends StatelessWidget {
         ),
         onPressed: _handleOnPressed(),
         child: Builder(
-          builder: (context) {
+          builder: (final context) {
             if (isLoading) return _buildLoading(context);
             return _buildButtonContent(context);
           },
@@ -77,14 +77,14 @@ class RoundedButton extends StatelessWidget {
     );
   }
 
-  Widget _buildButtonContent(BuildContext context) {
-    var textStyle = _getTextStyle(context);
+  Widget _buildButtonContent(final BuildContext context) {
+    final textStyle = _getTextStyle(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (leadingIcon != null)
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: const EdgeInsets.only(right: 8),
             child: Icon(
               leadingIcon,
               color: textStyle.color,
@@ -99,7 +99,7 @@ class RoundedButton extends StatelessWidget {
         ),
         if (trailingIcon != null)
           Padding(
-            padding: const EdgeInsets.only(left: 8.0),
+            padding: const EdgeInsets.only(left: 8),
             child: Icon(
               trailingIcon,
               color: textStyle.color,
@@ -110,7 +110,7 @@ class RoundedButton extends StatelessWidget {
     );
   }
 
-  Color _getFillColor(BuildContext context) {
+  Color _getFillColor(final BuildContext context) {
     if (isFilled && onPressed != null) {
       return fillColor ?? context.themeColors.primary;
     } else if (!isFilled && onPressed != null) {
@@ -122,7 +122,7 @@ class RoundedButton extends StatelessWidget {
     }
   }
 
-  Color _getOutlineColor(BuildContext context) {
+  Color _getOutlineColor(final BuildContext context) {
     if (onPressed != null) {
       return outlineColor ?? fillColor ?? context.themeColors.primary;
     } else {
@@ -130,7 +130,7 @@ class RoundedButton extends StatelessWidget {
     }
   }
 
-  TextStyle _getTextStyle(BuildContext context) {
+  TextStyle _getTextStyle(final BuildContext context) {
     if (isFilled && onPressed != null) {
       return textStyle ?? SimpleAACText.body1Style.copyWith(color: context.themeColors.onPrimary);
     } else if (!isFilled && onPressed != null) {
@@ -142,7 +142,7 @@ class RoundedButton extends StatelessWidget {
     }
   }
 
-  Color _getLoadingColor(BuildContext context) {
+  Color _getLoadingColor(final BuildContext context) {
     if (!isFilled && onPressed != null) {
       return context.themeColors.onBackground;
     } else {
@@ -150,7 +150,7 @@ class RoundedButton extends StatelessWidget {
     }
   }
 
-  Widget _buildLoading(BuildContext context) {
+  Widget _buildLoading(final BuildContext context) {
     return SizedBox(
       height: 16,
       width: 16,

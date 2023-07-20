@@ -11,8 +11,8 @@ import 'word_sub_type_view.dart';
 
 class WordTypeView extends StatefulWidget {
   const WordTypeView({
-    super.key,
     required this.wordType,
+    super.key,
   });
 
   final WordType wordType;
@@ -45,10 +45,10 @@ class _WordTypeViewState extends State<WordTypeView> with SingleTickerProviderSt
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return StreamBuilder<int>(
       stream: _tabBarViewModel.currentTabIndex,
-      builder: (context, snapshot) {
+      builder: (final context, final snapshot) {
         return Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -60,7 +60,7 @@ class _WordTypeViewState extends State<WordTypeView> with SingleTickerProviderSt
                   indicatorColor: context.themeColors.secondary,
                   tabs: subTypes
                       .map(
-                        (e) => _buildTab(
+                        (final e) => _buildTab(
                           e.name,
                           e.getIcon(),
                         ),
@@ -73,7 +73,7 @@ class _WordTypeViewState extends State<WordTypeView> with SingleTickerProviderSt
                   controller: _tabController,
                   children: subTypes
                       .map(
-                        (e) => WordSubTypeView(
+                        (final e) => WordSubTypeView(
                           wordSubType: e,
                         ),
                       )
@@ -88,8 +88,8 @@ class _WordTypeViewState extends State<WordTypeView> with SingleTickerProviderSt
   }
 
   Widget _buildTab(
-    String label,
-    IconData icon,
+    final String label,
+    final IconData icon,
   ) {
     return Tab(
       text: label,

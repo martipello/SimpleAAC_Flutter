@@ -33,9 +33,9 @@ extension DoubleExtension on double? {
 
   double? formatToTwoDecimalPlaces() {
     if (this == null) return null;
-    final formatter = NumberFormat();
-    formatter.minimumFractionDigits = 2;
-    formatter.maximumFractionDigits = 2;
+    final formatter = NumberFormat()
+      ..minimumFractionDigits = 2
+      ..maximumFractionDigits = 2;
     return double.tryParse(formatter.format(this));
   }
 }

@@ -24,14 +24,14 @@ class LanguageService {
     return sharedPreferencesService.currentLanguageId;
   }
 
-  Future<void> put(Language language) {
+  Future<void> put(final Language language) {
     return hiveClient.put(
       language.id,
       language,
     );
   }
 
-  Future<void> putAll(BuiltList<Language> languages) async {
+  Future<void> putAll(final BuiltList<Language> languages) async {
     for (var language in languages) {
       await hiveClient.put(
         language.id,
@@ -40,7 +40,7 @@ class LanguageService {
     }
   }
 
-  Future<void> delete(Language language) {
+  Future<void> delete(final Language language) {
     return hiveClient.delete(language.id);
   }
 
@@ -50,11 +50,11 @@ class LanguageService {
     return language!;
   }
 
-  void setCurrentLanguage(Language language) {
+  void setCurrentLanguage(final Language language) {
     sharedPreferencesService.setLanguageId(language.id);
   }
 
-  Future<Language?> get(String languageId) {
+  Future<Language?> get(final String languageId) {
     return hiveClient.get(languageId);
   }
 
@@ -62,19 +62,19 @@ class LanguageService {
     return hiveClient.getAll();
   }
 
-  void addListener(LanguageCallBack callBack) {
+  void addListener(final LanguageCallBack callBack) {
     sharedPreferencesService.addListener(
       _getLanguageCallbackWrapper(callBack),
     );
   }
 
-  void removeListener(LanguageCallBack callBack) {
+  void removeListener(final LanguageCallBack callBack) {
     sharedPreferencesService.removeListener(
       _getLanguageCallbackWrapper(callBack),
     );
   }
 
-  AsyncCallback _getLanguageCallbackWrapper(LanguageCallBack callBack) {
+  AsyncCallback _getLanguageCallbackWrapper(final LanguageCallBack callBack) {
     return () async {
       final currentLanguage = await getCurrentLanguage();
       callBack.call(currentLanguage);

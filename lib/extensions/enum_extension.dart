@@ -1,9 +1,9 @@
 //not technically an extension
-String enumToString(Object? o) => o != null ? o.toString().split('.').last : '';
+String enumToString(final Object? o) => o != null ? o.toString().split('.').last : '';
 
-T? enumFromString<T>(String key, List<T> values) {
+T? enumFromString<T>(final String key, final List<T> values) {
   try {
-    return values.firstWhere((v) => key == enumToString(v));
+    return values.firstWhere((final v) => key == enumToString(v));
   } catch (e) {
     return null;
   }

@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 extension TextStyleExtension on TextStyle {
   double get lineHeight => fontSize! * height!;
 
-  TextStyle operator +(Color color) {
+  TextStyle operator +(final Color color) {
     return copyWith(color: color);
   }
 }
@@ -30,7 +30,7 @@ class SimpleAACText {
   static const subtitle3Style = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.bold,
-    height: 1.625,
+    height: 1.2,
     fontFamily: 'Antipasto',
   );
 

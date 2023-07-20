@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_aac/ui/theme/theme_preview.dart';
+import 'theme_preview.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../dependency_injection_container.dart';
@@ -35,18 +35,18 @@ class _ThemeViewState extends State<ThemeView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Scaffold(
       appBar: SimpleAACAppBar(
         label: 'Choose a theme',
       ),
       body: PageView(
-        onPageChanged: (index) {
+        onPageChanged: (final index) {
           _themePageIndex = index;
         },
         children: _themePages()
             .map(
-              (themeViewModelAndTheme) => ThemePreview(
+              (final themeViewModelAndTheme) => ThemePreview(
                 themeViewModel: themeViewModelAndTheme.item1,
                 theme: themeViewModelAndTheme.item2,
                 isDark: isDark,

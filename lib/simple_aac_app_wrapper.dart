@@ -17,14 +17,14 @@ import 'view_models/theme_view_model.dart';
 // ignore: avoid_classes_with_only_static_members
 class SimpleAACAppWrapper extends StatefulWidget {
   const SimpleAACAppWrapper({
-    super.key,
     required this.themeViewModel,
+    super.key,
   });
 
   final ThemeViewModel themeViewModel;
 
   static void init() async {
-    runZonedGuarded<Future<void>>(
+    await runZonedGuarded<Future<void>>(
       () async {
         WidgetsFlutterBinding.ensureInitialized();
         await initializeFirebase();
@@ -52,7 +52,7 @@ class SimpleAACAppWrapper extends StatefulWidget {
           ),
         );
       },
-      (error, stack) => FirebaseCrashlytics.instance.recordError(
+      (final error, final stack) => FirebaseCrashlytics.instance.recordError(
         error,
         stack,
         reason: 'Zoned Error',
@@ -78,10 +78,10 @@ class _SimpleAACAppWrapperState extends State<SimpleAACAppWrapper> {
     sharedPreferences.dispose();
   }
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ThemeBuilderWidget(
       themeViewModel: widget.themeViewModel,
-      themeBuilder: (themeController) {
+      themeBuilder: (final themeController) {
         return SimpleAACApp(
           themeController: themeController,
         );

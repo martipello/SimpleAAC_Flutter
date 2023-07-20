@@ -61,7 +61,7 @@ extension DateTimeExtension on DateTime? {
     return '';
   }
 
-  String getDayOfMonthSuffix(int dayNum) {
+  String getDayOfMonthSuffix(final int dayNum) {
     if (!(dayNum >= 1 && dayNum <= 31)) {
       throw Exception('Invalid day of month');
     }
@@ -177,7 +177,7 @@ extension DateTimeExtension on DateTime? {
     return '';
   }
 
-  bool? isAfterOrEqualTo(DateTime dateTime) {
+  bool? isAfterOrEqualTo(final DateTime dateTime) {
     final date = this;
     if (date != null) {
       final isAtSameMomentAs = dateTime.isAtSameMomentAs(date);
@@ -186,7 +186,7 @@ extension DateTimeExtension on DateTime? {
     return null;
   }
 
-  bool? isBeforeOrEqualTo(DateTime dateTime) {
+  bool? isBeforeOrEqualTo(final DateTime dateTime) {
     final date = this;
     if (date != null) {
       final isAtSameMomentAs = dateTime.isAtSameMomentAs(date);
@@ -195,7 +195,7 @@ extension DateTimeExtension on DateTime? {
     return null;
   }
 
-  List<DateTime> getDaysBetween(DateTime endDate) {
+  List<DateTime> getDaysBetween(final DateTime endDate) {
     final startDate = this ?? DateTime.now();
     final days = <DateTime>[];
     final daysCount = endDate.subtract(const Duration(seconds: 1)).difference(startDate).inDays;

@@ -1,11 +1,11 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_aac/api/models/sentence.dart';
-import 'package:simple_aac/api/models/word.dart';
-import 'package:simple_aac/api/models/word_group.dart';
-import 'package:simple_aac/ui/shared_widgets/sentence_tile.dart';
-import 'package:simple_aac/ui/shared_widgets/simple_aac_tile.dart';
-import 'package:simple_aac/ui/shared_widgets/word_tile.dart';
+import '../../api/models/sentence.dart';
+import '../../api/models/word.dart';
+import '../../api/models/word_group.dart';
+import 'sentence_tile.dart';
+import 'simple_aac_tile.dart';
+import 'word_tile.dart';
 
 import '../../api/models/word_base.dart';
 import '../../extensions/build_context_extension.dart';
@@ -16,12 +16,12 @@ typedef StringCallBack = void Function(String string);
 
 class WordGroupTileExpanded extends StatelessWidget {
   const WordGroupTileExpanded({
-    Key? key,
     required this.onClose,
     required this.onRemoveWord,
     required this.selectedWordGroup,
     required this.onWordTap,
     required this.onTitleChange,
+    final Key? key,
   }) : super(key: key);
 
   final WordGroup selectedWordGroup;
@@ -30,7 +30,7 @@ class WordGroupTileExpanded extends StatelessWidget {
   final WordBaseCallBack onWordTap;
   final StringCallBack onTitleChange;
 
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final selectedWordGroup = this.selectedWordGroup;
       return _buildWordGroupExpandedContent(
         context,
@@ -39,8 +39,8 @@ class WordGroupTileExpanded extends StatelessWidget {
   }
 
   Widget _buildWordGroupExpandedContent(
-    BuildContext context,
-    WordGroup wordGroup,
+    final BuildContext context,
+    final WordGroup wordGroup,
   ) {
     return SimpleAACTile(
       child: Column(
@@ -60,8 +60,8 @@ class WordGroupTileExpanded extends StatelessWidget {
   }
 
   Widget _buildHeader(
-    BuildContext context,
-    String title,
+    final BuildContext context,
+    final String title,
   ) {
     return Container(
       color: context.themeColors.surfaceVariant,
@@ -71,7 +71,7 @@ class WordGroupTileExpanded extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(
-              left: 16.0,
+              left: 16,
             ),
             child: Text(
               title,
@@ -80,7 +80,7 @@ class WordGroupTileExpanded extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 8.0,
+              horizontal: 8,
             ),
             child: IconButton(
               splashRadius: 12,
@@ -99,7 +99,7 @@ class WordGroupTileExpanded extends StatelessWidget {
     );
   }
 
-  Widget _buildWords(BuiltList<WordBase> words) {
+  Widget _buildWords(final BuiltList<WordBase> words) {
     return GridView.builder(
       itemCount: words.length,
       padding: const EdgeInsets.all(6),
@@ -110,7 +110,7 @@ class WordGroupTileExpanded extends StatelessWidget {
         crossAxisSpacing: 4,
         childAspectRatio: 0.86,
       ),
-      itemBuilder: (context, index) {
+      itemBuilder: (final context, final index) {
         final word = words[index];
         if (word is Word) {
           return WordTile(

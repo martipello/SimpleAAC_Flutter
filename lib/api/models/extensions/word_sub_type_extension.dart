@@ -5,7 +5,7 @@ import '../../../ui/theme/app_color.dart';
 import '../word_sub_type.dart';
 
 extension WordSubTypeExtension on WordSubType? {
-  Color getColor(BuildContext context) {
+  Color getColor(final BuildContext context) {
     switch (this) {
       case WordSubType.people:
       case WordSubType.animals:

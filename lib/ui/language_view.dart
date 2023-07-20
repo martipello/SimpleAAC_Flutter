@@ -1,11 +1,11 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:change_notifier_builder/change_notifier_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_aac/api/models/word.dart';
-import 'package:simple_aac/ui/shared_widgets/app_bar.dart';
-import 'package:simple_aac/ui/shared_widgets/expansion_card.dart';
-import 'package:simple_aac/ui/shared_widgets/simple_aac_loading_widget.dart';
-import 'package:simple_aac/ui/shared_widgets/word_tile.dart';
+import '../api/models/word.dart';
+import 'shared_widgets/app_bar.dart';
+import 'shared_widgets/expansion_card.dart';
+import 'shared_widgets/simple_aac_loading_widget.dart';
+import 'shared_widgets/word_tile.dart';
 
 import '../api/models/language.dart';
 import '../dependency_injection_container.dart';
@@ -22,20 +22,20 @@ class _LanguageViewState extends State<LanguageView> {
   final languageViewModel = getIt.get<LanguageViewModel>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Scaffold(
       appBar: SimpleAACAppBar(
         label: 'Choose a Language',
       ),
       body: ChangeNotifierBuilder(
         notifier: languageViewModel.languageService.sharedPreferencesService,
-        builder: (context, _, __) {
+        builder: (final context, final _, final __) {
           return FutureBuilder<BuiltList<Language>>(
             future: languageViewModel.allLanguages(),
-            builder: (context, allLanguagesSnapshot) {
+            builder: (final context, final allLanguagesSnapshot) {
               return FutureBuilder<Language>(
                 future: languageViewModel.getCurrentLanguage(),
-                builder: (context, currentLanguagesSnapshot) {
+                builder: (final context, final currentLanguagesSnapshot) {
                   final _currentLanguage = currentLanguagesSnapshot.data;
                   final _allLanguages = allLanguagesSnapshot.data ?? BuiltList<Language>();
                   if (_currentLanguage != null) {
@@ -45,7 +45,7 @@ class _LanguageViewState extends State<LanguageView> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: _allLanguages
                             .map(
-                              (language) => _buildLanguageCard(
+                              (final language) => _buildLanguageCard(
                                 language,
                                 _currentLanguage.id,
                               ),
@@ -65,11 +65,11 @@ class _LanguageViewState extends State<LanguageView> {
   }
 
   Widget _buildLanguageCard(
-    Language language,
-    String currentLanguageId,
+    final Language language,
+    final String currentLanguageId,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4.0),
+      padding: const EdgeInsets.only(bottom: 4),
       child: ExpansionCard(
         title: language.displayName,
         expandedChildren: [
@@ -81,7 +81,7 @@ class _LanguageViewState extends State<LanguageView> {
                 children: language.words
                     .take(10)
                     .map(
-                      (word) => _buildWordTile(word),
+                      (final word) => _buildWordTile(word),
                     )
                     .toList(),
               ),
@@ -103,7 +103,7 @@ class _LanguageViewState extends State<LanguageView> {
     );
   }
 
-  WordTile _buildWordTile(Word word) {
+  WordTile _buildWordTile(final Word word) {
     return WordTile(
       word: word,
       key: UniqueKey(),

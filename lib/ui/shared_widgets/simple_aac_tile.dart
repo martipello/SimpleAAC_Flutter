@@ -5,9 +5,9 @@ import 'overlay_button.dart';
 
 class SimpleAACTile extends StatelessWidget {
   SimpleAACTile({
-    Key? key,
-    this.border,
     required this.child,
+    final Key? key,
+    this.border,
     this.isSelected = false,
     this.closeButtonOnTap,
     this.closeButtonOnLongPress,
@@ -27,7 +27,7 @@ class SimpleAACTile extends StatelessWidget {
   final RoundedRectangleBorder? border;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Card(
       key: key,
       elevation: isSelected ? 0 : 2,
@@ -60,7 +60,7 @@ class SimpleAACTile extends StatelessWidget {
       child: Align(
         alignment: Alignment.topLeft,
         child: Padding(
-          padding: const EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(4),
           child: handle ?? SizedBox(),
         ),
       ),
@@ -68,7 +68,7 @@ class SimpleAACTile extends StatelessWidget {
   }
 
   Widget buildCloseButton(
-    VoidCallback? closeButtonOnLongPress,
+    final VoidCallback? closeButtonOnLongPress,
   ) {
     return _buildTileOverlayButton(
       alignment: Alignment.topRight,
@@ -79,16 +79,16 @@ class SimpleAACTile extends StatelessWidget {
   }
 
   Widget _buildTileOverlayButton({
-    required Alignment alignment,
-    required IconData iconData,
-    VoidCallback? onTap,
-    VoidCallback? onLongPress,
+    required final Alignment alignment,
+    required final IconData iconData,
+    final VoidCallback? onTap,
+    final VoidCallback? onLongPress,
   }) {
     return Positioned.fill(
       child: Align(
         alignment: alignment,
         child: Padding(
-          padding: const EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(4),
           child: OverlayButton(
             iconData: iconData,
             onTap: onTap,

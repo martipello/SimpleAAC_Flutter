@@ -5,15 +5,15 @@ import 'theme/simple_aac_text.dart';
 
 class PickImageDialog extends StatefulWidget {
   PickImageDialog({
-    Key? key,
+    final Key? key,
   }) : super(key: key);
 
   static Future<bool?> show(
-    BuildContext context,
+    final BuildContext context,
   ) {
     return showModalBottomSheet(
       context: context,
-      builder: (context) {
+      builder: (final context) {
         return PickImageDialog();
       },
       shape: const RoundedRectangleBorder(
@@ -32,9 +32,9 @@ class PickImageDialog extends StatefulWidget {
 
 class _PickImageDialogState extends State<PickImageDialog> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
@@ -61,12 +61,12 @@ class _PickImageDialogState extends State<PickImageDialog> {
   }
 
   Widget _buildIconButton({
-    required IconData iconData,
-    required String label,
+    required final IconData iconData,
+    required final String label,
   }) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(24),
         child: TextButton(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

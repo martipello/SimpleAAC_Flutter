@@ -18,8 +18,8 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 class SimpleAACApp extends StatefulWidget {
   const SimpleAACApp({
-    Key? key,
     required this.themeController,
+    final Key? key,
   }) : super(key: key);
 
   final ThemeController themeController;
@@ -34,7 +34,7 @@ class _SimpleAACAppState extends State<SimpleAACApp> {
   ThemeController get themeController => widget.themeController;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return MaterialApp(
       title: 'SimpleAAC',
       navigatorKey: _navigationService.navigatorKey,
@@ -73,12 +73,12 @@ class _SimpleAACAppState extends State<SimpleAACApp> {
       themeMode: themeController.themeMode,
       initialRoute: AppShell.routeName,
       routes: {
-        AppShell.routeName: (context) => const AppShell(),
-        WordBaseDetailView.routeName: (context) => WordBaseDetailView(),
-        ManageWordView.routeName: (context) => ManageWordView(),
-        SettingsView.routeName: (context) => SettingsView(),
-        ThemeView.routeName: (context) => ThemeView(),
-        LanguageView.routeName: (context) => LanguageView(),
+        AppShell.routeName: (final context) => const AppShell(),
+        WordBaseDetailView.routeName: (final context) => WordBaseDetailView(),
+        ManageWordView.routeName: (final context) => ManageWordView(),
+        SettingsView.routeName: (final context) => SettingsView(),
+        ThemeView.routeName: (final context) => ThemeView(),
+        LanguageView.routeName: (final context) => LanguageView(),
       },
     );
   }

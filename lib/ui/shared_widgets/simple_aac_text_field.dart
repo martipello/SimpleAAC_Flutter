@@ -4,13 +4,13 @@ import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 import 'simple_aac_loading_widget.dart';
 
-typedef Validator = String? Function(dynamic value);
+typedef Validator = String? Function(String? value);
 
 class SimpleAACTextField extends StatelessWidget {
   const SimpleAACTextField({
-    Key? key,
     required this.textController,
     required this.labelText,
+    final Key? key,
     this.prefixIcon,
     this.validatorMessage,
     this.maxLines = 1,
@@ -37,7 +37,7 @@ class SimpleAACTextField extends StatelessWidget {
   final bool isDense;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return TextFormField(
       controller: textController,
       maxLines: maxLines,
@@ -55,14 +55,14 @@ class SimpleAACTextField extends StatelessWidget {
     );
   }
 
-  String? _defaultValidator(value) {
+  String? _defaultValidator(final String? value) {
     if (value == null || value.isEmpty) {
       return validatorMessage;
     }
     return null;
   }
 
-  InputDecoration _buildInputDecoration(BuildContext context) {
+  InputDecoration _buildInputDecoration(final BuildContext context) {
     return InputDecoration(
       labelText: labelText,
       labelStyle: SimpleAACText.body1Style,

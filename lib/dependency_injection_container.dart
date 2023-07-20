@@ -5,9 +5,9 @@ import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simple_aac/ui/shared_widgets/view_model/multi_image_view_model.dart';
-import 'package:simple_aac/ui/shared_widgets/word_group_tile_expanded_view_model.dart';
-import 'package:simple_aac/view_models/language_view_model.dart';
+import 'ui/shared_widgets/view_model/multi_image_view_model.dart';
+import 'ui/shared_widgets/word_group_tile_expanded_view_model.dart';
+import 'view_models/language_view_model.dart';
 
 import 'api/hive_client.dart';
 import 'api/models/language.dart';
@@ -27,6 +27,7 @@ import 'view_models/words_view_model.dart';
 
 final getIt = GetIt.instance;
 
+//ignore_for_file: cascade_invocations
 Future<void> init() async {
   getIt.registerLazySingletonAsync(SharedPreferences.getInstance);
   getIt.registerLazySingletonAsync(PackageInfo.fromPlatform);
@@ -59,7 +60,7 @@ Future<void> init() async {
 }
 
 @visibleForTesting
-void initForTest(Object object){
+void initForTest(final Object object){
   getIt.registerFactory(() => object);
 }
 

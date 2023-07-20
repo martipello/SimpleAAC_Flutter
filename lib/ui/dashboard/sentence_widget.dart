@@ -1,10 +1,9 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:great_list_view/great_list_view.dart';
-import 'package:simple_aac/ui/shared_widgets/sentence_tile.dart';
-import 'package:simple_aac/ui/shared_widgets/simple_aac_tile_handle.dart';
-import 'package:simple_aac/ui/theme/simple_aac_text.dart';
+import '../shared_widgets/sentence_tile.dart';
+import '../shared_widgets/simple_aac_tile_handle.dart';
+import '../theme/simple_aac_text.dart';
 
 import '../../api/models/extensions/word_base_extension.dart';
 import '../../api/models/sentence.dart';
@@ -33,16 +32,16 @@ class _SentenceWidgetState extends State<SentenceWidget> with SingleTickerProvid
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
+      (final _) {
         _addSelectedFilterListener();
       },
     );
   }
 
   bool onReorderComplete(
-    int index,
-    int dropIndex,
-    Object? slot,
+    final int index,
+    final int dropIndex,
+    final Object? slot,
   ) {
     if (index == dropIndex) {
       return false;
@@ -61,9 +60,9 @@ class _SentenceWidgetState extends State<SentenceWidget> with SingleTickerProvid
   void _addSelectedFilterListener() {
     const duration = Duration(milliseconds: 200);
     selectedWordsViewModel.selectedWords.listen(
-      (selectedTypes) {
+      (final selectedTypes) {
         Future.delayed(duration).then(
-          (value) {
+          (final value) {
             if (scrollController.hasClients) {
               scrollController.animateTo(
                 scrollController.position.maxScrollExtent,
@@ -78,10 +77,10 @@ class _SentenceWidgetState extends State<SentenceWidget> with SingleTickerProvid
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return StreamBuilder<BuiltList<WordBase>>(
       stream: selectedWordsViewModel.selectedWords,
-      builder: (context, snapshot) {
+      builder: (final context, final snapshot) {
         final words = snapshot.data ?? BuiltList<Word>();
         return SizedBox(
           height: 150,
@@ -112,14 +111,14 @@ class _SentenceWidgetState extends State<SentenceWidget> with SingleTickerProvid
     );
   }
 
-  Widget _buildGreatList(BuiltList<WordBase> wordList) {
+  Widget _buildGreatList(final BuiltList<WordBase> wordList) {
     return AutomaticAnimatedListView<WordBase>(
       list: wordList.toList(),
       comparator: AnimatedListDiffListComparator<WordBase>(
-        sameItem: (a, b) => a.id == b.id,
-        sameContent: (a, b) => a.id == b.id,
+        sameItem: (final a, final b) => a.id == b.id,
+        sameContent: (final a, final b) => a.id == b.id,
       ),
-      itemBuilder: (context, wordBase, data) {
+      itemBuilder: (final context, final wordBase, final data) {
         final index = wordList.indexOf(wordBase);
         if (index == -1 || data.measuring == true) {
           return const SizedBox();
@@ -134,13 +133,13 @@ class _SentenceWidgetState extends State<SentenceWidget> with SingleTickerProvid
       },
       reorderModel: AnimatedListReorderModel(
         onReorderComplete: onReorderComplete,
-        onReorderStart: (_, __, ___) {
+        onReorderStart: (final _, final __, final ___) {
           setState(() {
             isReordering = true;
           });
           return true;
         },
-        onReorderMove: (_, __) => true,
+        onReorderMove: (final _, final __) => true,
       ),
       animator: DefaultAnimatedListAnimator(
         dismissIncomingDuration: const Duration(milliseconds: 150),
@@ -164,14 +163,14 @@ class _SentenceWidgetState extends State<SentenceWidget> with SingleTickerProvid
   //TODO think how to fix hero flash animation
 
   Widget _buildWordTile(
-    Word word,
-    int index,
+    final Word word,
+    final int index,
   ) {
     return WordTile(
       word: word,
       heroTag: word.getHeroTag('sentence-$index-'),
       closeButtonOnTap: selectedWordsViewModel.removeSelectedWord,
-      closeButtonOnLongPress: (_) {
+      closeButtonOnLongPress: (final _) {
         selectedWordsViewModel.clearSelectedWordList();
       },
       handle: SimpleAACTileHandle(
@@ -182,14 +181,14 @@ class _SentenceWidgetState extends State<SentenceWidget> with SingleTickerProvid
   }
 
   Widget _buildSentenceTile(
-    Sentence sentence,
-    int index,
+    final Sentence sentence,
+    final int index,
   ) {
     return SentenceTile(
       sentence: sentence,
       heroTag: sentence.getHeroTag('sentence-$index-'),
       closeButtonOnTap: selectedWordsViewModel.removeSelectedWord,
-      closeButtonOnLongPress: (_) {
+      closeButtonOnLongPress: (final _) {
         selectedWordsViewModel.clearSelectedWordList();
       },
       handle: SimpleAACTileHandle(

@@ -2,10 +2,10 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:hive_built_value/hive_built_value.dart';
-import 'package:simple_aac/api/models/word.dart';
-import 'package:simple_aac/api/models/word_base.dart';
-import 'package:simple_aac/api/models/word_sub_type.dart';
-import 'package:simple_aac/api/models/word_type.dart';
+import 'word.dart';
+import 'word_base.dart';
+import 'word_sub_type.dart';
+import 'word_type.dart';
 
 import '../serializers/serializers.dart';
 
@@ -14,7 +14,7 @@ part 'sentence.g.dart';
 @HiveType(typeId: 4)
 abstract class Sentence with WordBase implements Built<Sentence, SentenceBuilder> {
 
-  factory Sentence([void Function(SentenceBuilder) updates]) = _$Sentence;
+  factory Sentence([final void Function(SentenceBuilder) updates]) = _$Sentence;
   Sentence._();
 
   @HiveField(0)
@@ -54,7 +54,7 @@ abstract class Sentence with WordBase implements Built<Sentence, SentenceBuilder
     return serializers.serializeWith(Sentence.serializer, this) as Map<String, dynamic>;
   }
 
-  static Sentence fromJson(Map<String, dynamic> json) {
+  static Sentence fromJson(final Map<String, dynamic> json) {
     return serializers.deserializeWith(Sentence.serializer, json)!;
   }
 

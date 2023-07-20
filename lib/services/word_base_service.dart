@@ -1,5 +1,5 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:simple_aac/ui/dashboard/related_words_widget.dart';
+import '../ui/dashboard/related_words_widget.dart';
 
 import '../api/models/word.dart';
 import '../api/models/word_base.dart';
@@ -11,59 +11,59 @@ class WordBaseService {
 
   final LanguageService languageService;
 
-  Future<BuiltList<WordBase>> getAllForType(WordSubType wordSubType) async {
+  Future<BuiltList<WordBase>> getAllForType(final WordSubType wordSubType) async {
     final currentLanguage = await languageService.getCurrentLanguage();
     final allWordBases = [
       ...currentLanguage.words,
       ...currentLanguage.sentences,
       ...currentLanguage.wordGroups,
     ];
-    return allWordBases.where((w) => w.subType == wordSubType).toBuiltList();
+    return allWordBases.where((final w) => w.subType == wordSubType).toBuiltList();
   }
 
-  Future<BuiltList<Word>> getExtraRelatedWords(Word word) async {
+  Future<BuiltList<Word>> getExtraRelatedWords(final Word word) async {
     final currentLanguage = await languageService.getCurrentLanguage();
     return currentLanguage.words
         .where(
-          (lw) => word.extraRelatedWordIds.any(
-            (w) => w == lw.id,
+          (final lw) => word.extraRelatedWordIds.any(
+            (final w) => w == lw.id,
           ),
         )
         .toBuiltList();
   }
 
-  Future<BuiltList<Word>> getRelatedWords(Word word) async {
+  Future<BuiltList<Word>> getRelatedWords(final Word word) async {
     final currentLanguage = await languageService.getCurrentLanguage();
     final words = currentLanguage.words;
     final extraRelatedWords = await getExtraRelatedWords(word);
     //TODO make this actually get related words not just the related words on the word
     final relatedWords = words.where(
-      (lw) => word.extraRelatedWordIds.any(
-        (w) => w == lw.id,
+      (final lw) => word.extraRelatedWordIds.any(
+        (final w) => w == lw.id,
       ),
     );
     return <Word>{...extraRelatedWords, ...relatedWords}.toBuiltList();
   }
 
-  Future<BuiltList<Word>> getWordsForIds(BuiltList<String> wordIds) async {
+  Future<BuiltList<Word>> getWordsForIds(final BuiltList<String> wordIds) async {
     final currentLanguage = await languageService.getCurrentLanguage();
     return currentLanguage.words
         .where(
-          (word) => wordIds.any(
-            (id) => word.id == id,
+          (final word) => wordIds.any(
+            (final id) => word.id == id,
           ),
         )
         .toBuiltList();
   }
 
-  void addListener(WordListCallBack wordListCallBack) {
+  void addListener(final WordListCallBack wordListCallBack) {
     languageService.addListener(
       _getWordListCallbackWrapper(wordListCallBack),
     );
   }
 
   void removeListener(
-    WordListCallBack wordListCallBack,
+    final WordListCallBack wordListCallBack,
   ) {
     languageService.removeListener(
       _getWordListCallbackWrapper(
@@ -73,9 +73,9 @@ class WordBaseService {
   }
 
   LanguageCallBack _getWordListCallbackWrapper(
-    WordListCallBack wordListCallBack,
+    final WordListCallBack wordListCallBack,
   ) {
-    return (language) {
+    return (final language) {
       wordListCallBack.call(
         language.words,
       );

@@ -5,12 +5,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:simple_aac/utils/stream_helper.dart';
+import '../../../utils/stream_helper.dart';
 
 class MultiImageViewModel {
-  final DefaultCacheManager defaultCacheManager;
 
   MultiImageViewModel(this.defaultCacheManager);
+
+  final DefaultCacheManager defaultCacheManager;
 
   final subscriptions = CompositeSubscription();
 
@@ -25,7 +26,7 @@ class MultiImageViewModel {
     imageThree,
     imageFour,
   ).map(
-    (event) {
+    (final event) {
       return List<ImageInfo?>.from(
         [
           event.item1,
@@ -38,7 +39,7 @@ class MultiImageViewModel {
   ).publishValue()
     ..connect().addTo(subscriptions);
 
-  Future<void> requestFourImages(BuiltList<String> imagePaths) async {
+  Future<void> requestFourImages(final BuiltList<String> imagePaths) async {
     final paddedList = [...imagePaths, '', '', '', ''];
     final firstFourImagePaths = paddedList.take(4).toList();
 
@@ -58,7 +59,7 @@ class MultiImageViewModel {
     }
   }
 
-  Future<ImageStream?> imageStream(String imagePath, int index) async {
+  Future<ImageStream?> imageStream(final String imagePath, final int index) async {
     //TODO(MS): images shouldn't be assets remove this when we support importing images
     //TODO(MS): Check the cache first
     ImageProvider? imageProvider;
@@ -86,17 +87,17 @@ class MultiImageViewModel {
   }
 
   ImageStreamListener imageStreamListener(
-    ImageStream imageStream,
-    int index,
+    final ImageStream imageStream,
+    final int index,
   ) {
     return ImageStreamListener(
-      (image, _) {
+      (final image, final _) {
         _updateImageResponse(image, index);
         imageStream.removeListener(
           imageStreamListener(imageStream, index),
         );
       },
-      onError: (error, stackTrace) {
+      onError: (final error, final stackTrace) {
         _updateImageResponse(null, index);
         imageStream.removeListener(
           imageStreamListener(imageStream, index),
@@ -105,7 +106,7 @@ class MultiImageViewModel {
     );
   }
 
-  void _updateImageResponse(ImageInfo? imageInfo, int index) {
+  void _updateImageResponse(final ImageInfo? imageInfo, final int index) {
     switch (index) {
       case 0:
         imageOne.add(imageInfo);
@@ -131,10 +132,10 @@ class MultiImageViewModel {
     imageTwoInfo?.dispose();
     imageThreeInfo?.dispose();
     imageFourInfo?.dispose();
-    // imageOne.close();
-    // imageTwo.close();
-    // imageThree.close();
-    // imageFour.close();
-    // subscriptions.dispose();
+    imageOne.close();
+    imageTwo.close();
+    imageThree.close();
+    imageFour.close();
+    subscriptions.dispose();
   }
 }

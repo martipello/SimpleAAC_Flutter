@@ -1,10 +1,10 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:simple_aac/api/models/extensions/word_base_extension.dart';
-import 'package:simple_aac/api/models/sentence.dart';
-import 'package:simple_aac/api/models/word_base.dart';
-import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
+import '../api/models/extensions/word_base_extension.dart';
+import '../api/models/sentence.dart';
+import '../api/models/word_base.dart';
+import 'shared_widgets/multi_image.dart';
 
 import '../../extensions/build_context_extension.dart';
 import '../api/models/word.dart';
@@ -59,7 +59,7 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
   double get toolbarMinusPadding => kToolbarHeight - 16;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     //TODO(MS): refactor this to keep the app bar icons visible when scrolling in some way
     return Scaffold(
       body: SingleChildScrollView(
@@ -79,7 +79,7 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
+                          padding: const EdgeInsets.only(left: 8),
                           child: OverlayButton(
                             onTap: Navigator.of(context).pop,
                             iconData: Icons.arrow_back,
@@ -90,10 +90,11 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
+                          padding: const EdgeInsets.only(right: 8),
                           child: OverlayButton(
                             onTap: Navigator.of(context).pop,
-                            iconData: word.isFavourite == true ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+                            iconData:
+                                word.isFavourite == true ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
                             size: Size(
                               toolbarMinusPadding,
                               toolbarMinusPadding,
@@ -108,7 +109,7 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
             ),
             Padding(
               padding: const EdgeInsets.all(
-                16.0,
+                16,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -173,27 +174,30 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
                     ],
                   ),
                   const SizedBox(
-                    height: 8,
+                    height: 16,
                   ),
                   Text(
-                    'Predictions : ',
+                    'Related words : ',
                     style: SimpleAACText.subtitle3Style.copyWith(
                       color: context.themeColors.onBackground,
                     ),
                   ),
                   const SizedBox(
-                    height: 8,
+                    height: 16,
                   ),
                   FutureBuilder<BuiltList<Word>>(
                     future: wordViewModel.getWordsForIds(word.extraRelatedWordIds),
-                    builder: (context, snapshot) {
+                    builder: (final context, final snapshot) {
                       final extraRelatedWords = snapshot.data ?? BuiltList();
                       return RelatedWordsWidget(
-                        onRelatedWordSelected: (_) {},
+                        onRelatedWordSelected: (final _) {},
                         relatedWords: extraRelatedWords,
                         isExpanded: true,
                       );
                     },
+                  ),
+                  const SizedBox(
+                    height: 96,
                   ),
                 ],
               ),
@@ -212,7 +216,7 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
       child: Align(
         alignment: Alignment.bottomRight,
         child: Padding(
-          padding: const EdgeInsets.only(right: 16.0),
+          padding: const EdgeInsets.only(right: 16),
           child: Hero(
             tag: kPlayButtonHeroTag,
             transitionOnUserGestures: true,
@@ -230,7 +234,7 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
   }
 
   Widget _buildWordBaseDetailImage(
-    WordBase wordBase,
+    final WordBase wordBase,
   ) {
     return Container(
       height: kImageHeight,
@@ -244,7 +248,7 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
   }
 
   Widget _buildImage(
-    WordBase wordBase,
+    final WordBase wordBase,
   ) {
     return MultiImage(
       images: wordBase.getImageList(),
@@ -254,7 +258,7 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
   }
 
   Widget _buildEditDeleteWordActionButton(
-    Word word,
+    final Word word,
   ) {
     return SpeedDial(
       spaceBetweenChildren: 4,
@@ -284,7 +288,7 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
             final delete = await SimpleAACDialog(
               title: 'Delete',
               content: const Padding(
-                padding: EdgeInsets.only(top: 8.0),
+                padding: EdgeInsets.only(top: 8),
                 child: Text(
                   'Are you sure you want to delete this word?',
                   style: SimpleAACText.body1Style,

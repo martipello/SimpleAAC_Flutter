@@ -9,7 +9,7 @@ class MyCustomPainter extends CustomPainter {
   final List<Offset?> points;
 
   @override
-  void paint(Canvas canvas, Size size) {
+  void paint(final Canvas canvas, final Size size) {
     final background = Paint()..color = Colors.white;
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.drawRect(rect, background);
@@ -30,5 +30,5 @@ class MyCustomPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant final CustomPainter oldDelegate) => true;
 }

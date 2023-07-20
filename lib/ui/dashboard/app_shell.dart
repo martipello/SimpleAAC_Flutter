@@ -45,16 +45,16 @@ class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    selectedWordsViewModel.selectedWords.listen((value) {
+    selectedWordsViewModel.selectedWords.listen((final value) {
       // print('selectedWordsStream WORD $value');
     });
-    selectedWordsViewModel.relatedWords.listen((value) {
+    selectedWordsViewModel.relatedWords.listen((final value) {
       // print('predictionsForSelectedWord WORD $value');
     });
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final isFirstTime = sharedPreferences.isFirstTime;
     if (isFirstTime == true) {
       return IntroPage();
@@ -78,7 +78,7 @@ class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin
         _buildHeroHolder(),
         WordType.values
             .map(
-              (wordType) => WordTypeView(
+              (final wordType) => WordTypeView(
                 wordType: wordType,
               ),
             )
@@ -101,7 +101,7 @@ class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin
           child: Align(
             alignment: Alignment.bottomRight,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: _buildPlaySentenceActionButton(),
             ),
           ),
@@ -113,7 +113,7 @@ class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin
   Widget _buildRelatedWords() {
     return StreamBuilder<BuiltList<Word>>(
       stream: selectedWordsViewModel.relatedWords,
-      builder: (context, snapshot) {
+      builder: (final context, final snapshot) {
         final relatedWords = snapshot.data ?? BuiltList();
         return SizedBox(
           height: 48,
@@ -220,7 +220,7 @@ class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin
       elevation: 12,
       items: _bottomNavigationBarItems(),
       currentIndex: _selectedIndex,
-      onTap: (index) {
+      onTap: (final index) {
         setState(
           () {
             _selectedIndex = index;
@@ -233,7 +233,7 @@ class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin
   List<BottomNavigationBarItem> _bottomNavigationBarItems() {
     return WordType.values
         .map(
-          (e) => BottomNavigationBarItem(
+          (final e) => BottomNavigationBarItem(
             icon: const Icon(Icons.add),
             label: e.name.capitalize(),
           ),
@@ -243,12 +243,12 @@ class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin
 
   Widget _buildMenuButton() {
     return PopupMenuButton(
-      onSelected: (index) {
+      onSelected: (final index) {
         if (index == 0) {
           Navigator.of(context).pushNamed(SettingsView.routeName);
         }
       },
-      itemBuilder: (context) {
+      itemBuilder: (final context) {
         return [
           PopupMenuItem(
             value: 0,
@@ -288,9 +288,9 @@ class _AppShellState extends State<AppShell> with SingleTickerProviderStateMixin
   }
 
   Widget _buildMenuItem(
-    BuildContext context,
-    String label,
-    IconData icon,
+    final BuildContext context,
+    final String label,
+    final IconData icon,
   ) {
     return Row(
       children: [

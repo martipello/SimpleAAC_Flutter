@@ -1,9 +1,9 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:simple_aac/api/models/sentence.dart';
-import 'package:simple_aac/api/models/word_base.dart';
-import 'package:simple_aac/ui/shared_widgets/sentence_tile.dart';
+import '../../api/models/sentence.dart';
+import '../../api/models/word_base.dart';
+import '../shared_widgets/sentence_tile.dart';
 
 import '../../../api/models/extensions/word_base_extension.dart';
 import '../../../api/models/word.dart';
@@ -17,8 +17,8 @@ import '../shared_widgets/word_tile.dart';
 
 class WordSubTypeView extends StatefulWidget {
   const WordSubTypeView({
-    super.key,
     required this.wordSubType,
+    super.key,
   });
 
   final WordSubType wordSubType;
@@ -44,11 +44,11 @@ class _WordSubTypeViewState extends State<WordSubTypeView> with AutomaticKeepAli
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     super.build(context);
     return StreamBuilder<BuiltList<WordBase>>(
       stream: wordsViewModel.wordsOfType,
-      builder: (context, snapshot) {
+      builder: (final context, final snapshot) {
         final words = snapshot.data ?? BuiltList();
         return Stack(
           children: [
@@ -61,7 +61,7 @@ class _WordSubTypeViewState extends State<WordSubTypeView> with AutomaticKeepAli
                 crossAxisSpacing: 4,
                 childAspectRatio: 0.86,
               ),
-              itemBuilder: (context, index) {
+              itemBuilder: (final context, final index) {
                 final wordBase = words[index];
                 if (wordBase is Word) {
                   return _buildWordTile(wordBase);
@@ -80,7 +80,7 @@ class _WordSubTypeViewState extends State<WordSubTypeView> with AutomaticKeepAli
     );
   }
 
-  Widget _buildWordTile(Word word) {
+  Widget _buildWordTile(final Word word) {
     return WordTile(
       word: word,
       key: ValueKey(word.id),
@@ -91,7 +91,7 @@ class _WordSubTypeViewState extends State<WordSubTypeView> with AutomaticKeepAli
     );
   }
 
-  Widget _buildSentenceTile(Sentence sentence) {
+  Widget _buildSentenceTile(final Sentence sentence) {
     return SentenceTile(
       sentence: sentence,
       key: ValueKey(sentence.id),
@@ -102,7 +102,7 @@ class _WordSubTypeViewState extends State<WordSubTypeView> with AutomaticKeepAli
     );
   }
 
-  Widget _buildWordGroup(WordGroup wordGroup) {
+  Widget _buildWordGroup(final WordGroup wordGroup) {
     return WordGroupTile(
       wordGroup: wordGroup,
       key: ValueKey(wordGroup.id),

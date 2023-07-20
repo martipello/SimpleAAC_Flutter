@@ -14,7 +14,7 @@ class _BioMetricViewState extends State<BioMetricView> {
   final _sharedPreferences = getIt.get<SharedPreferencesService>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final isFingerprintEnabled = _sharedPreferences.useBiometrics;
     return IntroView(
       title: 'Fast Sign In',
@@ -32,7 +32,7 @@ class _BioMetricViewState extends State<BioMetricView> {
     );
   }
 
-  Widget _buildBodyWidget(BuildContext context) {
+  Widget _buildBodyWidget(final BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints(
         maxWidth: 150,
@@ -43,7 +43,7 @@ class _BioMetricViewState extends State<BioMetricView> {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(color: context.themeColors.primary),
-            borderRadius: BorderRadius.circular(360.0),
+            borderRadius: BorderRadius.circular(360),
           ),
           padding: const EdgeInsets.all(8),
           child: FittedBox(
@@ -58,8 +58,8 @@ class _BioMetricViewState extends State<BioMetricView> {
   }
 
   String _getEnableFingerprintDescription(
-    BuildContext context, {
-    bool isFingerprintEnabled = false,
+    final BuildContext context, {
+    final bool isFingerprintEnabled = false,
   }) {
     return isFingerprintEnabled
         ? 'Fast sign in enabled'

@@ -12,7 +12,7 @@ class LanguageViewModel {
     return languageService.getCurrentLanguage();
   }
 
-  void setLanguage(Language language) {
+  void setLanguage(final Language language) {
     languageService.setCurrentLanguage(language);
   }
 

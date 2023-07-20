@@ -9,11 +9,11 @@ const pngFileExtension = '.png';
 
 class HiveClient<T> {
   /// Private constructor
-  HiveClient._create(Box<T> box) {
+  HiveClient._create(final Box<T> box) {
     _hiveBox = box;
   }
 
-  static Future<HiveClient> create<T>(String boxName) async {
+  static Future<HiveClient> create<T>(final String boxName) async {
     final box = await Hive.openBox<T>(boxName);
     final hiveClient = HiveClient._create(box);
     return hiveClient;
@@ -22,21 +22,21 @@ class HiveClient<T> {
   late final Box _hiveBox;
 
   Future<void> put(
-    String key,
-    T? value,
+    final String key,
+    final T? value,
   ) async {
     return _hiveBox.put(key, value);
   }
 
   Future<void> delete(
-    String key,
+    final String key,
   ) async {
     return _hiveBox.delete(key);
   }
 
   Future<T?> get<T>(
-    String key, {
-    T? defaultValue,
+    final String key, {
+    final T? defaultValue,
   }) async {
     try {
       final loaded = _hiveBox.get(key, defaultValue: defaultValue) as T?;
@@ -48,12 +48,12 @@ class HiveClient<T> {
 
   BuiltList<T> getAll<T>() => _hiveBox.values.whereType<T>().toBuiltList();
 
-  Future<BuiltList<T>> getAllForKeys<T>(BuiltList<String> keys) async {
+  Future<BuiltList<T>> getAllForKeys<T>(final BuiltList<String> keys) async {
     try {
       final allLoaded = BuiltList<T>();
       for (var key in keys) {
         final loaded = _hiveBox.get(key) as T;
-        allLoaded.rebuild((b) => b.add(loaded));
+        allLoaded.rebuild((final b) => b.add(loaded));
       }
       return allLoaded;
     } catch (e) {
@@ -61,16 +61,16 @@ class HiveClient<T> {
     }
   }
 
-  void addListener(AsyncCallback callback){
+  void addListener(final AsyncCallback callback){
     _hiveBox.listenable().addListener(callback);
   }
 
-  void removeListener(AsyncCallback callback){
+  void removeListener(final AsyncCallback callback){
     _hiveBox.listenable().removeListener(callback);
   }
 
   Future<XFile?> getPNGFile(
-    String key,
+    final String key,
   ) async {
     final path = await get<String?>(key);
     if (path != null && path.isNotEmpty == true) {

@@ -18,7 +18,7 @@ class SimpleAACAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AppBar(
       title: Text(
         label.toUpperCase(),

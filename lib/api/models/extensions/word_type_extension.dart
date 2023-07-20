@@ -6,7 +6,7 @@ import '../word_sub_type.dart';
 import '../word_type.dart';
 
 extension WordTypeExtension on WordType? {
-  Color getColor(BuildContext context) {
+  Color getColor(final BuildContext context) {
     switch (this) {
       case WordType.nouns:
         return AppColor.wordTypeNoun;

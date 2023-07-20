@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:simple_aac/api/models/extensions/word_base_extension.dart';
-import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
+import '../../api/models/extensions/word_base_extension.dart';
+import 'multi_image.dart';
 
 import '../../api/models/extensions/word_type_extension.dart';
 import '../../api/models/word.dart';
@@ -13,8 +13,8 @@ typedef WordCallBack = void Function(Word word);
 
 class WordTile extends StatelessWidget {
   const WordTile({
-    this.key,
     required this.word,
+    this.key,
     this.heroTag,
     this.wordTapCallBack,
     this.isSelected = false,
@@ -37,7 +37,7 @@ class WordTile extends StatelessWidget {
   final bool fadeImageIn;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AspectRatio(
       key: key,
       aspectRatio: 1 / 1.3,
@@ -80,10 +80,10 @@ class WordTile extends StatelessWidget {
   }
 
   Widget _buildWordTileContent(
-    BuildContext context,
+    final BuildContext context,
   ) {
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

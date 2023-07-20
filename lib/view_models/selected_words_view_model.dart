@@ -1,8 +1,8 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:simple_aac/api/models/extensions/word_base_extension.dart';
-import 'package:simple_aac/api/models/word_base.dart';
-import 'package:simple_aac/extensions/iterable_extension.dart';
+import '../api/models/extensions/word_base_extension.dart';
+import '../api/models/word_base.dart';
+import '../extensions/iterable_extension.dart';
 
 import '../api/models/word.dart';
 import '../services/word_base_service.dart';
@@ -29,12 +29,12 @@ class SelectedWordsViewModel {
     relatedWords.close();
   }
 
-  Future<void> addSelectedWord(WordBase word) async {
+  Future<void> addSelectedWord(final WordBase word) async {
     final words = selectedWords.valueOrNull;
     if (words != null) {
       selectedWords.add(
         words.rebuild(
-          (wb) => wb.add(
+          (final wb) => wb.add(
             word.copy(
               //Here we give it a new id so that duplicate words can be added to the list
               // and the lists animation comparator will still work
@@ -50,16 +50,16 @@ class SelectedWordsViewModel {
     }
   }
 
-  void removeSelectedWord(WordBase wordBase) {
+  void removeSelectedWord(final WordBase wordBase) {
     final words = selectedWords.valueOrNull;
     if (words != null) {
       final wordToRemove = words.firstWhereOrNull(
-        (word) => word.id == wordBase.id,
+        (final word) => word.id == wordBase.id,
       );
       if (wordToRemove != null) {
         selectedWords.add(
           words.rebuild(
-            (wb) => wb.remove(wordToRemove),
+            (final wb) => wb.remove(wordToRemove),
           ),
         );
       }
@@ -67,15 +67,15 @@ class SelectedWordsViewModel {
   }
 
   void updatePositionSelectedWordList(
-    int oldIndex,
-    int newIndex,
+    final int oldIndex,
+    final int newIndex,
   ) {
     final words = selectedWords.valueOrNull;
     if (words != null) {
       final word = words[oldIndex];
       selectedWords.add(
         words.rebuild(
-          (wb) => wb
+          (final wb) => wb
             ..remove(word)
             ..insert(newIndex, word),
         ),
@@ -83,11 +83,11 @@ class SelectedWordsViewModel {
     }
   }
 
-  void setRelatedWords(BuiltList<Word> relatedWords) {
+  void setRelatedWords(final BuiltList<Word> relatedWords) {
     this.relatedWords.add(relatedWords);
   }
 
-  void setRelatedWordsForWordIds(BuiltList<String> relatedWords) async {
+  void setRelatedWordsForWordIds(final BuiltList<String> relatedWords) async {
     final words = await wordService.getWordsForIds(relatedWords);
     setRelatedWords(words);
   }

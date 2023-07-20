@@ -1,9 +1,9 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart';
-import 'package:simple_aac/api/models/sentence.dart';
-import 'package:simple_aac/api/models/word_group.dart';
-import 'package:simple_aac/api/models/word_groups_response.dart';
+import '../models/sentence.dart';
+import '../models/word_group.dart';
+import '../models/word_groups_response.dart';
 
 import '../models/language.dart';
 import '../models/languages_response.dart';

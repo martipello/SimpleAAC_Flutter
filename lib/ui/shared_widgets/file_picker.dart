@@ -14,14 +14,14 @@ typedef OnPickedImages = Future<void> Function(List<XFile> imageFiles);
 
 class FilePicker extends StatefulWidget {
   const FilePicker({
-    Key? key,
+    required this.pickedImagesCallback,
+    final Key? key,
     this.buttonLabel,
     this.label,
     this.labelStyle,
     this.buttonLabelStyle,
     this.errorLabel,
     this.errorLabelStyle,
-    required this.pickedImagesCallback,
   }) : super(key: key);
 
   final String? buttonLabel;
@@ -43,7 +43,7 @@ class _FilePickerState extends State<FilePicker> {
   void initState() {
     super.initState();
     _filePickerViewModel.pickedFileList.listen(
-      (value) {
+      (final value) {
         widget.pickedImagesCallback.call(value ?? []);
       },
     );
@@ -56,7 +56,7 @@ class _FilePickerState extends State<FilePicker> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -67,7 +67,7 @@ class _FilePickerState extends State<FilePicker> {
         defaultTargetPlatform == TargetPlatform.android
             ? FutureBuilder<void>(
                 future: _filePickerViewModel.retrieveLostData(),
-                builder: (context, snapshot) {
+                builder: (final context, final snapshot) {
                   if (snapshot.hasError) {
                     return _buildErrorLabel();
                   }
@@ -83,7 +83,7 @@ class _FilePickerState extends State<FilePicker> {
   Widget _buildPreview() {
     return StreamBuilder<List<XFile>?>(
       stream: _filePickerViewModel.pickedFileList,
-      builder: (context, snapshot) {
+      builder: (final context, final snapshot) {
         if (snapshot.hasData) {
           return _buildImageList(snapshot.data ?? []);
         } else if (snapshot.hasError) {
@@ -94,7 +94,7 @@ class _FilePickerState extends State<FilePicker> {
     );
   }
 
-  Widget _buildImageList(List<XFile> images) {
+  Widget _buildImageList(final List<XFile> images) {
     if (images.isEmpty) {
       return const SizedBox();
     }
@@ -107,10 +107,10 @@ class _FilePickerState extends State<FilePicker> {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: images.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (final context, final index) {
                 return _buildImageHolder(images[index]);
               },
-              separatorBuilder: (context, index) {
+              separatorBuilder: (final context, final index) {
                 return const SizedBox(
                   width: 16,
                 );
@@ -125,7 +125,7 @@ class _FilePickerState extends State<FilePicker> {
     );
   }
 
-  Widget _buildImageHolder(XFile imageFile) {
+  Widget _buildImageHolder(final XFile imageFile) {
     return Center(
       child: Stack(
         children: [
@@ -137,7 +137,7 @@ class _FilePickerState extends State<FilePicker> {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(1.0),
+              padding: const EdgeInsets.all(1),
               child: _buildImage(imageFile),
             ),
           ),
@@ -147,14 +147,14 @@ class _FilePickerState extends State<FilePicker> {
     );
   }
 
-  Widget _buildRemoveButton(XFile imageFile) {
+  Widget _buildRemoveButton(final XFile imageFile) {
     return Positioned.fill(
       child: Align(
         alignment: Alignment.topRight,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(90),
           clipBehavior: Clip.hardEdge,
-          child: Container(
+          child: ColoredBox(
             color: Colors.black54,
             child: Material(
               type: MaterialType.transparency,
@@ -175,7 +175,7 @@ class _FilePickerState extends State<FilePicker> {
     );
   }
 
-  Widget _buildImage(XFile imageFile) {
+  Widget _buildImage(final XFile imageFile) {
     return ClipRRect(
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       clipBehavior: Clip.hardEdge,
@@ -197,7 +197,7 @@ class _FilePickerState extends State<FilePicker> {
 
   Widget _buildErrorLabel() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         widget.errorLabel ?? 'Failed to retrieve files please try again.',
         style: widget.errorLabelStyle ??

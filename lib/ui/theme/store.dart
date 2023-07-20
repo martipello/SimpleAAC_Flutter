@@ -580,12 +580,12 @@ class Store {
   // Key used to read and save the appBarOpacityLight value.
   static const String keyAppBarOpacityLight = 'appBarOpacity';
   // Default value for the appBarOpacityLight, also used to reset settings.
-  static const double defaultAppBarOpacityLight = 1.0;
+  static const double defaultAppBarOpacityLight = 1;
 
   // Key used to read and save the appBarOpacityDark value.
   static const String keyAppBarOpacityDark = 'appBarOpacityDark';
   // Default value for the appBarOpacityDark, also used to reset settings.
-  static const double defaultAppBarOpacityDark = 1.0;
+  static const double defaultAppBarOpacityDark = 1;
 
   // Key used to read and save the appBarElevationLight value.
   static const String keyAppBarElevationLight = 'appBarElevation';
@@ -855,7 +855,7 @@ class Store {
   // Key used to read and save the sysBarOpacity value.
   static const String keySysNavBarOpacity = 'sysSysNavBarOpacity';
   // Default value for the sysBarOpacity, also used to reset settings.
-  static const double defaultSysBarOpacity = 1.0;
+  static const double defaultSysBarOpacity = 1;
 
   // Key used to read and save the useNavDivider value.
   static const String keyUseSysNavDivider = 'useSysNavDivider';
@@ -876,7 +876,7 @@ class Store {
   static const String keyBottomNavigationBarOpacity =
       'bottomNavigationBarOpacity';
   // Default value for the bottomNavigationBarOpacity, also to reset settings.
-  static const double defaultBottomNavigationBarOpacity = 1.0;
+  static const double defaultBottomNavigationBarOpacity = 1;
 
   // Key used to read and save the bottomNavigationBarElevation value.
   static const String keyBottomNavigationBarElevation =
@@ -1026,7 +1026,7 @@ class Store {
   // Key used to read and save the navBarOpacity value.
   static const String keyNavBarOpacity = 'navBarOpacity';
   // Default value for the navBarOpacity, also to reset settings.
-  static const double defaultNavBarOpacity = 1.0;
+  static const double defaultNavBarOpacity = 1;
 
   // Key used to read and save the navigationBarElevation value.
   static const String keyNavBarElevation = 'navigationBarElevation';
@@ -1099,7 +1099,7 @@ class Store {
   // Key used to read and save the navigationRailOpacity value.
   static const String keyNavRailOpacity = 'navRailOpacity';
   // Default value for the navigationRailOpacity, also to reset settings.
-  static const double defaultNavRailOpacity = 1.0;
+  static const double defaultNavRailOpacity = 1;
 
   // Key used to read and save the navigationRailElevation value.
   static const String keyNavRailElevation = 'navigationRailElevation';
@@ -1582,7 +1582,7 @@ class Store {
   // Key used to read and save the tooltipOpacity value.
   static const String keyTooltipOpacity = 'tooltipOpacity';
   // Default value for the tooltipOpacity, also used to reset settings.
-  static const double defaultTooltipOpacity = 1.0;
+  static const double defaultTooltipOpacity = 1;
 
   // Custom surface tint color SETTINGS.
   // ===========================================================================

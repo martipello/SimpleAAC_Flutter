@@ -5,9 +5,9 @@ import '../../ui/theme/simple_aac_text.dart';
 
 class IntroView extends StatelessWidget {
   const IntroView({
-    Key? key,
     required this.title,
     required this.bodyWidget,
+    final Key? key,
     this.actionButtonCallback,
     this.actionButtonFillColor,
     this.actionButtonLabel,
@@ -22,9 +22,9 @@ class IntroView extends StatelessWidget {
   final VoidCallback? actionButtonCallback;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
@@ -60,7 +60,7 @@ class IntroView extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Padding(
-                padding: const EdgeInsets.only(top: 16.0),
+                padding: const EdgeInsets.only(top: 16),
                 child: Center(
                   child: SizedBox(
                     width: 200,
@@ -91,7 +91,7 @@ class IntroView extends StatelessWidget {
   Padding _buildTitle() {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 32.0,
+        horizontal: 32,
       ),
       child: Text(
         title,
