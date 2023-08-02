@@ -7,7 +7,7 @@ import '../ui/dashboard/related_words_widget.dart';
 
 import '../api/models/word.dart';
 import '../api/models/word_sub_type.dart';
-import '../services/word_base_service.dart';
+import '../services/word_service.dart';
 
 class WordsViewModel {
   WordsViewModel(this.wordService);

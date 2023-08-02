@@ -57,9 +57,13 @@ dependencies:
   flutter_image_compress: ^2.0.1
   expandable: ^5.0.1
 
-  hive_built_value: ^2.3.0
-  hive_built_value_flutter: ^2.3.0
-  built_collection: ^5.1.0
+  path_provider: ^2.0.0
+  path: ^1.8.2
+
+  drift: ^2.7.0
+  sqlite3_flutter_libs: ^0.5.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
   flex_color_scheme: ^7.0.5
   change_notifier_builder: ^1.1.2
@@ -72,11 +76,7 @@ dependencies:
   local_hero_with_callback: ^0.0.1
 
   mockito: ^5.4.0
-  sqflite_common_ffi: ^2.2.5
   file: ^6.1.4
-
-
-
 
 dev_dependencies:
   flutter_test:
@@ -89,10 +89,10 @@ dev_dependencies:
   # rules and activating additional ones.
   test: any
   flutter_lints: ^2.0.2
+  drift_dev: ^2.7.0
 
   build_runner: ^2.3.3
-  built_value_generator: ^8.5.0
-  hive_built_value_generator: ^2.3.1
+  hive_generator: ^2.0.0
   flutter_native_splash: ^2.2.19
   network_image_mock: ^2.0.1
 

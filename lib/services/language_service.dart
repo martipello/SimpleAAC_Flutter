@@ -20,9 +20,7 @@ class LanguageService {
   final HiveClient hiveClient;
   final SharedPreferencesService sharedPreferencesService;
 
-  String currentLanguageId() {
-    return sharedPreferencesService.currentLanguageId;
-  }
+  String get currentLanguageId => sharedPreferencesService.currentLanguageId;
 
   Future<void> put(final Language language) {
     return hiveClient.put(
@@ -45,8 +43,7 @@ class LanguageService {
   }
 
   Future<Language> getCurrentLanguage() async {
-    final languageId = sharedPreferencesService.currentLanguageId;
-    final language = await hiveClient.get<Language>(languageId);
+    final language = await hiveClient.get<Language>(currentLanguageId);
     return language!;
   }
 
@@ -74,7 +71,9 @@ class LanguageService {
     );
   }
 
-  AsyncCallback _getLanguageCallbackWrapper(final LanguageCallBack callBack) {
+  AsyncCallback _getLanguageCallbackWrapper(
+    final LanguageCallBack callBack,
+  ) {
     return () async {
       final currentLanguage = await getCurrentLanguage();
       callBack.call(currentLanguage);

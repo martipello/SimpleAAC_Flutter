@@ -1,12 +1,24 @@
+import 'package:drift/drift.dart';
 import 'word_sub_type.dart';
 import 'word_type.dart';
 
-mixin WordBase {
-  String get id;
+part '../word_base.g.dart';
 
-  double? get usageCount;
+class WordBase extends Table {
 
-  WordType get type;
+  IntColumn get id => integer().autoIncrement().call();
 
-  WordSubType get subType;
+  IntColumn get usageCount => integer().nullable().call();
+
+  TextColumn get type => textEnum<WordType>().call();
+
+  TextColumn get subType => textEnum<WordSubType>().call();
+
+  DateTimeColumn get dueDate => dateTime().nullable().call();
+
+  BoolColumn get isBackedUp => boolean().withDefault(Constant(false)).call();
+
+  BoolColumn get isFavorite => boolean().withDefault(Constant(false)).call();
+
+  BoolColumn get isUserAdded => boolean().withDefault(Constant(false)).call();
 }

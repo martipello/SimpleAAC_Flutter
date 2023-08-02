@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../word.dart';
 import '../word_base.dart';
 import 'package:built_collection/built_collection.dart';
@@ -85,5 +87,86 @@ extension WordExtension on WordBase {
         ..extraRelatedWordIds.replace(sentence.extraRelatedWordIds)
         ..createdDate = sentence.createdDate,
     );
+  }
+
+  bool isEqual(final WordBase otherWordBase) {
+    final wordBase = this;
+    if (wordBase.runtimeType != otherWordBase.runtimeType) {
+      return false;
+    }
+    if (wordBase is Word) {
+      final otherWord = otherWordBase as Word;
+      return _isWordEqual(wordBase, otherWord);
+    } else if (wordBase is Sentence) {
+      final otherSentence = otherWordBase as Sentence;
+      return _isSentenceEqual(wordBase, otherSentence);
+    } else if (wordBase is WordGroup) {
+      final otherWordGroup = otherWordBase as WordGroup;
+      return _isWordGroupEqual(wordBase, otherWordGroup);
+    } else {
+      return false;
+    }
+  }
+
+  bool _isWordEqual(
+    final Word wordBase,
+    final Word otherWord,
+  ) {
+    return wordBase.id == otherWord.id &&
+        wordBase.sound == otherWord.sound &&
+        wordBase.createdDate == otherWord.createdDate &&
+        wordBase.usageCount == otherWord.usageCount &&
+        wordBase.isFavourite == otherWord.isFavourite &&
+        wordBase.isBackedUp == otherWord.isBackedUp &&
+        wordBase.isUserAdded == otherWord.isUserAdded &&
+        wordBase.type == otherWord.type &&
+        wordBase.subType == otherWord.subType &&
+        listEquals(
+          wordBase.getImageList().toList(),
+          otherWord.getImageList().toList(),
+        ) &&
+        listEquals(
+          wordBase.getWords().toList(),
+          otherWord.getWords().toList(),
+        );
+  }
+
+  bool _isSentenceEqual(
+    final Sentence wordBase,
+    final Sentence otherSentence,
+  ) {
+    return wordBase.id == otherSentence.id &&
+        wordBase.createdDate == otherSentence.createdDate &&
+        wordBase.usageCount == otherSentence.usageCount &&
+        wordBase.isFavourite == otherSentence.isFavourite &&
+        wordBase.isBackedUp == otherSentence.isBackedUp &&
+        wordBase.type == otherSentence.type &&
+        wordBase.subType == otherSentence.subType &&
+        listEquals(
+          wordBase.getImageList().toList(),
+          otherSentence.getImageList().toList(),
+        ) &&
+        listEquals(
+          wordBase.getWords().toList(),
+          otherSentence.getWords().toList(),
+        );
+  }
+
+  bool _isWordGroupEqual(
+    final WordGroup wordBase,
+    final WordGroup otherWordGroup,
+  ) {
+    return wordBase.id == otherWordGroup.id &&
+        wordBase.displayName == otherWordGroup.displayName &&
+        wordBase.createdDate == otherWordGroup.createdDate &&
+        wordBase.usageCount == otherWordGroup.usageCount &&
+        wordBase.isFavourite == otherWordGroup.isFavourite &&
+        wordBase.isBackedUp == otherWordGroup.isBackedUp &&
+        listEquals(
+          wordBase.words.toList(),
+          otherWordGroup.words.toList(),
+        ) &&
+        wordBase.type == otherWordGroup.type &&
+        wordBase.subType == otherWordGroup.subType;
   }
 }

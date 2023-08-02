@@ -5,7 +5,7 @@ import '../api/models/word_base.dart';
 import '../extensions/iterable_extension.dart';
 
 import '../api/models/word.dart';
-import '../services/word_base_service.dart';
+import '../services/word_service.dart';
 
 // enum SelectedWordListAction {
 //   add, remove,

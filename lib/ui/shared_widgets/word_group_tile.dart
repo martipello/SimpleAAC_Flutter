@@ -62,13 +62,13 @@ class _WordGroupTileState extends State<WordGroupTile> with SingleTickerProvider
                       onTap: () {
                         toggleOverlay(
                           WordGroupTileExpanded(
+                            onWordTap: widget.onWordTap,
                             selectedWordGroup: widget.wordGroup,
                             onClose: removeOverlay,
-                            onRemoveWord: (final _) {},
-                            onTitleChange: (final _) {
-                              //TODO(MS): implement text controller with a listener that updates this widget on change
-                            },
-                            onWordTap: widget.onWordTap,
+                            // onRemoveWord: (final _) {},
+                            // onTitleChange: (final _) {
+                            //   //TODO(MS): implement text controller with a listener that updates this widget on change
+                            // },
                           ),
                         );
                       },

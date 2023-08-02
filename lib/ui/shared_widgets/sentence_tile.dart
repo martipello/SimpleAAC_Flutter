@@ -14,14 +14,16 @@ typedef SentenceCallBack = void Function(Sentence sentence);
 class SentenceTile extends StatelessWidget {
   const SentenceTile({
     required this.sentence,
+    this.sentenceTapCallBack,
+    this.sentenceLongPressCallBack,
     this.key,
     this.heroTag,
-    this.sentenceTapCallBack,
     this.isSelected = false,
     this.closeButtonOnTap,
     this.closeButtonOnLongPress,
     this.handle,
     this.fadeImageIn = true,
+    this.canLongPress = true,
   }) : super(key: key);
 
   final Key? key;
@@ -31,10 +33,12 @@ class SentenceTile extends StatelessWidget {
   final SentenceCallBack? sentenceTapCallBack;
   final SentenceCallBack? closeButtonOnTap;
   final SentenceCallBack? closeButtonOnLongPress;
+  final SentenceCallBack? sentenceLongPressCallBack;
 
   final Widget? handle;
   final bool isSelected;
   final bool fadeImageIn;
+  final bool canLongPress;
 
   @override
   Widget build(final BuildContext context) {
@@ -42,35 +46,23 @@ class SentenceTile extends StatelessWidget {
       aspectRatio: 1 / 1.3,
       child: SimpleAACTile(
         key: key,
-        border: RoundedRectangleBorder(
-          side: BorderSide(
-            color: sentence.type.getColor(context),
-          ),
-          borderRadius: BorderRadius.circular(4),
-        ),
+        border: buildRoundedRectangleBorder(context),
         isSelected: isSelected,
-        tapCallBack: () {
-          sentenceTapCallBack?.call(sentence);
-        },
-        longTapCallBack: () {
-          Navigator.of(context).pushNamed(
-            WordBaseDetailView.routeName,
-            arguments: WordBaseDetailViewArguments(
-              word: sentence,
-              heroTag: heroTag,
-            ),
-          );
-        },
-        closeButtonOnTap: closeButtonOnTap != null
+        tapCallBack: _getTapCallback,
+        longPressCallBack: canLongPress
             ? () {
-                closeButtonOnTap?.call(sentence);
+                sentenceLongPressCallBack?.call(sentence);
+                Navigator.of(context).pushNamed(
+                  WordBaseDetailView.routeName,
+                  arguments: WordBaseDetailViewArguments(
+                    word: sentence,
+                    heroTag: heroTag,
+                  ),
+                );
               }
             : null,
-        closeButtonOnLongPress: closeButtonOnLongPress != null
-            ? () {
-                closeButtonOnLongPress?.call(sentence);
-              }
-            : null,
+        closeButtonOnTap: _getCloseButtonOnTap,
+        closeButtonOnLongPress: _getCloseButtonOnLongPress,
         handle: handle,
         child: _buildWordTileContent(context),
       ),
@@ -117,6 +109,44 @@ class SentenceTile extends StatelessWidget {
       images: sentence.getImageList(),
       heroTag: heroTag,
       fadeIn: fadeImageIn,
+    );
+  }
+
+  VoidCallback? _getTapCallback() {
+    final sentenceTapCallBack = this.sentenceTapCallBack;
+    return sentenceTapCallBack != null
+        ? () {
+            sentenceTapCallBack.call(sentence);
+          }
+        : null;
+  }
+
+  VoidCallback? _getCloseButtonOnTap() {
+    final closeButtonOnTap = this.closeButtonOnTap;
+    return closeButtonOnTap != null
+        ? () {
+            closeButtonOnTap.call(sentence);
+          }
+        : null;
+  }
+
+  VoidCallback? _getCloseButtonOnLongPress() {
+    final closeButtonOnLongPress = this.closeButtonOnLongPress;
+    return closeButtonOnLongPress != null
+        ? () {
+            closeButtonOnLongPress.call(sentence);
+          }
+        : null;
+  }
+
+  RoundedRectangleBorder buildRoundedRectangleBorder(
+    final BuildContext context,
+  ) {
+    return RoundedRectangleBorder(
+      side: BorderSide(
+        color: sentence.type.getColor(context),
+      ),
+      borderRadius: BorderRadius.circular(4),
     );
   }
 }

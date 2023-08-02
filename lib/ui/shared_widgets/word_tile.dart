@@ -17,12 +17,15 @@ class WordTile extends StatelessWidget {
     this.key,
     this.heroTag,
     this.wordTapCallBack,
+    this.wordLongPressCallBack,
     this.isSelected = false,
     this.closeButtonOnTap,
     this.closeButtonOnLongPress,
     this.handle,
     this.fadeImageIn = true,
-  }) : super(key: key);
+    this.canLongPress = true,
+  })  : assert(closeButtonOnLongPress != null ? canLongPress : true),
+        super(key: key);
 
   final Key? key;
   final Word word;
@@ -31,10 +34,12 @@ class WordTile extends StatelessWidget {
   final WordCallBack? wordTapCallBack;
   final WordCallBack? closeButtonOnTap;
   final WordCallBack? closeButtonOnLongPress;
+  final WordCallBack? wordLongPressCallBack;
   final Widget? handle;
 
   final bool isSelected;
   final bool fadeImageIn;
+  final bool canLongPress;
 
   @override
   Widget build(final BuildContext context) {
@@ -54,15 +59,18 @@ class WordTile extends StatelessWidget {
           print(word.hashCode);
           wordTapCallBack?.call(word);
         },
-        longTapCallBack: () {
-          Navigator.of(context).pushNamed(
-            WordBaseDetailView.routeName,
-            arguments: WordBaseDetailViewArguments(
-              word: word,
-              heroTag: heroTag,
-            ),
-          );
-        },
+        longPressCallBack: canLongPress
+            ? () {
+                wordLongPressCallBack?.call(word);
+                Navigator.of(context).pushNamed(
+                  WordBaseDetailView.routeName,
+                  arguments: WordBaseDetailViewArguments(
+                    word: word,
+                    heroTag: heroTag,
+                  ),
+                );
+              }
+            : null,
         closeButtonOnTap: closeButtonOnTap != null
             ? () {
                 closeButtonOnTap?.call(word);

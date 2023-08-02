@@ -4,7 +4,7 @@ import 'package:rxdart/rxdart.dart';
 import '../../api/models/word.dart';
 import '../../api/models/word_sub_type.dart';
 import '../../api/models/word_type.dart';
-import '../../services/word_base_service.dart';
+import '../../services/word_service.dart';
 
 class ManageWordViewModel {
   ManageWordViewModel(this.wordService);

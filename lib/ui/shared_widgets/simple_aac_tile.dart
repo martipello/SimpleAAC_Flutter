@@ -13,7 +13,7 @@ class SimpleAACTile extends StatelessWidget {
     this.closeButtonOnLongPress,
     this.handle,
     this.tapCallBack,
-    this.longTapCallBack,
+    this.longPressCallBack,
   }) : super(key: key);
 
   final Widget child;
@@ -21,7 +21,7 @@ class SimpleAACTile extends StatelessWidget {
   final VoidCallback? closeButtonOnTap;
   final VoidCallback? closeButtonOnLongPress;
   final VoidCallback? tapCallBack;
-  final VoidCallback? longTapCallBack;
+  final VoidCallback? longPressCallBack;
   final Widget? handle;
 
   final RoundedRectangleBorder? border;
@@ -38,7 +38,7 @@ class SimpleAACTile extends StatelessWidget {
         type: MaterialType.transparency,
         child: InkWell(
           onTap: tapCallBack,
-          onLongPress: longTapCallBack,
+          onLongPress: longPressCallBack,
           child: Stack(
             children: [
               child,

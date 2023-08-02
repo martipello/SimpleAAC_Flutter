@@ -18,6 +18,7 @@ class RoundedButton extends StatelessWidget {
     this.outlineColor,
     this.textStyle,
     this.elevation,
+    this.tooltip,
   }) : super(key: key);
 
   final VoidCallback? onPressed;
@@ -28,50 +29,55 @@ class RoundedButton extends StatelessWidget {
   final bool disableShadow;
   final double? elevation;
   final String label;
+  final String? tooltip;
   final IconData? leadingIcon;
   final IconData? trailingIcon;
   final TextStyle? textStyle;
 
   @override
   Widget build(final BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: TextButton(
-        style: ButtonStyle(
-          textStyle: MaterialStateProperty.all(
-            _getTextStyle(context),
-          ),
-          elevation: MaterialStateProperty.all(
-            onPressed != null && !disableShadow ? elevation ?? 2 : 0,
-          ),
-          padding: MaterialStateProperty.all(
-            const EdgeInsets.symmetric(
-              horizontal: 16,
-            ),
-          ),
-          backgroundColor: MaterialStateProperty.all(
-            _getFillColor(context),
-          ),
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
-            ),
-          ),
-          side: MaterialStateProperty.all(
-            BorderSide(
-              color: _getOutlineColor(context),
-            ),
-          ),
-          overlayColor: MaterialStateProperty.all(Colors.black12),
+    return Semantics(
+      label: tooltip ?? label,
+      button: true,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
         ),
-        onPressed: _handleOnPressed(),
-        child: Builder(
-          builder: (final context) {
-            if (isLoading) return _buildLoading(context);
-            return _buildButtonContent(context);
-          },
+        child: TextButton(
+          style: ButtonStyle(
+            textStyle: MaterialStateProperty.all(
+              _getTextStyle(context),
+            ),
+            elevation: MaterialStateProperty.all(
+              onPressed != null && !disableShadow ? elevation ?? 2 : 0,
+            ),
+            padding: MaterialStateProperty.all(
+              const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+            ),
+            backgroundColor: MaterialStateProperty.all(
+              _getFillColor(context),
+            ),
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+            ),
+            side: MaterialStateProperty.all(
+              BorderSide(
+                color: _getOutlineColor(context),
+              ),
+            ),
+            overlayColor: MaterialStateProperty.all(Colors.black12),
+          ),
+          onPressed: _handleOnPressed(),
+          child: Builder(
+            builder: (final context) {
+              if (isLoading) return _buildLoading(context);
+              return _buildButtonContent(context);
+            },
+          ),
         ),
       ),
     );
