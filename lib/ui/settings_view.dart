@@ -5,7 +5,7 @@ import 'package:settings_ui/settings_ui.dart';
 import '../api/models/language.dart';
 import '../dependency_injection_container.dart';
 import '../extensions/build_context_extension.dart';
-import '../services/shared_preferences_service.dart';
+import '../api/services/shared_preferences_service.dart';
 import '../view_models/language_view_model.dart';
 import 'language_view.dart';
 import 'theme/simple_aac_text.dart';

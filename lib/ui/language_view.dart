@@ -1,15 +1,15 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:change_notifier_builder/change_notifier_builder.dart';
 import 'package:flutter/material.dart';
+
+import '../api/models/language.dart';
 import '../api/models/word.dart';
+import '../dependency_injection_container.dart';
+import '../view_models/language_view_model.dart';
 import 'shared_widgets/app_bar.dart';
 import 'shared_widgets/expansion_card.dart';
 import 'shared_widgets/simple_aac_loading_widget.dart';
 import 'shared_widgets/word_tile.dart';
-
-import '../api/models/language.dart';
-import '../dependency_injection_container.dart';
-import '../view_models/language_view_model.dart';
 
 class LanguageView extends StatefulWidget {
   static const String routeName = '/language';
@@ -77,13 +77,18 @@ class _LanguageViewState extends State<LanguageView> {
             height: 120,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                children: language.words
-                    .take(10)
-                    .map(
-                      (final word) => _buildWordTile(word),
-                    )
-                    .toList(),
+              child: FutureBuilder<BuiltList<Word>>(
+                future: languageViewModel.firstTenForLanguage(language),
+                builder: (final context, final snapshot) {
+                  final words = snapshot.data ?? BuiltList<Word>();
+                  return Row(
+                    children: words
+                        .map(
+                          (final word) => _buildWordTile(word),
+                        )
+                        .toList(),
+                  );
+                },
               ),
             ),
           )

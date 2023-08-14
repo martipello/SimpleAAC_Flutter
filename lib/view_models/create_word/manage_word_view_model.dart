@@ -4,12 +4,12 @@ import 'package:rxdart/rxdart.dart';
 import '../../api/models/word.dart';
 import '../../api/models/word_sub_type.dart';
 import '../../api/models/word_type.dart';
-import '../../services/word_service.dart';
+import '../../api/services/word_service.dart';
 
 class ManageWordViewModel {
   ManageWordViewModel(this.wordService);
 
-  final WordBaseService wordService;
+  final WordService wordService;
 
   final wordStream = BehaviorSubject<Word?>();
 

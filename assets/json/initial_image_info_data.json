@@ -1,0 +1,24 @@
+{
+  "imageInfos": [
+    {
+      "id": "ImageInfoId-1",
+      "uri": "https://picsum.photos/200/300"
+    },
+    {
+      "id": "ImageInfoId-2",
+      "uri": "https://picsum.photos/200/300"
+     },
+    {
+      "id": "ImageInfoId-3",
+      "uri": "https://picsum.photos/200/300"
+     },
+    {
+      "id": "ImageInfoId-4",
+      "uri": "https://picsum.photos/200/300"
+    },
+    {
+      "id": "ImageInfoId-5",
+      "uri": "https://picsum.photos/200/300"
+    }
+  ]
+}

@@ -1,22 +1,28 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:built_collection/built_collection.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_built_value/hive_built_value.dart';
-import 'models/sentence.dart';
-import 'models/sentences_response.dart';
-import 'models/word_groups_response.dart';
 
 import '../dependency_injection_container.dart' as di;
-import '../services/language_service.dart';
+import 'models/image_info.dart';
+import 'models/image_info_response.dart';
+import 'services/image_info_service.dart';
+import 'services/language_service.dart';
+import 'services/sentence_service.dart';
+import 'services/word_group_service.dart';
+import 'services/word_service.dart';
 import 'models/language.dart';
 import 'models/languages_response.dart';
+import 'models/sentence.dart';
+import 'models/sentences_response.dart';
 import 'models/theme_service_hive_adapters.dart';
 import 'models/word.dart';
 import 'models/word_group.dart';
+import 'models/word_groups_response.dart';
 import 'models/word_sub_type.dart';
 import 'models/word_type.dart';
+import 'models/words_response.dart';
 
 Future<void> initHive(
   final Directory appDocumentDir,
@@ -28,6 +34,7 @@ Future<void> initHive(
     ..registerAdapter<Language>(LanguageAdapter())
     ..registerAdapter<WordSubType>(WordSubTypeAdapter())
     ..registerAdapter<WordType>(WordTypeAdapter())
+    ..registerAdapter<ImageInfo>(ImageInfoAdapter())
     ..registerAdapter(ThemeModeAdapter())
     ..registerAdapter(ColorAdapter())
     ..registerAdapter(FlexSchemeAdapter())
@@ -47,6 +54,20 @@ Future<void> initHive(
 
 Future<void> populateInitialData() async {
   final languageService = di.getIt.get<LanguageService>();
+  final imageInfoService = di.getIt.get<ImageInfoService>();
+  final wordService = di.getIt.get<WordService>(instanceName: kWordBox);
+  final sentenceService = di.getIt.get<SentenceService>(instanceName: kSentenceBox);
+  final wordGroupService = di.getIt.get<WordGroupService>(instanceName: kWordGroupBox);
+
+  await languageService.deleteAll();
+  await imageInfoService.deleteAll();
+  await wordService.deleteAll();
+  await sentenceService.deleteAll();
+  await wordGroupService.deleteAll();
+
+  final initialImageInfoData = await rootBundle.loadString(
+    'assets/json/initial_image_info_data.json',
+  );
   final initialWordData = await rootBundle.loadString(
     'assets/json/initial_word_data.json',
   );
@@ -56,38 +77,28 @@ Future<void> populateInitialData() async {
   final initialWordGroupData = await rootBundle.loadString(
     'assets/json/initial_word_group_data.json',
   );
+  final initialLanguageData = await rootBundle.loadString(
+    'assets/json/initial_language_data.json',
+  );
 
+  final initialImageInfoDataJson = await jsonDecode(initialImageInfoData);
+
+  final initialLanguageDataJson = await jsonDecode(initialLanguageData);
   final initialWordDataJson = await jsonDecode(initialWordData);
-  final initialSentences = await jsonDecode(initialSentenceData);
-  final initialWordGroup = await jsonDecode(initialWordGroupData);
+  final initialSentencesDataJson = await jsonDecode(initialSentenceData);
+  final initialWordGroupsDataJson = await jsonDecode(initialWordGroupData);
 
-  final languages = LanguagesResponse.fromJson(initialWordDataJson).languages;
-  final sentences = SentencesResponse.fromJson(initialSentences).sentences;
-  final wordGroups = WordGroupsResponse.fromJson(initialWordGroup).wordGroups;
+  final imageInfos = ImageInfoResponse.fromJson(initialImageInfoDataJson).imageInfos;
+  final languages = LanguagesResponse.fromJson(initialLanguageDataJson).languages;
+  final words = WordsResponse.fromJson(initialWordDataJson).words;
+  final sentences = SentencesResponse.fromJson(initialSentencesDataJson).sentences;
+  final wordGroups = WordGroupsResponse.fromJson(initialWordGroupsDataJson).wordGroups;
 
-  final rebuiltFirstLanguage = _replaceFirstLanguagesSentencesAndWordGroups(
-    languages,
-    sentences,
-    wordGroups,
-  );
 
-  await languageService.putAll(rebuiltFirstLanguage);
+  await imageInfoService.putAll(imageInfos);
+  await languageService.putAll(languages);
+  await wordService.putAll(words);
+  await sentenceService.putAll(sentences);
+  await wordGroupService.putAll(wordGroups);
 }
 
-BuiltList<Language> _replaceFirstLanguagesSentencesAndWordGroups(
-  final BuiltList<Language> languages,
-  final BuiltList<Sentence> sentences,
-  final BuiltList<WordGroup> wordGroups,
-) {
-  final languageWithSentenceAndWordGroupData = languages.first.rebuild(
-    (final l) => l
-      ..sentences.replace(sentences)
-      ..wordGroups.replace(wordGroups),
-  );
-
-  final rebuiltFirstLanguage = BuiltList<Language>.of([
-    languageWithSentenceAndWordGroupData,
-    ...languages.skip(1),
-  ]);
-  return rebuiltFirstLanguage;
-}

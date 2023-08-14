@@ -8,15 +8,14 @@ import '../theme/simple_aac_text.dart';
 
 class MultiImage extends StatefulWidget {
   const MultiImage({
-    required this.images,
+    required this.imageIds,
     final Key? key,
     this.heroTag,
     this.fadeIn = true,
     this.spacing = 4.0,
   }) : super(key: key);
 
-  final BuiltList<String> images;
-
+  final BuiltList<String> imageIds;
   //Nullable because it's not always needed
   final String? heroTag;
   final bool fadeIn;
@@ -27,7 +26,7 @@ class MultiImage extends StatefulWidget {
 }
 
 class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+  late AnimationController? _controller;
   final multiImageViewModel = getIt.get<MultiImageViewModel>();
 
   @override
@@ -36,12 +35,21 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
     _initAnimationController();
     multiImageViewModel.fourImages.listen(
       (final event) {
-        if (event.isNotEmpty && widget.fadeIn) {
-          _controller.forward();
+        final controller = _controller;
+        if (event.isNotEmpty && widget.fadeIn && controller != null) {
+          controller.forward();
         }
       },
     );
-    multiImageViewModel.requestFourImages(widget.images);
+    multiImageViewModel.requestFourImages(widget.imageIds);
+  }
+
+  @override
+  void didUpdateWidget(covariant final MultiImage oldWidget) {
+    if (oldWidget.imageIds != widget.imageIds) {
+      multiImageViewModel.requestFourImages(widget.imageIds);
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   void _initAnimationController() {
@@ -55,8 +63,9 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
 
   @override
   void dispose() {
+    _controller?.dispose();
+    _controller = null;
     //TODO the below needs to be uncommented
-    _controller.dispose();
     // multiImageViewModel.dispose();
     super.dispose();
   }
@@ -177,7 +186,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   Widget _buildFourOrMoreImages(
     final BuiltList<ImageInfo> imageInfoList,
   ) {
-    final isMoreThanFour = widget.images.length > 4;
+    final isMoreThanFour = widget.imageIds.length > 4;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -224,7 +233,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
                           color: context.themeColors.background.withOpacity(0.5),
                           child: Center(
                             child: Text(
-                              '+${widget.images.length - 4}',
+                              '+${widget.imageIds.length - 4}',
                               style: SimpleAACText.subtitle1Style.copyWith(
                                 color: context.themeColors.onBackground.withOpacity(0.5),
                               ),
@@ -256,9 +265,10 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   Widget _buildImageMaybeFadeInWrapper(
     final ImageInfo imageInfo,
   ) {
-    if (widget.fadeIn) {
+    final controller = _controller;
+    if (widget.fadeIn && controller != null) {
       return FadeTransition(
-        opacity: _controller,
+        opacity: controller,
         child: _buildImage(
           imageInfo,
         ),

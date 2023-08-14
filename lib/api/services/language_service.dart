@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/foundation.dart';
 
-import '../api/hive_client.dart';
-import '../api/models/language.dart';
+import '../hive_client.dart';
+import '../models/language.dart';
 import 'shared_preferences_service.dart';
 
-const kLanguageBox = 'language';
+const kLanguageBox = 'language_box';
 
 typedef LanguageCallBack = void Function(Language language);
 
@@ -40,6 +40,10 @@ class LanguageService {
 
   Future<void> delete(final Language language) {
     return hiveClient.delete(language.id);
+  }
+
+  Future<void> deleteAll() async {
+    await hiveClient.deleteAll();
   }
 
   Future<Language> getCurrentLanguage() async {

@@ -1,7 +1,7 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
-import '../services/shared_preferences_service.dart';
+import '../api/services/shared_preferences_service.dart';
 import '../ui/theme/theme_controller.dart';
 
 class ThemeViewModel {

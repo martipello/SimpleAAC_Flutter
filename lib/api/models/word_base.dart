@@ -1,24 +1,35 @@
-import 'package:drift/drift.dart';
+import 'package:built_collection/built_collection.dart';
+import 'package:hive_built_value/hive_built_value.dart';
+
 import 'word_sub_type.dart';
 import 'word_type.dart';
 
-part '../word_base.g.dart';
+mixin WordBase {
 
-class WordBase extends Table {
+  @HiveField(0)
+  String get id;
 
-  IntColumn get id => integer().autoIncrement().call();
+  @HiveField(1)
+  WordType get type;
 
-  IntColumn get usageCount => integer().nullable().call();
+  @HiveField(2)
+  WordSubType get subType;
 
-  TextColumn get type => textEnum<WordType>().call();
+  @HiveField(3)
+  DateTime? get createdDate;
 
-  TextColumn get subType => textEnum<WordSubType>().call();
+  @HiveField(4)
+  double? get usageCount;
 
-  DateTimeColumn get dueDate => dateTime().nullable().call();
+  @HiveField(5)
+  bool? get isFavourite;
 
-  BoolColumn get isBackedUp => boolean().withDefault(Constant(false)).call();
+  @HiveField(6)
+  bool? get isUserAdded;
 
-  BoolColumn get isFavorite => boolean().withDefault(Constant(false)).call();
+  @HiveField(7)
+  bool? get isBackedUp;
 
-  BoolColumn get isUserAdded => boolean().withDefault(Constant(false)).call();
+  @HiveField(8)
+  BuiltList<String> get languageIds;
 }

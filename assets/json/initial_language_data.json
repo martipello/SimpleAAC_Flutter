@@ -1,0 +1,16 @@
+{
+  "languages": [
+    {
+      "id": "LanguageId-1",
+      "displayName": "Simple Language 1"
+    },
+    {
+      "id": "LanguageId-2",
+      "displayName": "Simple Language 2"
+     },
+    {
+      "id": "LanguageId-3",
+      "displayName": "Simple Language 3"
+     }
+  ]
+}

@@ -5,12 +5,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:rxdart/rxdart.dart';
+import '../../../api/services/image_info_service.dart';
 import '../../../utils/stream_helper.dart';
 
 class MultiImageViewModel {
+  MultiImageViewModel(
+    this.imageInfoService,
+    this.defaultCacheManager,
+  );
 
-  MultiImageViewModel(this.defaultCacheManager);
-
+  final ImageInfoService imageInfoService;
   final DefaultCacheManager defaultCacheManager;
 
   final subscriptions = CompositeSubscription();
@@ -39,7 +43,10 @@ class MultiImageViewModel {
   ).publishValue()
     ..connect().addTo(subscriptions);
 
-  Future<void> requestFourImages(final BuiltList<String> imagePaths) async {
+  Future<void> requestFourImages(final BuiltList<String> imageIds) async {
+    final imagePaths = imageInfoService.getImages(imageIds).map(
+          (final imageInfo) => imageInfo.uri,
+        );
     final paddedList = [...imagePaths, '', '', '', ''];
     final firstFourImagePaths = paddedList.take(4).toList();
 
@@ -59,7 +66,10 @@ class MultiImageViewModel {
     }
   }
 
-  Future<ImageStream?> imageStream(final String imagePath, final int index) async {
+  Future<ImageStream?> imageStream(
+    final String imagePath,
+    final int index,
+  ) async {
     //TODO(MS): images shouldn't be assets remove this when we support importing images
     //TODO(MS): Check the cache first
     ImageProvider? imageProvider;
@@ -83,7 +93,6 @@ class MultiImageViewModel {
     return imageProvider.resolve(
       ImageConfiguration.empty,
     );
-
   }
 
   ImageStreamListener imageStreamListener(

@@ -2,25 +2,25 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:hive_built_value/hive_built_value.dart';
-import 'language.dart';
+
+import '../serializers/serializers.dart';
 import 'word_base.dart';
 import 'word_sub_type.dart';
 import 'word_type.dart';
 
-import '../serializers/serializers.dart';
-
 part 'word_group.g.dart';
 
-@Entity(tableName: 'Word')
-class WordGroup extends WordBase {
+@HiveType(typeId: 3)
+abstract class WordGroup with WordBase implements Built<WordGroup, WordGroupBuilder> {
 
-  final String displayName;
-
-  @HiveField(8)
-  double? get usageCount;
+  factory WordGroup([final void Function(WordGroupBuilder) updates]) = _$WordGroup;
+  WordGroup._();
 
   @HiveField(9)
-  BuiltList<Language> get languages;
+  String get displayName;
+
+  @HiveField(10)
+  BuiltList<String> get wordIds;
 
   Map<String, dynamic> toJson() {
     return serializers.serializeWith(WordGroup.serializer, this) as Map<String, dynamic>;

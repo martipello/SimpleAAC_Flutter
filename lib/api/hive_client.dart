@@ -34,6 +34,10 @@ class HiveClient<T> {
     return _hiveBox.delete(key);
   }
 
+  Future<int> deleteAll() async {
+    return _hiveBox.clear();
+  }
+
   Future<T?> get<T>(
     final String key, {
     final T? defaultValue,
@@ -48,12 +52,12 @@ class HiveClient<T> {
 
   BuiltList<T> getAll<T>() => _hiveBox.values.whereType<T>().toBuiltList();
 
-  Future<BuiltList<T>> getAllForKeys<T>(final BuiltList<String> keys) async {
+  BuiltList<T> getAllForKeys<T>(final BuiltList<String> keys) {
     try {
-      final allLoaded = BuiltList<T>();
+      var allLoaded = BuiltList<T>();
       for (var key in keys) {
         final loaded = _hiveBox.get(key) as T;
-        allLoaded.rebuild((final b) => b.add(loaded));
+        allLoaded = allLoaded.rebuild((final b) => b.add(loaded));
       }
       return allLoaded;
     } catch (e) {

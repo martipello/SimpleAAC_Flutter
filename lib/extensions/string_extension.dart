@@ -1,4 +1,20 @@
+import '../api/models/extensions/word_base_extension.dart';
+
 extension StringExtension on String? {
+
+
+  bool isWordId() {
+    return this != null && this!.isNotEmpty && this!.startsWith(kWordIdPrefix);
+  }
+
+  bool isWordGroupId() {
+    return this != null && this!.isNotEmpty && this!.startsWith(kWordGroupIdPrefix);
+  }
+
+  bool isSentenceId() {
+    return this != null && this!.isNotEmpty && this!.startsWith(kSentenceIdPrefix);
+  }
+
   bool isNotNullOrEmpty() {
     return this?.isNotEmpty == true;
   }

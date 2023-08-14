@@ -47,14 +47,14 @@ class _WordSubTypeViewState extends State<WordSubTypeView> with AutomaticKeepAli
   Widget build(final BuildContext context) {
     super.build(context);
     return StreamBuilder<BuiltList<WordBase>>(
-      stream: wordsViewModel.wordsOfType,
+      stream: wordsViewModel.allWords,
       builder: (final context, final snapshot) {
         final words = snapshot.data ?? BuiltList();
         return Stack(
           children: [
             GridView.builder(
               itemCount: words.length,
-              padding: const EdgeInsets.all(6),
+              padding: const EdgeInsets.fromLTRB(6,6,6,72),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 mainAxisSpacing: 4,

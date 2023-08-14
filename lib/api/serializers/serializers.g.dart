@@ -7,6 +7,9 @@ part of 'serializers.dart';
 // **************************************************************************
 
 Serializers _$serializers = (new Serializers().toBuilder()
+      ..add(ImageInfo.serializer)
+      ..add(ImageInfoResponse.serializer)
+      ..add(Language.serializer)
       ..add(LanguagesResponse.serializer)
       ..add(Sentence.serializer)
       ..add(SentencesResponse.serializer)
@@ -15,6 +18,10 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(WordGroupsResponse.serializer)
       ..add(WordSubType.serializer)
       ..add(WordType.serializer)
+      ..add(WordsResponse.serializer)
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(ImageInfo)]),
+          () => new ListBuilder<ImageInfo>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Language)]),
           () => new ListBuilder<Language>())
@@ -28,23 +35,23 @@ Serializers _$serializers = (new Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(String)]),
           () => new ListBuilder<String>())
       ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType(Language)]),
-          () => new ListBuilder<Language>())
-      ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType(Word)]),
-          () => new ListBuilder<Word>())
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => new ListBuilder<String>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => new ListBuilder<String>())
       ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType(Language)]),
-          () => new ListBuilder<Language>())
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => new ListBuilder<String>())
       ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType(WordBase)]),
-          () => new ListBuilder<WordBase>())
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => new ListBuilder<String>())
       ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType(Language)]),
-          () => new ListBuilder<Language>())
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => new ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(Word)]),
+          () => new ListBuilder<Word>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(WordGroup)]),
           () => new ListBuilder<WordGroup>()))

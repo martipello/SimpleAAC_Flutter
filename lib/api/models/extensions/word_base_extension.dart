@@ -1,5 +1,10 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../dependency_injection_container.dart';
+import '../../services/image_info_service.dart';
+import '../../services/sentence_service.dart';
+import '../../services/word_service.dart';
+import '../image_info.dart';
 import '../word.dart';
 import '../word_base.dart';
 import 'package:built_collection/built_collection.dart';
@@ -7,39 +12,27 @@ import '../word_group.dart';
 
 import '../sentence.dart';
 
+const kWordIdPrefix = 'WordId-';
+const kWordGroupIdPrefix = 'WordGroupId-';
+const kSentenceIdPrefix = 'SentenceId-';
+const kLanguageIdPrefix = 'LanguageId-';
+const kImageInfoIdPrefix = 'ImageInfoId-';
+
 extension WordExtension on WordBase {
   String getHeroTag(final String suffix) {
     return '$suffix$id';
   }
 
-  BuiltList<String> getImageList() {
+  Future<BuiltList<String>> getWordsWords() async {
     final wordBase = this;
     if (wordBase is Word) {
-      return wordBase.imageList;
+      return Future.value(BuiltList.of([wordBase.word]));
     } else if (wordBase is Sentence) {
-      return BuiltList<String>.from(
-        wordBase.words.map(
-          (final word) => word.imageList.first,
-        ),
-      );
-    } else if (wordBase is WordGroup) {
-      return BuiltList<String>.from(
-        wordBase.words.map(
-          (final word) => word.getImageList().first,
-        ),
-      );
+      final wordService = getIt.get<WordService>(instanceName: kSentenceBox);
+      final words = await wordService.getForIds(wordBase.wordIds);
+      return words.map((final word) => word.word).toBuiltList();
     }
-    return BuiltList<String>();
-  }
-
-  BuiltList<String> getWords() {
-    final wordBase = this;
-    if (wordBase is Word) {
-      return BuiltList<String>.of([wordBase.word]);
-    } else if (wordBase is Sentence) {
-      return wordBase.words.map((final word) => word.word).toBuiltList();
-    }
-    return BuiltList<String>();
+    return Future.value(BuiltList());
   }
 
   WordBase copy({final String? id}) {
@@ -61,7 +54,7 @@ extension WordExtension on WordBase {
         ..type = word.type
         ..subType = word.subType
         ..word = word.word
-        ..imageList.replace(word.imageList)
+        ..imageId = word.imageId
         ..sound = word.sound
         ..isFavourite = word.isFavourite
         ..keyStage = word.keyStage
@@ -72,15 +65,17 @@ extension WordExtension on WordBase {
     );
   }
 
-  Sentence _fromSentence(final Sentence sentence, {final String? id}) {
+  Sentence _fromSentence(
+    final Sentence sentence, {
+    final String? id,
+  }) {
     return Sentence(
       (final b) => b
         ..id = id ?? sentence.id
         ..usageCount = sentence.usageCount
         ..type = sentence.type
         ..subType = sentence.subType
-        ..words.replace(sentence.words)
-        ..sound = sentence.sound
+        ..wordIds.replace(sentence.wordIds)
         ..isFavourite = sentence.isFavourite
         ..isUserAdded = sentence.isUserAdded
         ..isBackedUp = sentence.isBackedUp
@@ -120,15 +115,7 @@ extension WordExtension on WordBase {
         wordBase.isBackedUp == otherWord.isBackedUp &&
         wordBase.isUserAdded == otherWord.isUserAdded &&
         wordBase.type == otherWord.type &&
-        wordBase.subType == otherWord.subType &&
-        listEquals(
-          wordBase.getImageList().toList(),
-          otherWord.getImageList().toList(),
-        ) &&
-        listEquals(
-          wordBase.getWords().toList(),
-          otherWord.getWords().toList(),
-        );
+        wordBase.subType == otherWord.subType;
   }
 
   bool _isSentenceEqual(
@@ -141,15 +128,7 @@ extension WordExtension on WordBase {
         wordBase.isFavourite == otherSentence.isFavourite &&
         wordBase.isBackedUp == otherSentence.isBackedUp &&
         wordBase.type == otherSentence.type &&
-        wordBase.subType == otherSentence.subType &&
-        listEquals(
-          wordBase.getImageList().toList(),
-          otherSentence.getImageList().toList(),
-        ) &&
-        listEquals(
-          wordBase.getWords().toList(),
-          otherSentence.getWords().toList(),
-        );
+        wordBase.subType == otherSentence.subType;
   }
 
   bool _isWordGroupEqual(
@@ -163,8 +142,8 @@ extension WordExtension on WordBase {
         wordBase.isFavourite == otherWordGroup.isFavourite &&
         wordBase.isBackedUp == otherWordGroup.isBackedUp &&
         listEquals(
-          wordBase.words.toList(),
-          otherWordGroup.words.toList(),
+          wordBase.wordIds.toList(),
+          otherWordGroup.wordIds.toList(),
         ) &&
         wordBase.type == otherWordGroup.type &&
         wordBase.subType == otherWordGroup.subType;

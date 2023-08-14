@@ -1,13 +1,17 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
-import '../../api/models/extensions/word_base_extension.dart';
-import '../../api/models/sentence.dart';
 
+import '../../api/models/extensions/word_base_extension.dart';
 import '../../api/models/extensions/word_type_extension.dart';
+import '../../api/models/sentence.dart';
 import '../../extensions/build_context_extension.dart';
 import '../theme/simple_aac_text.dart';
 import '../word_detail_view.dart';
 import 'multi_image.dart';
+import 'multi_image_id_builder.dart';
+import 'simple_aac_loading_widget.dart';
 import 'simple_aac_tile.dart';
+import 'word_tile.dart';
 
 typedef SentenceCallBack = void Function(Sentence sentence);
 
@@ -43,7 +47,7 @@ class SentenceTile extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1 / 1.3,
+      aspectRatio: kTileAspectRatio,
       child: SimpleAACTile(
         key: key,
         border: buildRoundedRectangleBorder(context),
@@ -89,26 +93,41 @@ class SentenceTile extends StatelessWidget {
           const SizedBox(
             height: 4,
           ),
-          Text(
-            sentence.words.map((final wb) => wb.word).join(' '),
-            maxLines: 2,
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.ellipsis,
-            style: SimpleAACText.body1Style.copyWith(
-              color: context.themeColors.onBackground,
-            ),
-          ),
+          _buildSentenceDisplayName(),
         ],
       ),
     );
   }
 
+  Widget _buildSentenceDisplayName() {
+    return FutureBuilder<BuiltList<String>>(
+      future: sentence.getWordsWords(),
+      builder: (final context, final snapshot) {
+        final words = snapshot.data ?? BuiltList<String>();
+        return Text(
+          words.join(' '),
+          maxLines: 2,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: SimpleAACText.body1Style.copyWith(
+            color: context.themeColors.onBackground,
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildImage() {
-    return MultiImage(
-      key: ValueKey(sentence.hashCode),
-      images: sentence.getImageList(),
-      heroTag: heroTag,
-      fadeIn: fadeImageIn,
+    return MultiImageIDBuilder(
+      multiImageIDBuilder: (final imageIds){
+        return MultiImage(
+          key: ValueKey(sentence.hashCode),
+          imageIds: imageIds,
+          heroTag: heroTag,
+          fadeIn: fadeImageIn,
+        );
+      },
+      wordBase: sentence,
     );
   }
 

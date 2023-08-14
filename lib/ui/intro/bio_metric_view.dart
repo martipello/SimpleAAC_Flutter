@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../dependency_injection_container.dart';
 import '../../extensions/build_context_extension.dart';
-import '../../services/shared_preferences_service.dart';
+import '../../api/services/shared_preferences_service.dart';
 import 'intro_view.dart';
 
 class BioMetricView extends StatefulWidget {

@@ -1,181 +1,49 @@
 {
   "sentences": [
     {
-      "id": "s1",
-      "createdDate": "2023-06-11T00:00:00.000Z",
+      "id": "SentenceId-1",
       "type": "quicks",
       "subType": "conjunctions",
-      "words": [
-        {
-          "id": "w1",
-          "createdDate": "2023-06-11T00:00:00.000Z",
-          "type": "quicks",
-          "subType": "conjunctions",
-          "word": "the",
-          "imageList": ["https://picsum.photos/200/300","https://picsum.photos/200/300"],
-          "sound": "thē",
-          "isFavourite": false,
-          "usageCount": 0,
-          "keyStage": 1,
-          "isUserAdded": false,
-          "isBackedUp": false,
-          "extraRelatedWordIds": ["w4", "w5", "w14", "w19", "w33"]
-        },
-        {
-          "id": "w2",
-          "createdDate": "2023-06-11T00:00:00.000Z",
-          "type": "quicks",
-          "subType": "conjunctions",
-          "word": "of",
-          "imageList": ["https://picsum.photos/200/300","https://picsum.photos/200/300","https://picsum.photos/200/300"],
-          "sound": "əv",
-          "isFavourite": false,
-          "usageCount": 0,
-          "keyStage": 1,
-          "isUserAdded": false,
-          "isBackedUp": false,
-          "extraRelatedWordIds": ["w6", "w7", "w15", "w22", "w41"]
-        },
-        {
-          "id": "w3",
-          "createdDate": "2023-06-11T00:00:00.000Z",
-          "type": "quicks",
-          "subType": "conjunctions",
-          "word": "and",
-          "imageList": ["https://picsum.photos/200/300"],
-          "sound": "ənd",
-          "isFavourite": false,
-          "usageCount": 0,
-          "keyStage": 1,
-          "isUserAdded": false,
-          "isBackedUp": false,
-          "extraRelatedWordIds": ["w8", "w9", "w12", "w23", "w35"]
-        }
-      ],
-      "sound": "thē",
-      "isFavourite": false,
+      "createdDate": "2023-06-11T00:00:00.000Z",
       "usageCount": 0,
+      "isFavourite": false,
       "isUserAdded": false,
       "isBackedUp": false,
-      "extraRelatedWordIds": ["w4", "w5", "w14", "w19", "w33"]
+      "languageIds": ["LanguageId-1"],
+      "wordIds": [
+        "WordId-1","WordId-2"
+      ],
+      "extraRelatedWordIds": ["WordId-4", "WordId-5", "WordId-14", "WordId-19", "WordId-33"]
     },
     {
-      "id": "s2",
+      "id": "SentenceId-2",
       "createdDate": "2023-06-11T00:00:00.000Z",
       "type": "quicks",
       "subType": "conjunctions",
-      "words": [
-        {
-          "id": "w1",
-          "createdDate": "2023-06-11T00:00:00.000Z",
-          "type": "quicks",
-          "subType": "conjunctions",
-          "word": "the",
-          "imageList": ["https://picsum.photos/200/300","https://picsum.photos/200/300"],
-          "sound": "thē",
-          "isFavourite": false,
-          "usageCount": 0,
-          "keyStage": 1,
-          "isUserAdded": false,
-          "isBackedUp": false,
-          "extraRelatedWordIds": ["w4", "w5", "w14", "w19", "w33"]
-        },
-        {
-          "id": "w2",
-          "createdDate": "2023-06-11T00:00:00.000Z",
-          "type": "quicks",
-          "subType": "conjunctions",
-          "word": "of",
-          "imageList": ["https://picsum.photos/200/300","https://picsum.photos/200/300","https://picsum.photos/200/300"],
-          "sound": "əv",
-          "isFavourite": false,
-          "usageCount": 0,
-          "keyStage": 1,
-          "isUserAdded": false,
-          "isBackedUp": false,
-          "extraRelatedWordIds": ["w6", "w7", "w15", "w22", "w41"]
-        },
-        {
-          "id": "w3",
-          "createdDate": "2023-06-11T00:00:00.000Z",
-          "type": "quicks",
-          "subType": "conjunctions",
-          "word": "and",
-          "imageList": ["https://picsum.photos/200/300"],
-          "sound": "ənd",
-          "isFavourite": false,
-          "usageCount": 0,
-          "keyStage": 1,
-          "isUserAdded": false,
-          "isBackedUp": false,
-          "extraRelatedWordIds": ["w8", "w9", "w12", "w23", "w35"]
-        }
-      ],
-      "sound": "əv",
-      "isFavourite": false,
       "usageCount": 0,
+      "isFavourite": false,
       "isUserAdded": false,
       "isBackedUp": false,
-      "extraRelatedWordIds": ["w6", "w7", "w15", "w22", "w41"]
+      "languageIds": ["LanguageId-1"],
+      "wordIds": [
+        "WordId-1","WordId-2","WordId-3","WordId-4","WordId-5"
+      ],
+      "extraRelatedWordIds": ["WordId-4", "WordId-5", "WordId-14", "WordId-19", "WordId-33"]
     },
     {
-      "id": "s3",
+      "id": "SentenceId-3",
       "createdDate": "2023-06-11T00:00:00.000Z",
       "type": "quicks",
       "subType": "conjunctions",
-      "words": [
-        {
-          "id": "w1",
-          "createdDate": "2023-06-11T00:00:00.000Z",
-          "type": "quicks",
-          "subType": "conjunctions",
-          "word": "the",
-          "imageList": ["https://picsum.photos/200/300","https://picsum.photos/200/300"],
-          "sound": "thē",
-          "isFavourite": false,
-          "usageCount": 0,
-          "keyStage": 1,
-          "isUserAdded": false,
-          "isBackedUp": false,
-          "extraRelatedWordIds": ["w4", "w5", "w14", "w19", "w33"]
-        },
-        {
-          "id": "w2",
-          "createdDate": "2023-06-11T00:00:00.000Z",
-          "type": "quicks",
-          "subType": "conjunctions",
-          "word": "of",
-          "imageList": ["https://picsum.photos/200/300","https://picsum.photos/200/300","https://picsum.photos/200/300"],
-          "sound": "əv",
-          "isFavourite": false,
-          "usageCount": 0,
-          "keyStage": 1,
-          "isUserAdded": false,
-          "isBackedUp": false,
-          "extraRelatedWordIds": ["w6", "w7", "w15", "w22", "w41"]
-        },
-        {
-          "id": "w3",
-          "createdDate": "2023-06-11T00:00:00.000Z",
-          "type": "quicks",
-          "subType": "conjunctions",
-          "word": "and",
-          "imageList": ["https://picsum.photos/200/300"],
-          "sound": "ənd",
-          "isFavourite": false,
-          "usageCount": 0,
-          "keyStage": 1,
-          "isUserAdded": false,
-          "isBackedUp": false,
-          "extraRelatedWordIds": ["w8", "w9", "w12", "w23", "w35"]
-        }
-      ],
-      "sound": "ənd",
-      "isFavourite": false,
       "usageCount": 0,
+      "isFavourite": false,
       "isUserAdded": false,
       "isBackedUp": false,
-      "extraRelatedWordIds": ["w8", "w9", "w12", "w23", "w35"]
+      "languageIds": ["LanguageId-1"],
+      "wordIds": [
+        "WordId-1","WordId-2","WordId-3"
+      ],
+      "extraRelatedWordIds": ["WordId-4", "WordId-5", "WordId-14", "WordId-19", "WordId-33"]
     }
   ]
 }

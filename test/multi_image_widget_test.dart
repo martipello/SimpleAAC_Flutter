@@ -5,6 +5,8 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:simple_aac/api/hive_client.dart';
+import 'package:simple_aac/api/services/image_info_service.dart';
 import 'package:simple_aac/ui/shared_widgets/multi_image.dart';
 import 'package:simple_aac/ui/shared_widgets/simple_aac_loading_widget.dart';
 import 'package:simple_aac/ui/shared_widgets/view_model/multi_image_view_model.dart';
@@ -297,8 +299,10 @@ Future<Widget> _buildMultiImageWidgetHolder(
 ) async {
   final getIt = GetIt.instance;
   //ignore_for_file: cascade_invocations
+  getIt.registerSingletonAsync(() => HiveClient.create<ImageInfo>(kImageInfoBox), instanceName: kImageInfoBox);
+  getIt.registerLazySingleton(() => ImageInfoService(getIt(instanceName: kImageInfoBox)));
   getIt.registerSingleton(DefaultCacheManager());
-  getIt.registerFactory(() => MultiImageViewModel(getIt()));
+  getIt.registerFactory(() => MultiImageViewModel(getIt(), getIt()));
   await getIt.allReady();
 
   return MaterialApp(
@@ -317,8 +321,9 @@ Future<Widget> _buildMultiImageWidgetHolder(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
+            //TODO this will break this test, needs to have the images added to the hive box and this should take imageIds
             child: MultiImage(
-              images: BuiltList.of(
+              imageIds: BuiltList.of(
                 imageList,
               ),
             ),

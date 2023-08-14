@@ -1,18 +1,19 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import '../api/models/extensions/word_base_extension.dart';
-import '../api/models/sentence.dart';
-import '../api/models/word_base.dart';
-import 'shared_widgets/multi_image.dart';
 
 import '../../extensions/build_context_extension.dart';
+import '../api/models/extensions/word_base_extension.dart';
+import '../api/models/sentence.dart';
 import '../api/models/word.dart';
+import '../api/models/word_base.dart';
 import '../dependency_injection_container.dart';
 import '../view_models/words_view_model.dart';
 import 'dashboard/app_shell.dart';
 import 'dashboard/related_words_widget.dart';
 import 'manage_word_view.dart';
+import 'shared_widgets/multi_image.dart';
+import 'shared_widgets/multi_image_id_builder.dart';
 import 'shared_widgets/overlay_button.dart';
 import 'shared_widgets/simple_aac_dialog.dart';
 import 'shared_widgets/simple_aac_table.dart';
@@ -250,10 +251,15 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
   Widget _buildImage(
     final WordBase wordBase,
   ) {
-    return MultiImage(
-      images: wordBase.getImageList(),
-      heroTag: heroTag,
-      fadeIn: false,
+    return MultiImageIDBuilder(
+      multiImageIDBuilder: (final imageIds) {
+        return MultiImage(
+          imageIds: imageIds,
+          heroTag: heroTag,
+          fadeIn: false,
+        );
+      },
+      wordBase: wordBase,
     );
   }
 

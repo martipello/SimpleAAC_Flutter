@@ -3,7 +3,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../dependency_injection_container.dart';
 import '../../extensions/build_context_extension.dart';
-import '../../services/shared_preferences_service.dart';
+import '../../api/services/shared_preferences_service.dart';
 import '../../ui/dashboard/app_shell.dart';
 import '../../ui/shared_widgets/rounded_button.dart';
 import '../../view_models/intro/intro_view_model.dart';

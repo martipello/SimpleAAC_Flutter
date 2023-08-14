@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../ui/shared_widgets/simple_aac_dialog.dart';
+import '../../ui/shared_widgets/simple_aac_dialog.dart';
 
 class NavigationService {
   final navigatorKey = GlobalKey<NavigatorState>();

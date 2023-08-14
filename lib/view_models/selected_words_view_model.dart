@@ -5,7 +5,7 @@ import '../api/models/word_base.dart';
 import '../extensions/iterable_extension.dart';
 
 import '../api/models/word.dart';
-import '../services/word_service.dart';
+import '../api/services/word_service.dart';
 
 // enum SelectedWordListAction {
 //   add, remove,
@@ -14,7 +14,7 @@ import '../services/word_service.dart';
 class SelectedWordsViewModel {
   SelectedWordsViewModel(this.wordService);
 
-  final WordBaseService wordService;
+  final WordService wordService;
 
   final selectedWords = BehaviorSubject<BuiltList<WordBase>>.seeded(
     BuiltList<WordBase>.of([]),
@@ -88,7 +88,7 @@ class SelectedWordsViewModel {
   }
 
   void setRelatedWordsForWordIds(final BuiltList<String> relatedWords) async {
-    final words = await wordService.getWordsForIds(relatedWords);
+    final words = await wordService.getForIds(relatedWords);
     setRelatedWords(words);
   }
 

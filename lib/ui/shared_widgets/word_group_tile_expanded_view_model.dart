@@ -3,14 +3,21 @@ import 'package:rxdart/rxdart.dart';
 import '../../api/models/extensions/word_base_extension.dart';
 import '../../api/models/word_base.dart';
 import '../../api/models/word_group.dart';
-import '../../services/word_service.dart';
+import '../../api/services/sentence_service.dart';
+import '../../api/services/word_group_service.dart';
+import '../../api/services/word_service.dart';
+import '../../extensions/string_extension.dart';
 
 class WordGroupTileExpandedViewModel {
   WordGroupTileExpandedViewModel(
-    this.wordBaseService,
+    this.wordService,
+    this.wordGroupService,
+    this.sentenceService,
   );
 
-  final WordBaseService wordBaseService;
+  final WordGroupService wordGroupService;
+  final WordService wordService;
+  final SentenceService sentenceService;
 
   final hasWordGroupChanged = BehaviorSubject<bool>.seeded(false);
   final initialWordGroup = BehaviorSubject<WordGroup>();
@@ -28,7 +35,7 @@ class WordGroupTileExpandedViewModel {
     final changedWordGroup = this.changedWordGroup.valueOrNull;
     if (changedWordGroup != null) {
       initialWordGroup.add(changedWordGroup);
-      wordBaseService.updateWordGroup(changedWordGroup);
+      wordGroupService.put(changedWordGroup);
     }
   }
 
@@ -50,12 +57,12 @@ class WordGroupTileExpandedViewModel {
     }
   }
 
-  void removeWord(final WordBase word) {
+  void removeWord(final String wordId) {
     final changedWordGroup = this.changedWordGroup.valueOrNull;
     if (changedWordGroup != null) {
       this.changedWordGroup.add(
             changedWordGroup.rebuild(
-              (final wg) => wg.words.remove(word),
+              (final wg) => wg.wordIds.remove(wordId),
             ),
           );
     }
@@ -75,5 +82,17 @@ class WordGroupTileExpandedViewModel {
     hasWordGroupChanged.close();
     initialWordGroup.close();
     changedWordGroup.close();
+  }
+
+  Future<WordBase?> getWord(final String wordId) async {
+    //TODO this needs to know what it is getting, ie word or sentence
+    //Make id identifier a constant
+    if (wordId.isWordId()) {
+      return wordService.get(wordId);
+    } else if (wordId.isSentenceId()) {
+      return sentenceService.get(wordId);
+    } else {
+      return null;
+    }
   }
 }

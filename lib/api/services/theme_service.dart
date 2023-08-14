@@ -1,4 +1,4 @@
-import '../api/hive_client.dart';
+import '../hive_client.dart';
 
 const kThemeBox = 'themes';
 

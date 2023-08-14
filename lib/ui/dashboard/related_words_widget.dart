@@ -1,17 +1,16 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:change_notifier_builder/change_notifier_builder.dart';
 import 'package:flutter/material.dart';
-import '../shared_widgets/multi_image.dart';
 
 import '../../api/models/word.dart';
+import '../../api/services/shared_preferences_service.dart';
+import '../../api/services/word_service.dart';
 import '../../dependency_injection_container.dart';
-import '../../services/shared_preferences_service.dart';
 import '../shared_widgets/chip_group.dart';
+import '../shared_widgets/multi_image.dart';
+import '../shared_widgets/multi_image_id_builder.dart';
 import '../shared_widgets/simple_aac_chip.dart';
 import '../shared_widgets/word_tile.dart';
-
-typedef WordListCallBack = void Function(BuiltList<Word> word);
-typedef WordIDListCallBack = void Function(BuiltList<String> word);
 
 class RelatedWordsWidget extends StatelessWidget {
   RelatedWordsWidget({
@@ -91,10 +90,15 @@ class RelatedWordsWidget extends StatelessWidget {
         padding: const EdgeInsets.all(4),
         child: ClipOval(
           clipBehavior: Clip.hardEdge,
-          child: MultiImage(
-            images: word.imageList,
-            fadeIn: false,
-            spacing: 1,
+          child: MultiImageIDBuilder(
+            multiImageIDBuilder: (final imageIds) {
+              return MultiImage(
+                imageIds: imageIds,
+                fadeIn: false,
+                spacing: 1,
+              );
+            },
+            wordBase: word,
           ),
         ),
       ),

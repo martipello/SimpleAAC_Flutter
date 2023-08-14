@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../ui/theme/simple_aac_text.dart';
+import '../../ui/theme/simple_aac_text.dart';
 
 class LaunchService {
   void launchEvent(final String _url, final BuildContext context) async => await canLaunch(_url)

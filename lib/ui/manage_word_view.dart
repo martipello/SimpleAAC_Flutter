@@ -14,6 +14,7 @@ import 'dashboard/related_words_widget.dart';
 import 'pick_image_dialog.dart';
 import 'shared_widgets/app_bar.dart';
 import 'shared_widgets/bottom_button_holder.dart';
+import 'shared_widgets/multi_image_id_builder.dart';
 import 'shared_widgets/rounded_button.dart';
 import 'shared_widgets/simple_aac_text_field.dart';
 import 'shared_widgets/simple_aac_tile.dart';
@@ -98,15 +99,21 @@ class _ManageWordViewState extends State<ManageWordView> {
     return StreamBuilder<Word?>(
       stream: _wordViewModel.wordStream,
       builder: (final context, final snapshot) {
-        final _word = snapshot.data;
-        return Scaffold(
-          appBar: SimpleAACAppBar(
-            label: isEditing ? 'Edit ${_word?.word ?? ''}' : 'Create',
-          ),
-          body: _buildCreateWordViewBody(
-            _word,
-          ),
-          bottomNavigationBar: _buildBottomButtonBar(),
+        final _word = snapshot.data ?? _createWordViewArguments.word;
+        return FutureBuilder<BuiltList<String>>(
+          future: _word?.getWordsWords(),
+          builder: (final context, final snapshot) {
+            final _wordsWords = snapshot.data ?? BuiltList<String>();
+            return Scaffold(
+              appBar: SimpleAACAppBar(
+                label: isEditing ? 'Edit ${_wordsWords.join(' ')}' : 'Create',
+              ),
+              body: _buildCreateWordViewBody(
+                _word,
+              ),
+              bottomNavigationBar: _buildBottomButtonBar(),
+            );
+          },
         );
       },
     );
@@ -291,9 +298,8 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildCreateWordImage(
-    final WordBase? _word,
+    final WordBase? word,
   ) {
-    final images = _word?.getImageList() ?? BuiltList<String>();
     return Flexible(
       child: ClipRRect(
         borderRadius: const BorderRadius.all(
@@ -308,21 +314,27 @@ class _ManageWordViewState extends State<ManageWordView> {
               onTap: () {
                 PickImageDialog.show(context);
               },
-              child: images.isNotEmpty
-                  ? MultiImage(
-                      images: images,
-                      fadeIn: false,
-                      heroTag: heroTag ?? '',
-                    )
-                  : FittedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Icon(
-                          Icons.add_a_photo_outlined,
-                          color: context.themeColors.onBackground,
-                        ),
-                      ),
-                    ),
+              child: MultiImageIDBuilder(
+                multiImageIDBuilder: (final imageIds) {
+                  return imageIds.isNotEmpty
+                      ? MultiImage(
+                          imageIds: imageIds,
+                          fadeIn: false,
+                          heroTag: heroTag ?? '',
+                        )
+                      : FittedBox(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Icon(
+                              Icons.add_a_photo_outlined,
+                              color: context.themeColors.onBackground,
+                            ),
+                          ),
+                        );
+                },
+                //TODO TERRIBLE HACK please fix
+                wordBase: word!,
+              ),
             ),
           ),
         ),
@@ -334,34 +346,35 @@ class _ManageWordViewState extends State<ManageWordView> {
     final Word? word,
   ) {
     return StreamBuilder<BuiltList<Word>>(
-        stream: _wordViewModel.relatedWords,
-        builder: (final context, final snapshot) {
-          final relatedWords = snapshot.data ?? BuiltList<Word>();
-          return Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 8,
-                ),
-                child: SizedBox(
-                  height: 32,
-                  child: word?.extraRelatedWordIds.isNotEmpty == true
-                      ? RelatedWordsWidget(
-                          relatedWords: relatedWords,
-                          onRelatedWordSelected: (final _) {},
-                          onRelatedWordIdsChanged: _wordViewModel.setExtraRelatedWords,
-                          isExpanded: true,
-                        )
-                      : null,
-                ),
+      stream: _wordViewModel.relatedWords,
+      builder: (final context, final snapshot) {
+        final relatedWords = snapshot.data ?? BuiltList<Word>();
+        return Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 8,
               ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: _buildAddPredictionButton(),
+              child: SizedBox(
+                height: 32,
+                child: word?.extraRelatedWordIds.isNotEmpty == true
+                    ? RelatedWordsWidget(
+                        relatedWords: relatedWords,
+                        onRelatedWordSelected: (final _) {},
+                        onRelatedWordIdsChanged: _wordViewModel.setExtraRelatedWords,
+                        isExpanded: true,
+                      )
+                    : null,
               ),
-            ],
-          );
-        },);
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: _buildAddPredictionButton(),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildAddPredictionButton() {

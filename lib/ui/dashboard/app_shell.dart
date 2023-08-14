@@ -7,7 +7,7 @@ import '../../api/models/word_type.dart';
 import '../../dependency_injection_container.dart';
 import '../../extensions/string_extension.dart';
 import '../../flavors.dart';
-import '../../services/shared_preferences_service.dart';
+import '../../api/services/shared_preferences_service.dart';
 import '../../view_models/selected_words_view_model.dart';
 import '../intro/intro_page.dart';
 import '../manage_word_view.dart';

@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'api/hive.dart';
 import 'dependency_injection_container.dart' as di;
 import 'dependency_injection_container.dart';
-import 'services/shared_preferences_service.dart';
+import 'api/services/shared_preferences_service.dart';
 import 'simple_aac_app.dart';
 import 'ui/theme/theme_builder_widget.dart';
 import 'view_models/theme_view_model.dart';

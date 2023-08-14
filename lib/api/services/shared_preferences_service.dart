@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../utils/constants.dart';
+import '../../utils/constants.dart';
+import '../models/extensions/word_base_extension.dart';
 
-const defaultLanguageId = 'l1';
+const defaultLanguageId = '${kLanguageIdPrefix}1';
 
 class SharedPreferencesService extends ChangeNotifier {
   SharedPreferencesService(this.sharedPreferences);

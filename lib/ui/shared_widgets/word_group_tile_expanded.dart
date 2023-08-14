@@ -1,4 +1,3 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 
 import '../../api/models/sentence.dart';
@@ -43,7 +42,7 @@ class _WordGroupTileExpandedState extends State<WordGroupTileExpanded> {
     wordGroupViewModel.setInitialWordGroup(widget.selectedWordGroup);
     textController.addListener(
       () {
-        wrapWithNotifier(
+        wordBaseCallbackWithNotifier(
           (final _) {
             wordGroupViewModel.updateTitle(textController.text);
           },
@@ -91,7 +90,7 @@ class _WordGroupTileExpandedState extends State<WordGroupTileExpanded> {
           ),
           Flexible(
             child: _buildWords(
-              wordGroup.words,
+              wordGroup,
             ),
           ),
           StreamBuilder<bool>(
@@ -164,9 +163,9 @@ class _WordGroupTileExpandedState extends State<WordGroupTileExpanded> {
     );
   }
 
-  Widget _buildWords(final BuiltList<WordBase> words) {
+  Widget _buildWords(final WordGroup wordGroup) {
     return GridView.builder(
-      itemCount: words.length * 10,
+      itemCount: wordGroup.wordIds.length * 10,
       padding: const EdgeInsets.all(6),
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -176,13 +175,23 @@ class _WordGroupTileExpandedState extends State<WordGroupTileExpanded> {
         childAspectRatio: 0.86,
       ),
       itemBuilder: (final context, final index) {
-        final word = words[index % 3];
-        if (word is Word) {
-          return _buildWordTile(word);
-        } else if (word is Sentence) {
-          return _buildSentenceTile(word);
-        }
-        throw Exception('Unknown word type');
+        final wordId = wordGroup.wordIds[index % 3];
+        //TODO wordGroupViewModel.getWord should have words and sentences
+        return FutureBuilder<WordBase?>(
+          future: wordGroupViewModel.getWord(wordId),
+          builder: (final context, final snapshot) {
+            final word = snapshot.data;
+            if (word == null) {
+              return const SizedBox();
+            }
+            if (word is Word) {
+              return _buildWordTile(word);
+            } else if (word is Sentence) {
+              return _buildSentenceTile(word);
+            }
+            throw Exception('Unknown word type');
+          },
+        );
       },
     );
   }
@@ -191,8 +200,10 @@ class _WordGroupTileExpandedState extends State<WordGroupTileExpanded> {
     return WordTile(
       word: word,
       fadeImageIn: false,
-      closeButtonOnTap: wrapWithNotifier(wordGroupViewModel.removeWord),
-      wordTapCallBack: wrapWithNotifier(widget.onWordTap),
+      closeButtonOnTap: wordBaseCallbackWithNotifier((final _) {
+        wordGroupViewModel.removeWord(word.id);
+      }),
+      wordTapCallBack: wordBaseCallbackWithNotifier(widget.onWordTap),
       wordLongPressCallBack: (final _) {
         widget.onClose();
       },
@@ -204,8 +215,10 @@ class _WordGroupTileExpandedState extends State<WordGroupTileExpanded> {
       sentence: word,
       fadeImageIn: false,
       canLongPress: false,
-      closeButtonOnTap: wrapWithNotifier(wordGroupViewModel.removeWord),
-      sentenceTapCallBack: wrapWithNotifier(widget.onWordTap),
+      closeButtonOnTap: wordBaseCallbackWithNotifier((final _) {
+        wordGroupViewModel.removeWord(word.id);
+      }),
+      sentenceTapCallBack: wordBaseCallbackWithNotifier(widget.onWordTap),
       sentenceLongPressCallBack: (final _) {
         widget.onClose();
       },
@@ -255,7 +268,9 @@ class _WordGroupTileExpandedState extends State<WordGroupTileExpanded> {
     );
   }
 
-  WordBaseCallBack wrapWithNotifier(final WordBaseCallBack onWordTap) {
+  WordBaseCallBack wordBaseCallbackWithNotifier(
+    final WordBaseCallBack onWordTap,
+  ) {
     return (final wordBase) {
       onWordTap.call(wordBase);
       _notifyChange();
