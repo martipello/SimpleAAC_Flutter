@@ -58,6 +58,7 @@ class SentenceService {
   }
 
   Future<BuiltList<Sentence>> getExtraRelatedWords(final Sentence word) async {
+    //TODO magic LLM method for getting "predictions"
     return getForIds(word.extraRelatedWordIds);
   }
 

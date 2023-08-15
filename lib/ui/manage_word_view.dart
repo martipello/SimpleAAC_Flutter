@@ -101,7 +101,7 @@ class _ManageWordViewState extends State<ManageWordView> {
       builder: (final context, final snapshot) {
         final _word = snapshot.data ?? _createWordViewArguments.word;
         return FutureBuilder<BuiltList<String>>(
-          future: _word?.getWordsWords(),
+          future: _word?.getWords(),
           builder: (final context, final snapshot) {
             final _wordsWords = snapshot.data ?? BuiltList<String>();
             return Scaffold(

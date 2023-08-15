@@ -9,7 +9,6 @@ import '../theme/simple_aac_text.dart';
 import '../word_detail_view.dart';
 import 'multi_image.dart';
 import 'multi_image_id_builder.dart';
-import 'simple_aac_loading_widget.dart';
 import 'simple_aac_tile.dart';
 import 'word_tile.dart';
 
@@ -101,7 +100,7 @@ class SentenceTile extends StatelessWidget {
 
   Widget _buildSentenceDisplayName() {
     return FutureBuilder<BuiltList<String>>(
-      future: sentence.getWordsWords(),
+      future: sentence.getWords(),
       builder: (final context, final snapshot) {
         final words = snapshot.data ?? BuiltList<String>();
         return Text(

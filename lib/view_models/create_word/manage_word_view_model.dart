@@ -1,6 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../api/models/extensions/word_base_extension.dart';
 import '../../api/models/word.dart';
 import '../../api/models/word_sub_type.dart';
 import '../../api/models/word_type.dart';
@@ -100,7 +101,7 @@ class ManageWordViewModel {
   }
 
   Stream<BuiltList<Word>> get relatedWords => wordStream.whereType<Word>().switchMap((final word) {
-    return wordService.getRelatedWords(word).asStream();
+    return word.getRelatedWords().asStream();
   });
 
   Stream<BuiltList<Word>> get extraRelatedWords => wordStream.whereType<Word>().switchMap((final word) {

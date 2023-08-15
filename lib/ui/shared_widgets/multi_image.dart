@@ -55,7 +55,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   void _initAnimationController() {
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 500),
       lowerBound: 0,
       upperBound: 1,
     );
@@ -85,12 +85,14 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
       stream: multiImageViewModel.fourImages,
       builder: (final context, final snapshot) {
         final isLoading = snapshot.connectionState == ConnectionState.waiting;
-        final imageInfoList = BuiltList.of(snapshot.data ?? <ImageInfo>[]);
+        final hasError = snapshot.hasError;
+        final imageInfoList = BuiltList.of(snapshot.data ?? <ImageInfo>[]).whereType<ImageInfo>().toBuiltList();
         return Stack(
           fit: StackFit.expand,
           children: [
-            _buildImageHolder(imageInfoList),
-            if (isLoading) SimpleAACLoadingWidget.shimmer(),
+            if(hasError) _buildImageError(),
+            if (imageInfoList.isNotEmpty) _buildImageHolder(imageInfoList),
+            if (isLoading || imageInfoList.isEmpty) SimpleAACLoadingWidget.shimmer(),
           ],
         );
       },
@@ -98,20 +100,17 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
   }
 
   Widget _buildImageHolder(
-    final BuiltList<ImageInfo?> imageInfoList,
+    final BuiltList<ImageInfo> imageInfoList,
   ) {
-    final imageContent = imageInfoList.whereType<ImageInfo>().toBuiltList();
-    switch (imageContent.length) {
-      case 0:
-        return _buildEmptyImages();
+    switch (imageInfoList.length) {
       case 1:
-        return _buildOneImage(imageContent.first);
+        return _buildOneImage(imageInfoList.first);
       case 2:
-        return _buildTwoImages(imageContent);
+        return _buildTwoImages(imageInfoList);
       case 3:
-        return _buildThreeImages(imageContent);
+        return _buildThreeImages(imageInfoList);
       default:
-        return _buildFourOrMoreImages(imageContent);
+        return _buildFourOrMoreImages(imageInfoList);
     }
   }
 
@@ -289,7 +288,7 @@ class _MultiImageState extends State<MultiImage> with SingleTickerProviderStateM
     );
   }
 
-  Widget _buildEmptyImages() {
+  Widget _buildImageError() {
     return const Center(
       child: Icon(
         Icons.error_outline_outlined,

@@ -3,7 +3,9 @@ import 'package:flutter/foundation.dart';
 
 import '../hive_client.dart';
 import '../models/language.dart';
+import '../models/sentence.dart';
 import '../models/word.dart';
+import '../models/word_base.dart';
 import '../models/word_sub_type.dart';
 import '../models/word_type.dart';
 import 'word_base_service.dart';
@@ -12,6 +14,7 @@ const kWordBox = 'word_box';
 typedef WordListCallBack = void Function<T extends Word>(BuiltList<T> word);
 typedef WordIDListCallBack = void Function(BuiltList<String> word);
 
+//TODO consider making an interface for this and passing it to the wordbase extension
 class WordService {
   WordService(
     this.hiveClient,
@@ -59,12 +62,15 @@ class WordService {
     return wordBaseService.getAllForSubType(wordSubType);
   }
 
-  Future<BuiltList<Word>> getExtraRelatedWords(final Word word) async {
-    return getForIds(word.extraRelatedWordIds);
-  }
-
-  Future<BuiltList<Word>> getRelatedWords(final Word word) async {
-    return getExtraRelatedWords(word);
+  Future<BuiltList<Word>> getExtraRelatedWords(final WordBase word) async {
+    //TODO magic LLM method for getting "predictions"
+    if(word is Word) {
+      return getForIds(word.extraRelatedWordIds);
+    } else if (word is Sentence) {
+      return getForIds(word.extraRelatedWordIds);
+    } else {
+      return BuiltList();
+    }
   }
 
   Future<BuiltList<T>> getAllForLanguage<T extends Word>(

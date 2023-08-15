@@ -1,16 +1,14 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:tuple/tuple.dart';
 
 import '../../../dependency_injection_container.dart';
-import '../../services/image_info_service.dart';
 import '../../services/sentence_service.dart';
 import '../../services/word_service.dart';
-import '../image_info.dart';
+import '../sentence.dart';
 import '../word.dart';
 import '../word_base.dart';
-import 'package:built_collection/built_collection.dart';
 import '../word_group.dart';
-
-import '../sentence.dart';
 
 const kWordIdPrefix = 'WordId-';
 const kWordGroupIdPrefix = 'WordGroupId-';
@@ -23,7 +21,7 @@ extension WordExtension on WordBase {
     return '$suffix$id';
   }
 
-  Future<BuiltList<String>> getWordsWords() async {
+  Future<BuiltList<String>> getWords() async {
     final wordBase = this;
     if (wordBase is Word) {
       return Future.value(BuiltList.of([wordBase.word]));
@@ -33,6 +31,36 @@ extension WordExtension on WordBase {
       return words.map((final word) => word.word).toBuiltList();
     }
     return Future.value(BuiltList());
+  }
+
+  Future<BuiltList<String>> getSounds() async {
+    final wordBase = this;
+    if (wordBase is Word) {
+      return Future.value(BuiltList.of([wordBase.sound]));
+    } else if (wordBase is Sentence) {
+      final wordService = getIt.get<WordService>(instanceName: kSentenceBox);
+      final words = await wordService.getForIds(wordBase.wordIds);
+      return words.map((final word) => word.sound).toBuiltList();
+    }
+    return Future.value(BuiltList());
+  }
+
+  Future<BuiltList<Tuple2<String, String>>> getWordsAndSounds() async {
+    final wordBase = this;
+    if (wordBase is Word) {
+      return Future.value(BuiltList.of([Tuple2(wordBase.word, wordBase.sound)]));
+    } else if (wordBase is Sentence) {
+      final wordService = getIt.get<WordService>(instanceName: kSentenceBox);
+      final words = await wordService.getForIds(wordBase.wordIds);
+      return words.map((final word) => Tuple2(word.word, word.sound)).toBuiltList();
+    }
+    return Future.value(BuiltList());
+  }
+
+  Future<BuiltList<Word>> getRelatedWords() async {
+    final wordBase = this;
+    final wordService = getIt.get<WordService>(instanceName: kWordBox);
+    return wordService.getExtraRelatedWords(wordBase);
   }
 
   WordBase copy({final String? id}) {

@@ -44,7 +44,7 @@ class SelectedWordsViewModel {
         ),
       );
       if (word is Word) {
-        final relatedWords = await wordService.getRelatedWords(word);
+        final relatedWords = await word.getRelatedWords();
         setRelatedWords(relatedWords);
       }
     }
