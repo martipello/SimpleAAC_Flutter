@@ -19,12 +19,14 @@ class RelatedWordsWidget extends StatelessWidget {
     final Key? key,
     this.onRelatedWordIdsChanged,
     this.isExpanded = false,
+    this.padding,
   }) : super(key: key);
 
   final BuiltList<Word> relatedWords;
   final WordIDListCallBack? onRelatedWordIdsChanged;
   final WordCallBack onRelatedWordSelected;
   final bool isExpanded;
+  final EdgeInsets? padding;
 
   final _sharedPreferencesService = getIt.get<SharedPreferencesService>();
 
@@ -46,7 +48,7 @@ class RelatedWordsWidget extends StatelessWidget {
   Widget _buildRelatedWordListView() {
     return ListView.separated(
       shrinkWrap: true,
-      padding: const EdgeInsets.only(
+      padding: padding ?? const EdgeInsets.only(
         left: 12,
         right: 96,
       ),

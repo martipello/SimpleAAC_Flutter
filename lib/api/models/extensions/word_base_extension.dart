@@ -26,7 +26,7 @@ extension WordExtension on WordBase {
     if (wordBase is Word) {
       return Future.value(BuiltList.of([wordBase.word]));
     } else if (wordBase is Sentence) {
-      final wordService = getIt.get<WordService>(instanceName: kSentenceBox);
+      final wordService = getIt.get<WordService>(instanceName: kWordBox);
       final words = await wordService.getForIds(wordBase.wordIds);
       return words.map((final word) => word.word).toBuiltList();
     }

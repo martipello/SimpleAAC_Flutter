@@ -5,7 +5,6 @@ import 'package:tuple/tuple.dart';
 
 import '../../extensions/build_context_extension.dart';
 import '../api/models/extensions/word_base_extension.dart';
-import '../api/models/sentence.dart';
 import '../api/models/word.dart';
 import '../api/models/word_base.dart';
 import '../dependency_injection_container.dart';
@@ -17,6 +16,7 @@ import 'shared_widgets/multi_image.dart';
 import 'shared_widgets/multi_image_id_builder.dart';
 import 'shared_widgets/overlay_button.dart';
 import 'shared_widgets/simple_aac_dialog.dart';
+import 'shared_widgets/simple_aac_loading_widget.dart';
 import 'shared_widgets/simple_aac_table.dart';
 import 'theme/simple_aac_text.dart';
 
@@ -195,6 +195,9 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
       future: wordBase.getWordsAndSounds(),
       builder: (final context, final snapshot) {
         final wordsAndSounds = snapshot.data ?? BuiltList();
+        if (snapshot.connectionState != ConnectionState.waiting) {
+          return _buildContentLoading();
+        }
         return SimpleAACTable(
           wordskiiTableRowInfoList: [
             SimpleAACTableRowInfo(
@@ -243,6 +246,52 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
     );
   }
 
+  Column _buildContentLoading() {
+    return Column(
+        children: [
+          SizedBox(
+            height: 30,
+            child: SimpleAACLoadingWidget.shimmer(),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          SizedBox(
+            height: 30,
+            child: SimpleAACLoadingWidget.shimmer(),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          SizedBox(
+            height: 30,
+            child: SimpleAACLoadingWidget.shimmer(),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          SizedBox(
+            height: 30,
+            child: SimpleAACLoadingWidget.shimmer(),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          SizedBox(
+            height: 30,
+            child: SimpleAACLoadingWidget.shimmer(),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          SizedBox(
+            height: 30,
+            child: SimpleAACLoadingWidget.shimmer(),
+          ),
+        ],
+      );
+  }
+
   Widget _buildRelatedWords() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -289,13 +338,16 @@ class _WordBaseDetailViewState extends State<WordBaseDetailView> {
     return SpeedDialChild(
       onTap: () {
         //TODO decide how to edit sentences, maybe a new view? maybe the same as word groups
-        Navigator.of(context).pushReplacementNamed(
-          ManageWordView.routeName,
-          arguments: ManageWordViewArguments(
-            word: _wordBase,
-            heroTag: heroTag,
-          ),
-        );
+        final wordBase = _wordBase;
+        if (wordBase is Word) {
+          Navigator.of(context).pushReplacementNamed(
+            ManageWordView.routeName,
+            arguments: ManageWordViewArguments(
+              word: wordBase,
+              heroTag: heroTag,
+            ),
+          );
+        }
       },
       child: const FloatingActionButton(
         onPressed: null,

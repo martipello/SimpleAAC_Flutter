@@ -227,9 +227,10 @@ class _ManageWordViewState extends State<ManageWordView> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildCreateWordImage(
-              _word,
-            ),
+            if (_word != null)
+              _buildCreateWordImage(
+                _word,
+              ),
             const SizedBox(
               height: 24,
             ),
@@ -298,7 +299,7 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildCreateWordImage(
-    final WordBase? word,
+    final WordBase word,
   ) {
     return Flexible(
       child: ClipRRect(
@@ -333,7 +334,7 @@ class _ManageWordViewState extends State<ManageWordView> {
                         );
                 },
                 //TODO TERRIBLE HACK please fix
-                wordBase: word!,
+                wordBase: word,
               ),
             ),
           ),
@@ -362,7 +363,8 @@ class _ManageWordViewState extends State<ManageWordView> {
                         relatedWords: relatedWords,
                         onRelatedWordSelected: (final _) {},
                         onRelatedWordIdsChanged: _wordViewModel.setExtraRelatedWords,
-                        isExpanded: true,
+                        isExpanded: false,
+                        padding: EdgeInsets.only(left: 4, right: 96),
                       )
                     : null,
               ),

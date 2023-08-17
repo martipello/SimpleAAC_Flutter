@@ -83,7 +83,7 @@ Future<void> init() async {
   getIt.registerFactory(() => LanguageViewModel(getIt(), getIt(instanceName: kWordBox)));
   getIt.registerFactory(IntroViewModel.new);
   getIt.registerFactory(TabBarViewModel.new);
-  getIt.registerFactory(() => ManageWordViewModel(getIt()));
+  getIt.registerFactory(() => ManageWordViewModel(getIt(instanceName: kWordBox)));
   getIt.registerFactory(() => ImageInfoViewModel(getIt(), getIt(instanceName: kWordBox)));
   getIt.registerFactory(() => ThemeViewModel(getIt(), getIt()));
   getIt.registerFactory(() => FilePickerViewModel(getIt()));
