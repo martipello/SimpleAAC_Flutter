@@ -24,19 +24,17 @@ class ThemeViewModel {
     final themeName = sharedPreferencesService.themeName;
     final theme = SimpleAACTheme.getTheme(themeName);
     setTheme(theme);
+    themeController.setThemeMode(sharedPreferencesService.themeMode, false);
   }
 
   void setTheme(SimpleAACTheme simpleAACTheme) {
     sharedPreferencesService.setThemeName(simpleAACTheme.name);
-    themeController.setUsedScheme(
-      simpleAACTheme.color,
-    );
+    themeController.setUsedScheme(simpleAACTheme.color);
   }
 
   void setThemeMode(ThemeMode themeMode) {
-    themeController.setThemeMode(
-      themeMode,
-    );
+    sharedPreferencesService.setThemeMode(themeMode);
+    themeController.setThemeMode(themeMode);
   }
 
   String? get themeName => FlexColor.schemes[themeController.usedScheme]?.name;

@@ -35,7 +35,7 @@ class BottomButtonHolder extends StatelessWidget {
                   blurRadius: 6,
                 ),
               ],
-              color: color ?? context.themeColors.background,
+              color: color ?? context.themeColors.surfaceContainerLow,
             )
           : null,
       child: Material(

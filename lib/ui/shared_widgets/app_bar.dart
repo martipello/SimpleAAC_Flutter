@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/simple_aac_text.dart';
+import '../../extensions/string_extension.dart';
 
 class SimpleAACAppBar extends StatelessWidget implements PreferredSizeWidget {
   SimpleAACAppBar({
@@ -21,8 +21,7 @@ class SimpleAACAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(
-        label.toUpperCase(),
-        style: SimpleAACText.subtitle2Style,
+        label,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),

@@ -1,4 +1,3 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 
 import '../api/models/extensions/word_type_extension.dart';
@@ -6,15 +5,18 @@ import '../api/models/word.dart';
 import '../dependency_injection_container.dart';
 import '../extensions/build_context_extension.dart';
 import '../extensions/iterable_extension.dart';
+import '../services/tts_service.dart';
 import '../view_models/create_word/manage_word_view_model.dart';
 import 'dashboard/app_shell.dart';
 import 'dashboard/related_words_widget.dart';
 import 'pick_image_dialog.dart';
+import 'word_picker_bottom_sheet.dart' show WordPickerView;
 import 'shared_widgets/app_bar.dart';
 import 'shared_widgets/bottom_button_holder.dart';
 import 'shared_widgets/rounded_button.dart';
 import 'shared_widgets/simple_aac_text_field.dart';
 import 'shared_widgets/simple_aac_tile.dart';
+import 'shared_widgets/word_image.dart';
 import 'shared_widgets/word_sub_type_picker.dart';
 import 'shared_widgets/word_type_picker.dart';
 
@@ -44,6 +46,7 @@ class _ManageWordViewState extends State<ManageWordView> {
 
   final _formKey = GlobalKey<FormState>();
   final _wordViewModel = getIt.get<ManageWordViewModel>();
+  final _ttsService = getIt.get<TtsService>();
 
   final _wordWordController = TextEditingController();
   final _wordSoundController = TextEditingController();
@@ -70,21 +73,13 @@ class _ManageWordViewState extends State<ManageWordView> {
   void _addTextListeners() {
     Future.delayed(Duration.zero).then(
       (value) {
-        _wordWordController.text = _createWordViewArguments.word?.word ?? '';
-        _wordSoundController.text = _createWordViewArguments.word?.sound ?? '';
+        _wordWordController.text = _createWordViewArguments.word?.text ?? '';
+        _wordSoundController.text = _createWordViewArguments.word?.phoneticOverride ?? '';
         _wordWordController.addListener(
-          () {
-            _wordViewModel.setWordWord(
-              _wordWordController.text,
-            );
-          },
+          () => _wordViewModel.setWordText(_wordWordController.text),
         );
         _wordSoundController.addListener(
-          () {
-            _wordViewModel.setWordSound(
-              _wordSoundController.text,
-            );
-          },
+          () => _wordViewModel.setPhoneticOverride(_wordSoundController.text),
         );
       },
     );
@@ -98,7 +93,7 @@ class _ManageWordViewState extends State<ManageWordView> {
         final _word = snapshot.data;
         return Scaffold(
           appBar: SimpleAACAppBar(
-            label: isEditing ? 'Edit ${_word?.word ?? ''}' : 'Create',
+            label: isEditing ? 'Edit ${_word?.text ?? ''}' : 'Create',
           ),
           body: _buildCreateWordViewBody(
             _word,
@@ -199,7 +194,9 @@ class _ManageWordViewState extends State<ManageWordView> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildImageAndButtonStack(_word),
+          _buildMediumMargin(),
           _buildCreateWordWordLabel(_word),
+          _buildMediumMargin(),
           _buildCreateWordWordSound(_word),
           _buildMediumMargin(),
           _buildExtraRelatedWords(_word),
@@ -228,22 +225,42 @@ class _ManageWordViewState extends State<ManageWordView> {
         Positioned(
           bottom: 0,
           right: 0,
-          child: _buildSpeechButton(),
+          child: _buildSpeechButton(_word),
         ),
       ],
     );
   }
 
-  Widget _buildSpeechButton() {
+  Widget _buildSpeechButton(Word? word) {
     return Hero(
       tag: kPlayButtonHeroTag,
       transitionOnUserGestures: true,
-      child: FloatingActionButton(
-        heroTag: null,
-        onPressed: () {},
-        child: const Icon(
-          Icons.play_arrow,
-        ),
+      child: StreamBuilder<bool>(
+        stream: _ttsService.isSpeaking,
+        builder: (context, snapshot) {
+          final speaking = snapshot.data ?? false;
+          return FloatingActionButton(
+            heroTag: null,
+            onPressed: word == null
+                ? null
+                : () {
+                    if (speaking) {
+                      _ttsService.stop();
+                    } else {
+                      _ttsService.speakWord(
+                        word.phoneticOverride ?? word.text,
+                      );
+                    }
+                  },
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: Icon(
+                speaking ? Icons.stop_rounded : Icons.play_arrow_rounded,
+                key: ValueKey(speaking),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -263,7 +280,7 @@ class _ManageWordViewState extends State<ManageWordView> {
         horizontal: 4.0,
       ),
       child: SimpleAACTextField(
-        labelText: _word?.sound ?? 'Word Sound',
+        labelText: 'Phonetic Override',
         textController: _wordSoundController,
         validatorMessage: 'Please input a valid word sound.',
         maxLines: 1,
@@ -279,7 +296,7 @@ class _ManageWordViewState extends State<ManageWordView> {
         horizontal: 4.0,
       ),
       child: SimpleAACTextField(
-        labelText: _word?.word ?? 'Word Label',
+        labelText: 'Word Label',
         textController: _wordWordController,
         validatorMessage: 'Please input a valid word',
         maxLines: 1,
@@ -290,9 +307,8 @@ class _ManageWordViewState extends State<ManageWordView> {
   Widget _buildCreateWordImage(
     Word? _word,
   ) {
-    final imageUri = _word?.imageList.firstOrNull() ?? '';
-    return Flexible(
-      child: ClipRRect(
+    final imageUri = _word?.imagePaths.firstOrNull() ?? '';
+    return ClipRRect(
         borderRadius: const BorderRadius.all(
           Radius.circular(4),
         ),
@@ -300,65 +316,52 @@ class _ManageWordViewState extends State<ManageWordView> {
         child: AspectRatio(
           aspectRatio: 1.0 / 1.0,
           child: Material(
-            type: MaterialType.transparency,
-            child: InkWell(
-              onTap: () {
-                PickImageDialog.show(context);
-              },
-              child: imageUri.isNotEmpty
-                  ? Hero(
-                      tag: heroTag ?? '',
-                      transitionOnUserGestures: true,
-                      child: Image.asset(
-                        imageUri,
-                        fit: BoxFit.contain,
-                      ),
-                    )
-                  : FittedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Icon(
-                          Icons.add_a_photo_outlined,
-                          color: context.themeColors.onBackground,
-                        ),
+          type: MaterialType.transparency,
+          child: InkWell(
+            onTap: () async {
+              final path = await PickImageDialog.show(context);
+              if (path != null) _wordViewModel.setImagePath(path);
+            },
+            child: imageUri.isNotEmpty
+                ? Hero(
+                    tag: heroTag ?? '',
+                    transitionOnUserGestures: true,
+                    placeholderBuilder: (_, __, child) => child,
+                    child: WordImage(imagePath: imageUri, fit: BoxFit.cover),
+                  )
+                : FittedBox(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Icon(
+                        Icons.add_a_photo_outlined,
+                        color: context.themeColors.onBackground,
                       ),
                     ),
-            ),
+                  ),
           ),
         ),
-      ),
+                ),
     );
   }
 
   Widget _buildExtraRelatedWords(
     Word? word,
   ) {
-    return StreamBuilder<BuiltList<Word>>(
+    return StreamBuilder<List<Word>>(
       stream: _wordViewModel.relatedWords,
       builder: (context, snapshot) {
-        final relatedWords = snapshot.data ?? BuiltList<Word>();
-        return Stack(
+        final relatedWords = snapshot.data ?? [];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 8.0,
+            if (word?.extraRelatedWordIds.isNotEmpty == true)
+              RelatedWordsWidget(
+                relatedWords: relatedWords,
+                onRelatedWordSelected: (_) {},
+                onRelatedWordIdsChanged: _wordViewModel.setExtraRelatedWords,
+                isExpanded: true,
               ),
-              child: SizedBox(
-                height: 32,
-                child: word?.extraRelatedWordIds.isNotEmpty == true
-                    ? RelatedWordsWidget(
-                        relatedWords: relatedWords,
-                        onRelatedWordSelected: (_){},
-                        onRelatedWordIdsChanged: _wordViewModel.setExtraRelatedWords,
-                        isExpanded: true,
-                      )
-                    : null,
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: _buildAddPredictionButton(),
-            ),
+            _buildAddPredictionButton(),
           ],
         );
       }
@@ -366,10 +369,17 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildAddPredictionButton() {
-    return FloatingActionButton.small(
-      heroTag: null,
-      onPressed: () {},
-      child: const Icon(Icons.add),
+    return TextButton.icon(
+      onPressed: () async {
+        final current = _wordViewModel.wordStream.valueOrNull?.extraRelatedWordIds ?? [];
+        final result = await WordPickerView.show(context, existingWordIds: current);
+        if (result != null) _wordViewModel.setExtraRelatedWords(result);
+      },
+      icon: const Icon(Icons.add, size: 18),
+      label: const Text('Add prediction'),
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+      ),
     );
   }
 
@@ -393,9 +403,25 @@ class _ManageWordViewState extends State<ManageWordView> {
   }
 
   Widget _buildSaveButton() {
-    return RoundedButton(
-      label: 'SAVE',
-      onPressed: () {},
+    return StreamBuilder<bool>(
+      stream: _wordViewModel.isValid,
+      builder: (context, snapshot) {
+        final valid = snapshot.data ?? false;
+        return RoundedButton(
+          label: 'Save',
+          onPressed: valid
+              ? () async {
+                  await _wordViewModel.saveWord();
+                  if (!context.mounted) return;
+                  if (isEditing) {
+                    Navigator.of(context).popUntil((route) => route.settings.name == AppShell.routeName);
+                  } else {
+                    Navigator.of(context).pop(_wordViewModel.wordStream.valueOrNull);
+                  }
+                }
+              : null,
+        );
+      },
     );
   }
 
@@ -404,9 +430,13 @@ class _ManageWordViewState extends State<ManageWordView> {
   ) {
     return RoundedButton(
       label: 'Cancel',
-      fillColor: context.themeColors.secondary,
+      isFilled: false,
       onPressed: () {
-        Navigator.of(context).pop();
+        if (isEditing) {
+          Navigator.of(context).popUntil((route) => route.settings.name == AppShell.routeName);
+        } else {
+          Navigator.of(context).pop();
+        }
       },
     );
   }

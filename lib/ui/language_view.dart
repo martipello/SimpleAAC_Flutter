@@ -1,15 +1,13 @@
-import 'package:built_collection/built_collection.dart';
-import 'package:change_notifier_builder/change_notifier_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_aac/api/models/word.dart';
-import 'package:simple_aac/ui/shared_widgets/app_bar.dart';
-import 'package:simple_aac/ui/shared_widgets/expansion_card.dart';
-import 'package:simple_aac/ui/shared_widgets/simple_aac_loading_widget.dart';
-import 'package:simple_aac/ui/shared_widgets/word_tile.dart';
 
 import '../api/models/language.dart';
+import '../api/models/word.dart';
 import '../dependency_injection_container.dart';
 import '../view_models/language_view_model.dart';
+import 'shared_widgets/app_bar.dart';
+import 'shared_widgets/expansion_card.dart';
+import 'shared_widgets/simple_aac_loading_widget.dart';
+import 'shared_widgets/word_tile.dart';
 
 class LanguageView extends StatefulWidget {
   static const String routeName = '/language';
@@ -19,55 +17,32 @@ class LanguageView extends StatefulWidget {
 }
 
 class _LanguageViewState extends State<LanguageView> {
-  final languageViewModel = getIt.get<LanguageViewModel>();
+  final _languageViewModel = getIt.get<LanguageViewModel>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SimpleAACAppBar(
-        label: 'Choose a Language',
-      ),
-      body: ChangeNotifierBuilder(
-        notifier: languageViewModel.languageService.sharedPreferencesService,
-        builder: (context, _, __) {
-          return FutureBuilder<BuiltList<Language>>(
-            future: languageViewModel.allLanguages(),
-            builder: (context, allLanguagesSnapshot) {
-              return FutureBuilder<Language>(
-                future: languageViewModel.getCurrentLanguage(),
-                builder: (context, currentLanguagesSnapshot) {
-                  final _currentLanguage = currentLanguagesSnapshot.data;
-                  final _allLanguages = allLanguagesSnapshot.data ?? BuiltList<Language>();
-                  if (_currentLanguage != null) {
-                    return SingleChildScrollView(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: _allLanguages
-                            .map(
-                              (language) => _buildLanguageCard(
-                                language,
-                                _currentLanguage.id,
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    );
-                  }
-                  return _buildLoading();
-                },
-              );
-            },
+      appBar: SimpleAACAppBar(label: 'Choose a Language'),
+      body: Builder(
+        builder: (context) {
+          final all = _languageViewModel.allLanguages();
+          final current = _languageViewModel.getCurrentLanguage();
+          if (current == null) return _buildLoading();
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: all
+                  .map((l) => _buildLanguageCard(l, current.id))
+                  .toList(),
+            ),
           );
         },
       ),
     );
   }
 
-  Widget _buildLanguageCard(
-    Language language,
-    String currentLanguageId,
-  ) {
+  Widget _buildLanguageCard(Language language, String currentId) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4.0),
       child: ExpansionCard(
@@ -80,38 +55,23 @@ class _LanguageViewState extends State<LanguageView> {
               child: Row(
                 children: language.words
                     .take(10)
-                    .map(
-                      (word) => _buildWordTile(word),
-                    )
+                    .map(_buildWordTile)
                     .toList(),
               ),
             ),
-          )
+          ),
         ],
-        onTap: () {
-          languageViewModel.setLanguage(language);
-        },
-        borderSide: language.id == currentLanguageId ? _buildSelectedBorderSide() : null,
+        onTap: () => _languageViewModel.setLanguage(language),
+        borderSide: language.id == currentId
+            ? const BorderSide(color: Colors.green, width: 2)
+            : null,
       ),
     );
   }
 
-  BorderSide _buildSelectedBorderSide() {
-    return BorderSide(
-      color: Colors.green,
-      width: 2,
-    );
-  }
-
   WordTile _buildWordTile(Word word) {
-    return WordTile(
-      word: word,
-      key: UniqueKey(),
-      heroTag: null,
-    );
+    return WordTile(word: word, key: UniqueKey(), heroTag: null);
   }
 
-  Widget _buildLoading() => Center(
-        child: SimpleAACLoadingWidget(),
-      );
+  Widget _buildLoading() => const Center(child: SimpleAACLoadingWidget());
 }

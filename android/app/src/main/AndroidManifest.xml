@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.sealstudios.simpleaac.simple_aac">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-permission android:name="android.permission.INTERNET"/>
   <queries>
     <intent>
@@ -35,5 +35,9 @@
     <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
     <meta-data android:name="flutterEmbedding" android:value="2"/>
+    <activity
+      android:name="com.yalantis.ucrop.UCropActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
   </application>
 </manifest>

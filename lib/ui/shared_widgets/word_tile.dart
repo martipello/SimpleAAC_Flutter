@@ -7,6 +7,7 @@ import '../../extensions/iterable_extension.dart';
 import '../theme/simple_aac_text.dart';
 import '../word_detail_view.dart';
 import 'simple_aac_tile.dart';
+import 'word_image.dart';
 
 typedef WordCallBack = void Function(Word word);
 
@@ -17,7 +18,9 @@ class WordTile extends StatelessWidget {
     this.heroTag,
     this.wordTapCallBack,
     this.hasReOrderButton = false,
+    this.reorderIndex,
     this.isSelected = false,
+    this.isHighlighted = false,
     this.closeButtonOnTap,
     this.closeButtonOnLongPress,
   });
@@ -31,14 +34,15 @@ class WordTile extends StatelessWidget {
   final WordCallBack? closeButtonOnLongPress;
 
   final bool hasReOrderButton;
+  final int? reorderIndex;
   final bool isSelected;
+  final bool isHighlighted;
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1 / 1.3,
       child: SimpleAACTile(
-        key: key,
         tapCallBack: () {
           wordTapCallBack?.call(word);
         },
@@ -58,6 +62,7 @@ class WordTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
         ),
         isSelected: isSelected,
+        isHighlighted: isHighlighted,
         closeButtonOnTap: closeButtonOnTap != null
             ? () {
                 closeButtonOnTap?.call(word);
@@ -69,6 +74,7 @@ class WordTile extends StatelessWidget {
               }
             : null,
         hasReOrderButton: hasReOrderButton,
+        reorderIndex: reorderIndex,
         child: _buildWordTileContent(context),
       ),
     );
@@ -83,24 +89,20 @@ class WordTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Flexible(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(4),
-              ),
-              clipBehavior: Clip.hardEdge,
-              child: heroTag != null
-                  ? wrapWithHero(
-                      _buildImage(),
-                      heroTag!,
-                    )
-                  : _buildImage(),
-            ),
+            child: heroTag != null
+                ? Hero(
+                    tag: heroTag!,
+                    transitionOnUserGestures: true,
+                    placeholderBuilder: (_, __, child) => child,
+                    child: _buildClippedImage(),
+                  )
+                : _buildClippedImage(),
           ),
           const SizedBox(
             height: 4,
           ),
           Text(
-            word.word,
+            word.text,
             maxLines: 2,
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
@@ -113,17 +115,14 @@ class WordTile extends StatelessWidget {
     );
   }
 
-  Widget wrapWithHero(Widget child, String heroTag) {
-    return Hero(
-      tag: heroTag,
-      child: child,
-    );
-  }
+  Widget _buildClippedImage() => ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
+        clipBehavior: Clip.hardEdge,
+        child: _buildImage(),
+      );
 
-  Widget _buildImage() {
-    return Image.network(
-      word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
-      fit: BoxFit.cover,
-    );
-  }
+  Widget _buildImage() => WordImage(
+        imagePath: word.imagePaths.firstOrNull(),
+        fit: BoxFit.cover,
+      );
 }

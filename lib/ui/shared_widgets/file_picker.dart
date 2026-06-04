@@ -213,11 +213,8 @@ class _FilePickerState extends State<FilePicker> {
       height: 36,
       child: RoundedButton(
         label: widget.buttonLabel ?? 'CHOOSE FILES',
-        textStyle: widget.buttonLabelStyle,
         isFilled: false,
-        disableShadow: true,
         onPressed: _filePickerViewModel.openImagePicker,
-        elevation: 0,
       ),
     );
   }

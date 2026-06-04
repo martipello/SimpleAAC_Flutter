@@ -4,75 +4,49 @@ import '../../api/models/extensions/word_sub_type_extension.dart';
 import '../../api/models/extensions/word_type_extension.dart';
 import '../../api/models/word_sub_type.dart';
 import '../../api/models/word_type.dart';
-import '../../extensions/build_context_extension.dart';
-import '../theme/simple_aac_text.dart';
 
 typedef WordSubTypePickerCallBack = void Function(WordSubType? wordSubType);
-typedef WordSubTypePickerValidator = String Function(WordSubType? wordSubType);
 
 class WordSubTypePicker extends StatelessWidget {
   const WordSubTypePicker({
     required this.wordSubTypePickerCallBack,
-    this.wordSubTypePickerValidator,
     this.wordSubType,
     this.wordType,
   });
 
   final WordSubTypePickerCallBack wordSubTypePickerCallBack;
-  final WordSubTypePickerValidator? wordSubTypePickerValidator;
   final WordSubType? wordSubType;
   final WordType? wordType;
 
+  List<WordSubType> get _subTypes => wordType?.getSubTypes() ?? [];
+
+  WordSubType? get _resolvedSelection {
+    if (wordSubType != null && _subTypes.contains(wordSubType)) return wordSubType;
+    return _subTypes.isNotEmpty ? _subTypes.first : null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return _buildReasonPicker(context);
-  }
-
-  Widget _buildReasonPicker(
-    BuildContext context,
-  ) {
-    return DropdownButtonFormField<WordSubType>(
-      hint: Text(
-        wordSubType?.name.toUpperCase() ?? 'WordSub Type',
-        style: SimpleAACText.body3Style,
-      ),
-      isDense: true,
-      isExpanded: true,
-      decoration: InputDecoration(
-        isDense: true,
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: wordType?.getSubTypes().first.getColor(context) ?? context.themeColors.primary,
-            width: 2.0,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: wordType.getColor(context),
-            width: 2.0,
-          ),
-        ),
-      ),
-      value: wordType?.getSubTypes().first,
-      validator: wordSubTypePickerValidator,
-      items: _getDropdownMenuItems(),
-      onChanged: wordSubTypePickerCallBack,
+    return DropdownMenu<WordSubType>(
+      key: ValueKey(wordType),
+      initialSelection: _resolvedSelection,
+      label: const Text('Category'),
+      expandedInsets: EdgeInsets.zero,
+      requestFocusOnTap: false,
+      enableFilter: false,
+      enableSearch: false,
+      enabled: _subTypes.isNotEmpty,
+      textStyle: Theme.of(context).textTheme.bodyMedium,
+      onSelected: wordSubTypePickerCallBack,
+      dropdownMenuEntries: _subTypes
+          .map(
+            (e) => DropdownMenuEntry<WordSubType>(
+              value: e,
+              label: e.name[0].toUpperCase() + e.name.substring(1),
+              leadingIcon: Icon(e.getIcon(), size: 18),
+            ),
+          )
+          .toList(),
     );
-  }
-
-  List<DropdownMenuItem<WordSubType>> _getDropdownMenuItems() {
-    return wordType
-            ?.getSubTypes()
-            .map(
-              (e) => DropdownMenuItem<WordSubType>(
-                value: e,
-                child: Text(
-                  e.name.toUpperCase(),
-                  style: SimpleAACText.body1Style,
-                ),
-              ),
-            )
-            .toList() ??
-        [];
   }
 }

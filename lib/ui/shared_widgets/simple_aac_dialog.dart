@@ -44,56 +44,29 @@ class SimpleAACDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            color: context.themeColors.primary,
-            height: 50,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 8, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                title != null
-                    ? Padding(
-                        padding: const EdgeInsets.only(
-                          left: 16.0,
-                        ),
-                        child: Text(
-                          title!,
-                          style: SimpleAACText.subtitle1Style,
-                        ),
-                      )
-                    : const SizedBox(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                  ),
-                  child: IconButton(
-                    splashRadius: 12,
-                    constraints: const BoxConstraints(
-                      minWidth: 12,
-                      minHeight: 12,
-                    ),
-                    icon: const Icon(
-                      Icons.close,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                )
+                if (title != null)
+                  Text(title!, style: SimpleAACText.subtitle1Style)
+                else
+                  const SizedBox(),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
               ],
             ),
           ),
-          const SizedBox(
-            height: 8,
-          ),
+          const Divider(height: 1),
+          const SizedBox(height: 12),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: content,
           ),
-          const SizedBox(
-            height: 24,
-          ),
+          const SizedBox(height: 24),
           if (showOkButton)
             _buildPickerButtons(
               context,
@@ -161,13 +134,14 @@ class SimpleAACDialog extends StatelessWidget {
     DialogAction action,
     BuildContext context,
   ) {
-    return TextButton(
+    final color = action.color ?? context.themeColors.primary;
+    return OutlinedButton(
       onPressed: action.actionVoidCallback,
-      child: Text(
-        action.actionText,
-        style: SimpleAACText.body3Style,
-        textAlign: TextAlign.end,
+      style: OutlinedButton.styleFrom(
+        foregroundColor: color,
+        side: BorderSide(color: color),
       ),
+      child: Text(action.actionText, style: SimpleAACText.body3Style),
     );
   }
 }
@@ -176,8 +150,10 @@ class DialogAction {
   DialogAction({
     required this.actionText,
     required this.actionVoidCallback,
+    this.color,
   });
 
   final String actionText;
   final VoidCallback actionVoidCallback;
+  final Color? color;
 }

@@ -4,16 +4,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
-import 'api/hive.dart';
 import 'dependency_injection_container.dart' as di;
+import 'services/auth_service.dart';
 import 'services/shared_preferences_service.dart';
+import 'api/repositories/vocabulary_repository.dart';
 import 'simple_aac_app.dart';
 import 'ui/theme/theme_builder_widget.dart';
 import 'view_models/theme_view_model.dart';
 
-// ignore: avoid_classes_with_only_static_members
 class SimpleAACAppWrapper extends StatefulWidget {
   const SimpleAACAppWrapper({
     super.key,
@@ -22,34 +21,37 @@ class SimpleAACAppWrapper extends StatefulWidget {
 
   final ThemeViewModel themeViewModel;
 
-  static void init() async {
+  static void init() {
     runZonedGuarded<Future<void>>(
       () async {
         WidgetsFlutterBinding.ensureInitialized();
-        await initializeFirebase();
+        await Firebase.initializeApp();
+
         FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
         if (kDebugMode) {
-          await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+          await FirebaseCrashlytics.instance
+              .setCrashlyticsCollectionEnabled(false);
         }
 
-        final appDocumentDir = await getApplicationDocumentsDirectory();
-        await initHive(appDocumentDir);
         await di.init();
         await di.allReady();
 
+        // Ensure we have an anonymous userId before anything else.
+        await di.getIt<AuthService>().ensureSignedIn();
+
+        // Load the bundled vocabulary into memory.
+        await di.getIt<VocabularyRepository>().loadCoreVocabulary();
+
+        // Populate initial data only on first launch.
         final isFirstTime = await SharedPreferencesService.firstTime;
-        if(isFirstTime) {
-          await populateInitialData();
+        if (isFirstTime) {
+          di.getIt<SharedPreferencesService>().setFirstTime(isFirstTime: false);
         }
 
-        final themeViewModel = di.getIt.get<ThemeViewModel>();
+        final themeViewModel = di.getIt<ThemeViewModel>();
         await themeViewModel.init();
 
-        runApp(
-          SimpleAACAppWrapper(
-            themeViewModel: themeViewModel,
-          ),
-        );
+        runApp(SimpleAACAppWrapper(themeViewModel: themeViewModel));
       },
       (error, stack) => FirebaseCrashlytics.instance.recordError(
         error,
@@ -57,10 +59,6 @@ class SimpleAACAppWrapper extends StatefulWidget {
         reason: 'Zoned Error',
       ),
     );
-  }
-
-  static Future<void> initializeFirebase() async {
-    await Firebase.initializeApp();
   }
 
   @override
@@ -72,11 +70,8 @@ class _SimpleAACAppWrapperState extends State<SimpleAACAppWrapper> {
   Widget build(BuildContext context) {
     return ThemeBuilderWidget(
       themeViewModel: widget.themeViewModel,
-      themeBuilder: (themeController) {
-        return SimpleAACApp(
-          themeController: themeController,
-        );
-      },
+      themeBuilder: (themeController) =>
+          SimpleAACApp(themeController: themeController),
     );
   }
 }

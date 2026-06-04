@@ -1,18 +1,21 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'dependency_injection_container.dart';
 import 'services/navigation_service.dart';
+import 'ui/create_word_group_view.dart';
 import 'ui/dashboard/app_shell.dart';
-import 'ui/language_view.dart';
 import 'ui/manage_word_view.dart';
 import 'ui/settings_view.dart';
+import 'ui/tts_settings_view.dart';
 import 'ui/theme/theme_controller.dart';
 import 'ui/theme/theme_view.dart';
 import 'ui/word_detail_view.dart';
+import 'ui/word_group_detail_view.dart';
+import 'ui/word_groups_view.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -78,7 +81,12 @@ class _SimpleAACAppState extends State<SimpleAACApp> {
         ManageWordView.routeName: (context) => ManageWordView(),
         SettingsView.routeName: (context) => SettingsView(),
         ThemeView.routeName: (context) => ThemeView(),
-        LanguageView.routeName: (context) => LanguageView(),
+        TtsSettingsView.routeName: (context) => const TtsSettingsView(),
+        WordGroupsView.routeName: (context) => const WordGroupsView(),
+        WordGroupDetailView.routeName: (context) =>
+            const WordGroupDetailView(),
+        CreateWordGroupView.routeName: (context) =>
+            const CreateWordGroupView(),
       },
     );
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:simple_aac/ui/theme/theme_preview.dart';
-import 'package:tuple/tuple.dart';
 
 import '../../dependency_injection_container.dart';
 import '../../extensions/build_context_extension.dart';
@@ -58,8 +57,8 @@ class _ThemeViewState extends State<ThemeView> {
         children: _themePages()
             .map(
               (themeViewModelAndTheme) => ThemePreview(
-                themeViewModel: themeViewModelAndTheme.item1,
-                theme: themeViewModelAndTheme.item2,
+                themeViewModel: themeViewModelAndTheme.$1,
+                theme: themeViewModelAndTheme.$2,
                 isDark: isDark,
               ),
             )
@@ -70,32 +69,14 @@ class _ThemeViewState extends State<ThemeView> {
     );
   }
 
-  List<Tuple2> _themePages() {
+  List<(ThemeViewModel, SimpleAACTheme)> _themePages() {
     return [
-      Tuple2(
-        _themeViewModelRed,
-        SimpleAACTheme.red,
-      ),
-      Tuple2(
-        _themeViewModelBlue,
-        SimpleAACTheme.blue,
-      ),
-      Tuple2(
-        _themeViewModelYellow,
-        SimpleAACTheme.yellow,
-      ),
-      Tuple2(
-        _themeViewModelGreen,
-        SimpleAACTheme.green,
-      ),
-      Tuple2(
-        _themeViewModelPink,
-        SimpleAACTheme.pink,
-      ),
-      Tuple2(
-        _themeViewModelPurple,
-        SimpleAACTheme.purple,
-      ),
+      (_themeViewModelRed, SimpleAACTheme.red),
+      (_themeViewModelBlue, SimpleAACTheme.blue),
+      (_themeViewModelYellow, SimpleAACTheme.yellow),
+      (_themeViewModelGreen, SimpleAACTheme.green),
+      (_themeViewModelPink, SimpleAACTheme.pink),
+      (_themeViewModelPurple, SimpleAACTheme.purple),
     ];
   }
 
@@ -125,7 +106,7 @@ class _ThemeViewState extends State<ThemeView> {
             isDark ? ThemeMode.dark : ThemeMode.light,
           );
           context.themeViewModel.setTheme(
-            _themePages().get(_themePageIndex).item2,
+            _themePages().get(_themePageIndex).$2,
           );
         },
       ),

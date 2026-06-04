@@ -1,10 +1,14 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:shimmer/shimmer.dart';
 
+import '../../api/models/extensions/word_type_extension.dart';
 import '../../api/models/word.dart';
+import '../../api/models/word_sub_type.dart';
 import '../../api/models/word_type.dart';
 import '../../dependency_injection_container.dart';
+import '../../extensions/build_context_extension.dart';
+import '../../extensions/iterable_extension.dart';
 import '../../extensions/string_extension.dart';
 import '../../flavors.dart';
 import '../../services/shared_preferences_service.dart';
@@ -12,8 +16,14 @@ import '../../view_models/selected_words_view_model.dart';
 import '../intro/intro_page.dart';
 import '../manage_word_view.dart';
 import '../settings_view.dart';
+import '../create_word_group_view.dart';
+import '../word_groups_view.dart';
+import '../search/word_search_delegate.dart';
 import '../shared_widgets/app_bar.dart';
+import '../shared_widgets/simple_aac_chip.dart';
+import '../shared_widgets/word_image.dart';
 import '../theme/simple_aac_text.dart';
+import '../word_type_views/group_word_view.dart';
 import '../word_type_views/word_type_view.dart';
 import 'related_words_widget.dart';
 import 'sentence_widget.dart';
@@ -41,12 +51,13 @@ class _AppShellState extends State<AppShell> {
   final selectedWordsViewModel = getIt.get<SelectedWordsViewModel>();
 
   var _selectedIndex = 0;
+  WordSubType? _pendingSubType;
 
   @override
   void initState() {
     super.initState();
     selectedWordsViewModel.selectedWords.listen((value) {
-      print('selectedWordsStream WORD $value');
+      print('selectedWordsStream WORD ${value.map((s) => s.word)}');
     });
     selectedWordsViewModel.relatedWords.listen((value) {
       print('predictionsForSelectedWord WORD $value');
@@ -84,13 +95,14 @@ class _AppShellState extends State<AppShell> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildHeroHolder(),
-        WordType.values
-            .map(
-              (wordType) => WordTypeView(
-                wordType: wordType,
-              ),
-            )
-            .elementAt(_selectedIndex)
+        if (_selectedIndex >= WordType.values.length)
+          const Expanded(child: GroupWordView())
+        else
+          WordTypeView(
+            key: ValueKey('$_selectedIndex-$_pendingSubType'),
+            wordType: WordType.values[_selectedIndex],
+            initialSubType: _pendingSubType,
+          ),
       ],
     );
   }
@@ -103,6 +115,7 @@ class _AppShellState extends State<AppShell> {
           children: [
             SentenceWidget(),
             _buildRelatedWords(),
+            _buildAiPredictions(),
           ],
         ),
         Positioned.fill(
@@ -119,10 +132,10 @@ class _AppShellState extends State<AppShell> {
   }
 
   Widget _buildRelatedWords() {
-    return StreamBuilder<BuiltList<Word>>(
+    return StreamBuilder<List<Word>>(
       stream: selectedWordsViewModel.relatedWords,
       builder: (context, snapshot) {
-        final relatedWords = snapshot.data ?? BuiltList();
+        final relatedWords = snapshot.data ?? [];
         return SizedBox(
           height: 48,
           child: RelatedWordsWidget(
@@ -135,17 +148,128 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  Widget _buildPlaySentenceActionButton() {
-    return Hero(
-      tag: kPlayButtonHeroTag,
-      transitionOnUserGestures: true,
-      child: FloatingActionButton(
-        heroTag: null,
-        onPressed: () {},
-        child: const Icon(
-          Icons.play_arrow,
+  Widget _buildAiPredictions() {
+    return ListenableBuilder(
+      listenable: sharedPreferences,
+      builder: (context, _) {
+        if (!sharedPreferences.aiPredictionsEnabled) return const SizedBox.shrink();
+        return StreamBuilder<List<WordSlot>>(
+          stream: selectedWordsViewModel.selectedWords,
+          builder: (context, sentenceSnap) {
+            final hasWords = sentenceSnap.data?.isNotEmpty ?? false;
+            if (!hasWords) return const SizedBox.shrink();
+            return StreamBuilder<List<Word>?>(
+              stream: selectedWordsViewModel.aiPredictions,
+              builder: (context, predSnap) {
+                final predictions = predSnap.data; // null=loading, []=no results, [...]= results
+                return _buildAiRow(context, predictions);
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildAiRow(BuildContext context, List<Word>? predictions) {
+    return SizedBox(
+      height: 48,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Icon(
+              Icons.auto_awesome_rounded,
+              size: 16,
+              color: context.themeColors.primary.withOpacity(0.7),
+            ),
+          ),
+          Expanded(
+            child: predictions == null
+                ? _buildAiLoadingShimmer(context)
+                : predictions.isEmpty
+                    ? Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'No AI predictions',
+                          style: TextStyle(
+                            color: context.themeColors.onSurface.withOpacity(0.4),
+                            fontSize: 13,
+                          ),
+                        ),
+                      )
+                    : ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(right: 96),
+                    itemCount: predictions.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    itemBuilder: (context, index) {
+                      final word = predictions[index];
+                      return SimpleAACChip(
+                        label: word.text,
+                        icon: ClipOval(
+                          child: WordImage(
+                            imagePath: word.imagePaths.firstOrNull(),
+                            width: 24,
+                            height: 24,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        chipType: ChipType.normal,
+                        onTap: () => selectedWordsViewModel.addSelectedWord(word),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAiLoadingShimmer(BuildContext context) {
+    final base = context.themeColors.surfaceContainerHighest;
+    final highlight = context.themeColors.surfaceContainerLow;
+    return Shimmer.fromColors(
+      baseColor: base,
+      highlightColor: highlight,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemCount: 4,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (_, __) => Container(
+          width: 72,
+          height: 32,
+          decoration: BoxDecoration(
+            color: base,
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPlaySentenceActionButton() {
+    return StreamBuilder<bool>(
+      stream: selectedWordsViewModel.isSpeaking,
+      builder: (context, snapshot) {
+        final speaking = snapshot.data ?? false;
+        return Hero(
+          tag: kPlayButtonHeroTag,
+          transitionOnUserGestures: true,
+          child: FloatingActionButton(
+            heroTag: null,
+            onPressed: selectedWordsViewModel.toggleSpeak,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: Icon(
+                speaking ? Icons.stop_rounded : Icons.play_arrow_rounded,
+                key: ValueKey(speaking),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -157,32 +281,28 @@ class _AppShellState extends State<AppShell> {
       spacing: 4,
       children: [
         SpeedDialChild(
-          onTap: () {
-            Navigator.of(context).pushNamed(
-              ManageWordView.routeName,
-              arguments: ManageWordViewArguments(),
-            );
-          },
-          child: const FloatingActionButton(
-            onPressed: null,
-            heroTag: null,
-            child: Icon(Icons.add),
+          label: 'Add group',
+          child: const Icon(Icons.playlist_add),
+          onTap: () => Navigator.of(context).pushNamed(
+            CreateWordGroupView.routeName,
+            arguments: const CreateWordGroupViewArguments(),
           ),
         ),
         SpeedDialChild(
-          onTap: () {
-            Navigator.of(context).pushNamed(
+          label: 'Add word',
+          child: const Icon(Icons.add_photo_alternate_outlined),
+          onTap: () async {
+            final word = await Navigator.of(context).pushNamed(
               ManageWordView.routeName,
-              arguments: ManageWordViewArguments(
-                word: null,
-              ),
-            );
+              arguments: ManageWordViewArguments(),
+            ) as Word?;
+            if (word != null && mounted) {
+              setState(() {
+                _selectedIndex = WordType.values.indexOf(word.type);
+                _pendingSubType = word.subType;
+              });
+            }
           },
-          child: const FloatingActionButton(
-            onPressed: null,
-            heroTag: null,
-            child: Icon(Icons.group_add_rounded),
-          ),
         ),
       ],
       useRotationAnimation: true,
@@ -214,9 +334,13 @@ class _AppShellState extends State<AppShell> {
     return IconButton(
       padding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
-      onPressed: () {},
-      icon: const Icon(
-        Icons.search_rounded,
+      icon: const Icon(Icons.search_rounded),
+      onPressed: () => showSearch(
+        context: context,
+        delegate: WordSearchDelegate(
+          getIt.get(),
+          selectedWordsViewModel,
+        ),
       ),
     );
   }
@@ -239,14 +363,18 @@ class _AppShellState extends State<AppShell> {
   }
 
   List<BottomNavigationBarItem> _bottomNavigationBarItems() {
-    return WordType.values
-        .map(
-          (e) => BottomNavigationBarItem(
-            icon: const Icon(Icons.add),
-            label: e.name.capitalize(),
-          ),
-        )
-        .toList();
+    return [
+      ...WordType.values.map(
+        (e) => BottomNavigationBarItem(
+          icon: Icon(e.getIcon()),
+          label: e.name.capitalize(),
+        ),
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.playlist_play_rounded),
+        label: 'Groups',
+      ),
+    ];
   }
 
   Widget _buildMenuButton() {
@@ -254,6 +382,8 @@ class _AppShellState extends State<AppShell> {
       onSelected: (index) {
         if (index == 0) {
           Navigator.of(context).pushNamed(SettingsView.routeName);
+        } else if (index == 1) {
+          Navigator.of(context).pushNamed(WordGroupsView.routeName);
         }
       },
       itemBuilder: (context) {
@@ -264,6 +394,14 @@ class _AppShellState extends State<AppShell> {
               context,
               'Settings',
               Icons.settings,
+            ),
+          ),
+          PopupMenuItem(
+            value: 1,
+            child: _buildMenuItem(
+              context,
+              'My groups',
+              Icons.playlist_play_rounded,
             ),
           ),
           PopupMenuItem(

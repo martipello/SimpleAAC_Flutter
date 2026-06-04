@@ -1,4 +1,4 @@
-package com.sealstudios.simpleaac.simple_aac
+package com.sealstudios.simpleaac
 
 import io.flutter.embedding.android.FlutterActivity
 

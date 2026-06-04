@@ -1,66 +1,45 @@
-import 'package:built_collection/built_collection.dart';
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
-import 'package:hive_built_value/hive_built_value.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../serializers/serializers.dart';
 import 'word_sub_type.dart';
 import 'word_type.dart';
 
+part 'word.freezed.dart';
 part 'word.g.dart';
 
-@HiveType(typeId: 1)
-abstract class Word implements Built<Word, WordBuilder> {
+@freezed
+sealed class Word with _$Word {
+  const factory Word({
+    required String wordId,
 
-  factory Word([void Function(WordBuilder) updates]) = _$Word;
-  Word._();
+    /// Text shown on the card.
+    required String text,
 
-  @HiveField(0)
-  String get wordId;
+    /// What the TTS engine speaks. If null, [text] is used directly.
+    /// Supports SSML/IPA for precise phonetic control.
+    String? phoneticOverride,
 
-  @HiveField(1)
-  DateTime? get createdDate;
+    required WordType type,
+    required WordSubType subType,
 
-  @HiveField(2)
-  WordType get type;
+    /// Asset paths (bundled) or local file paths (user-added images).
+    required List<String> imagePaths,
 
-  @HiveField(3)
-  WordSubType get subType;
+    /// False for user-created words.
+    @Default(true) bool isCoreVocabulary,
 
-  @HiveField(4)
-  String get word;
+    @Default(false) bool isFavourite,
 
-  @HiveField(5)
-  BuiltList<String> get imageList;
+    /// Manually curated follow-up word IDs.
+    @Default([]) List<String> extraRelatedWordIds,
 
-  @HiveField(6)
-  String get sound;
+    /// Cached AI-suggested follow-up word IDs (offline predictions).
+    @Default([]) List<String> aiSuggestedFollowUps,
 
-  @HiveField(7)
-  bool? get isFavourite;
+    /// Float32 vector for offline semantic search.
+    List<double>? localEmbedding,
 
-  @HiveField(8)
-  double? get usageCount;
+    DateTime? createdDate,
+  }) = _Word;
 
-  @HiveField(9)
-  double? get keyStage;
-
-  @HiveField(10)
-  bool? get isUserAdded;
-
-  @HiveField(11)
-  bool? get isBackedUp;
-
-  @HiveField(12)
-  BuiltList<String> get extraRelatedWordIds;
-
-  Map<String, dynamic> toJson() {
-    return serializers.serializeWith(Word.serializer, this) as Map<String, dynamic>;
-  }
-
-  static Word fromJson(Map<String, dynamic> json) {
-    return serializers.deserializeWith(Word.serializer, json)!;
-  }
-
-  static Serializer<Word> get serializer => _$wordSerializer;
+  factory Word.fromJson(Map<String, dynamic> json) => _$WordFromJson(json);
 }

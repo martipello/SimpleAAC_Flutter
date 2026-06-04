@@ -1,71 +1,69 @@
-import 'package:built_collection/built_collection.dart';
-import 'package:simple_aac/ui/dashboard/related_words_widget.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../api/models/word.dart';
 import '../api/models/word_sub_type.dart';
+import '../api/models/word_type.dart';
+import '../api/repositories/vocabulary_repository.dart';
+import 'auth_service.dart';
 import 'language_service.dart';
 
 class WordService {
-  WordService(this.languageService);
+  WordService(this._vocabulary, this._auth, this._language);
 
-  final LanguageService languageService;
+  final VocabularyRepository _vocabulary;
+  final AuthService _auth;
+  final LanguageService _language;
 
-  Future<BuiltList<Word>> getAllForType(WordSubType wordSubType) async {
-    final currentLanguage = await languageService.getCurrentLanguage();
-    final words = currentLanguage.words;
-    return words.where((w) => w.subType == wordSubType).toBuiltList();
+  String get _uid => _auth.currentUserId ?? 'anonymous';
+  String get _languageId => _language.currentLanguageId;
+
+  Stream<List<Word>> watchSubType(WordSubType subType) =>
+      _vocabulary.watchWordsForSubType(_uid, _languageId, subType);
+
+  Stream<List<Word>> watchType(WordType type) =>
+      _vocabulary.watchWordsForType(_uid, _languageId, type);
+
+  Stream<List<Word>> watchFavourites() =>
+      _vocabulary.watchFavourites(_uid, _languageId);
+
+  Future<List<Word>> getWordsForIds(List<String> ids) async {
+    final core = _vocabulary.getCoreWordsForIds(_languageId, ids);
+    final found = core.map((w) => w.wordId).toSet();
+    final missing = ids.where((id) => !found.contains(id)).toList();
+    if (missing.isEmpty) return core;
+    // Any missing IDs may be custom words — fetch from Firestore once
+    final custom = await _vocabulary
+        .watchCustomWords(_uid)
+        .first
+        .then((all) => all.where((w) => missing.contains(w.wordId)).toList());
+    return [...core, ...custom];
   }
 
-  Future<BuiltList<Word>> getExtraRelatedWords(Word word) async {
-    final currentLanguage = await languageService.getCurrentLanguage();
-    return currentLanguage.words
-        .where(
-          (lw) => word.extraRelatedWordIds.any(
-            (w) => w == lw.wordId,
-          ),
-        )
-        .toBuiltList();
+  Future<List<Word>> getRelatedWords(Word word) async {
+    final ids = {
+      ...word.extraRelatedWordIds,
+      ...word.aiSuggestedFollowUps,
+    }.toList();
+    if (ids.isEmpty) return [];
+    return getWordsForIds(ids);
   }
 
-  Future<BuiltList<Word>> getRelatedWords(Word word) async {
-    final currentLanguage = await languageService.getCurrentLanguage();
-    final words = currentLanguage.words;
-    final extraRelatedWords = await getExtraRelatedWords(word);
-    //TODO make this actually get related words not just the related words on the word
-    final relatedWords = words.where(
-      (lw) => word.extraRelatedWordIds.any(
-        (w) => w == lw.wordId,
-      ),
-    );
-    return <Word>{...extraRelatedWords, ...relatedWords}.toBuiltList();
+  Future<void> saveCustomWord(Word word) =>
+      _vocabulary.saveCustomWord(_uid, word);
+
+  Future<Word> toggleFavourite(Word word) async {
+    final updated = word.copyWith(isFavourite: !word.isFavourite);
+    await _vocabulary.saveCustomWord(_uid, updated);
+    return updated;
   }
 
-  Future<BuiltList<Word>> getWordsForIds(BuiltList<String> wordIds) async {
-    final currentLanguage = await languageService.getCurrentLanguage();
-    return currentLanguage.words
-        .where(
-          (word) => wordIds.any(
-            (id) => word.wordId == id,
-          ),
-        )
-        .toBuiltList();
+  Future<void> deleteCustomWord(String wordId) =>
+      _vocabulary.deleteCustomWord(_uid, wordId);
+
+  List<Word> searchWords(String query) {
+    if (query.isEmpty) return [];
+    return _vocabulary.searchWords(_languageId, query.toLowerCase());
   }
 
-  void addListener(WordListCallBack wordListCallBack) {
-    languageService.addListener(
-      _getWordListCallbackWrapper(wordListCallBack),
-    );
-  }
-
-  void removeListener(WordListCallBack wordListCallBack) {
-    languageService.removeListener(
-      _getWordListCallbackWrapper(wordListCallBack),
-    );
-  }
-
-  LanguageCallBack _getWordListCallbackWrapper(WordListCallBack wordListCallBack) {
-    return (language) {
-      wordListCallBack.call(language.words);
-    };
-  }
+  List<Word> getAllCoreWords() => _vocabulary.getAllCoreWordsForLanguage(_languageId);
 }

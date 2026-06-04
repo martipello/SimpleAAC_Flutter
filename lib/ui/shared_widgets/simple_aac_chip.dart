@@ -50,22 +50,13 @@ class SimpleAACChip extends StatelessWidget {
   ) {
     return InputChip(
       avatar: icon,
-      label: Text(
-        label,
-        style: SimpleAACText.body1Style,
-      ),
-      padding: EdgeInsets.zero,
-      labelStyle: SimpleAACText.body1Style,
+      label: Text(label),
       onPressed: onTap ?? () {},
       isEnabled: true,
       deleteButtonTooltipMessage: 'Remove',
       deleteIconColor: context.themeColors.onBackground,
       onDeleted: onDelete,
-      deleteIcon: isRemovable
-          ? const Icon(
-              Icons.close,
-            )
-          : null,
+      deleteIcon: isRemovable ? const Icon(Icons.close) : null,
     );
   }
 

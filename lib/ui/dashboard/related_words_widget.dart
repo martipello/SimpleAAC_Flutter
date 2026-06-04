@@ -1,5 +1,3 @@
-import 'package:built_collection/built_collection.dart';
-import 'package:change_notifier_builder/change_notifier_builder.dart';
 import 'package:flutter/material.dart';
 
 import '../../api/models/word.dart';
@@ -8,22 +6,23 @@ import '../../extensions/iterable_extension.dart';
 import '../../services/shared_preferences_service.dart';
 import '../shared_widgets/chip_group.dart';
 import '../shared_widgets/simple_aac_chip.dart';
-import '../shared_widgets/word_tile.dart';
+import '../shared_widgets/word_image.dart';
 
-typedef WordListCallBack = void Function(BuiltList<Word> word);
-typedef WordIDListCallBack = void Function(BuiltList<String> word);
+typedef WordCallBack = void Function(Word word);
+typedef WordListCallback = void Function(List<Word> words);
+typedef WordIDListCallback = void Function(List<String> ids);
 
 class RelatedWordsWidget extends StatelessWidget {
   RelatedWordsWidget({
-    Key? key,
+    super.key,
     required this.relatedWords,
     required this.onRelatedWordSelected,
     this.onRelatedWordIdsChanged,
     this.isExpanded = false,
-  }) : super(key: key);
+  });
 
-  final BuiltList<Word> relatedWords;
-  final WordIDListCallBack? onRelatedWordIdsChanged;
+  final List<Word> relatedWords;
+  final WordIDListCallback? onRelatedWordIdsChanged;
   final WordCallBack onRelatedWordSelected;
   final bool isExpanded;
 
@@ -31,15 +30,15 @@ class RelatedWordsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierBuilder(
-      notifier: _sharedPreferencesService,
-      builder: (context, _, __) {
-        final hasRelatedWordsEnabled = _sharedPreferencesService.hasRelatedWordsEnabled;
-        if (hasRelatedWordsEnabled) {
-          return isExpanded ? _buildExpandedChipGroup() : _buildRelatedWordListView();
-        } else {
-          return const SizedBox();
+    return ListenableBuilder(
+      listenable: _sharedPreferencesService,
+      builder: (context, _) {
+        if (!_sharedPreferencesService.hasRelatedWordsEnabled) {
+          return const SizedBox.shrink();
         }
+        return isExpanded
+            ? _buildExpandedChipGroup()
+            : _buildRelatedWordListView();
       },
     );
   }
@@ -47,81 +46,53 @@ class RelatedWordsWidget extends StatelessWidget {
   Widget _buildRelatedWordListView() {
     return ListView.separated(
       shrinkWrap: true,
-      padding: const EdgeInsets.only(
-        left: 4,
-        right: 96,
-      ),
+      padding: const EdgeInsets.only(left: 16, right: 96),
       scrollDirection: Axis.horizontal,
       itemCount: relatedWords.length,
       itemBuilder: (context, index) {
         final word = relatedWords[index];
-        return _buildRelatedWordChip(
-          word,
-          onDeleteWordFunction(word),
-        );
+        return _buildRelatedWordChip(word, _onDeleteWord(word));
       },
-      separatorBuilder: (context, index) {
-        return const SizedBox(
-          width: 12,
-        );
-      },
+      separatorBuilder: (_, __) => const SizedBox(width: 12),
     );
   }
 
   Widget _buildExpandedChipGroup() {
     return ChipGroup(
       chips: relatedWords
-          .map(
-            (word) => _buildRelatedWordChip(
-              word,
-              onDeleteWordFunction(word),
-            ),
-          )
+          .map((word) => _buildRelatedWordChip(word, _onDeleteWord(word)))
           .toList(),
     );
   }
 
-  Widget _buildRelatedWordChip(
-    Word word,
-    VoidCallback? onDelete,
-  ) {
+  Widget _buildRelatedWordChip(Word word, VoidCallback? onDelete) {
     return SimpleAACChip(
-      label: word.word,
-      icon: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: ClipOval(
-          clipBehavior: Clip.hardEdge,
-          child: Image.asset(
-            word.imageList.firstOrNull() ?? 'assets/images/simple_aac_white_background.png',
-            fit: BoxFit.contain,
-          ),
-        ),
+      label: word.text,
+      icon: ClipOval(
+        child: _buildWordImage(word),
       ),
       chipType: ChipType.normal,
-      onTap: () {
-        onRelatedWordSelected.call(word);
-      },
+      onTap: () => onRelatedWordSelected(word),
       onDelete: onDelete,
     );
   }
 
-  VoidCallback? onDeleteWordFunction(
-    Word word,
-  ) {
-    final onDeleteWord = onRelatedWordIdsChanged;
-    if (onDeleteWord != null) {
-      return () {
-        onDeleteWord.call(
-          relatedWords
-              .rebuild(
-                (pb) => pb.remove(word),
-              )
-              .map((p0) => p0.wordId)
-              .toBuiltList(),
-        );
-      };
-    } else {
-      return null;
-    }
+  Widget _buildWordImage(Word word) => WordImage(
+        imagePath: word.imagePaths.firstOrNull(),
+        fit: BoxFit.cover,
+        width: 24,
+        height: 24,
+      );
+
+  VoidCallback? _onDeleteWord(Word word) {
+    final callback = onRelatedWordIdsChanged;
+    if (callback == null) return null;
+    return () {
+      final remaining = relatedWords
+          .where((w) => w.wordId != word.wordId)
+          .map((w) => w.wordId)
+          .toList();
+      callback(remaining);
+    };
   }
 }

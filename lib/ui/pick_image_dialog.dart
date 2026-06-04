@@ -1,25 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
-import '../extensions/build_context_extension.dart';
-import 'theme/simple_aac_text.dart';
+import '../dependency_injection_container.dart';
+import 'draw_word_view.dart';
 
 class PickImageDialog extends StatefulWidget {
-  PickImageDialog({
-    Key? key,
-  }) : super(key: key);
+  const PickImageDialog({Key? key}) : super(key: key);
 
-  static Future<bool?> show(
-    BuildContext context,
-  ) {
-    return showModalBottomSheet(
+  static Future<String?> show(BuildContext context) {
+    return showModalBottomSheet<String>(
       context: context,
-      builder: (context) {
-        return PickImageDialog();
-      },
+      builder: (context) => const PickImageDialog(),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       enableDrag: true,
       isScrollControlled: true,
@@ -31,63 +25,127 @@ class PickImageDialog extends StatefulWidget {
 }
 
 class _PickImageDialogState extends State<PickImageDialog> {
+  final _picker = getIt.get<ImagePicker>();
+  final _cropper = ImageCropper();
+
+  Future<void> _pickFromCamera() async {
+    final file = await _picker.pickImage(source: ImageSource.camera, imageQuality: 100);
+    if (file == null) return;
+    await _cropAndReturn(file.path);
+  }
+
+  Future<void> _pickFromDraw() async {
+    final path = await DrawWordView.show(context);
+    if (path == null) {
+      if (mounted) Navigator.of(context).pop(null);
+      return;
+    }
+    await _cropAndReturn(path);
+  }
+
+  Future<void> _pickFromGallery() async {
+    final file = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
+    if (file == null) return;
+    await _cropAndReturn(file.path);
+  }
+
+  Future<void> _cropAndReturn(String sourcePath) async {
+    final cropped = await _cropper.cropImage(
+      sourcePath: sourcePath,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      uiSettings: [
+        AndroidUiSettings(lockAspectRatio: true),
+        IOSUiSettings(aspectRatioLockEnabled: true, resetAspectRatioEnabled: false),
+      ],
+    );
+    if (mounted) Navigator.of(context).pop(cropped?.path);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              _buildIconButton(
-                iconData: Icons.camera_alt,
-                label: 'Camera',
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
               ),
-              _buildIconButton(
-                iconData: Icons.image_rounded,
-                label: 'Gallery',
-              ),
-              _buildIconButton(
-                iconData: Icons.brush_rounded,
-                label: 'Draw',
-              ),
-            ],
-          )
-        ],
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Add a picture!',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                _buildOption(
+                  icon: Icons.camera_alt_rounded,
+                  label: 'Camera',
+                  color: const Color(0xFF4FC3F7),
+                  onTap: _pickFromCamera,
+                ),
+                const SizedBox(width: 12),
+                _buildOption(
+                  icon: Icons.photo_library_rounded,
+                  label: 'Gallery',
+                  color: const Color(0xFF81C784),
+                  onTap: _pickFromGallery,
+                ),
+                const SizedBox(width: 12),
+                _buildOption(
+                  icon: Icons.brush_rounded,
+                  label: 'Draw',
+                  color: const Color(0xFFFFB74D),
+                  onTap: _pickFromDraw,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildIconButton({
-    required IconData iconData,
+  Widget _buildOption({
+    required IconData icon,
     required String label,
+    required Color color,
+    required VoidCallback onTap,
   }) {
     return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: TextButton(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: color, width: 2),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
-              FittedBox(
-                child: Icon(
-                  iconData,
-                  color: context.themeColors.onBackground,
-                ),
-              ),
+              Icon(icon, size: 40, color: color),
+              const SizedBox(height: 10),
               Text(
                 label,
-                style: SimpleAACText.body1Style,
-                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: color.withOpacity(0.9),
+                ),
               ),
             ],
           ),
-          onPressed: () {
-
-          },
         ),
       ),
     );
