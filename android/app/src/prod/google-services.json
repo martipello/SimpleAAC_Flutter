@@ -8,6 +8,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:997985384352:android:04b78149a4f753afe956c5",
+        "android_client_info": {
+          "package_name": "com.sealstudios.simpleaac"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmCr6eOqqXt41McT1I3g447yybMNCRSOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "997985384352-1rpmqc97asd8gogs8flt3uo997s99mkb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sealstudios.simpleaac.uat"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:997985384352:android:747f808f59bc2f61e956c5",
         "android_client_info": {
           "package_name": "com.sealstudios.simpleaac.dev"
@@ -30,6 +66,13 @@
             {
               "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "997985384352-1rpmqc97asd8gogs8flt3uo997s99mkb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sealstudios.simpleaac.uat"
+              }
             }
           ]
         }
@@ -59,6 +102,13 @@
             {
               "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "997985384352-1rpmqc97asd8gogs8flt3uo997s99mkb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sealstudios.simpleaac.uat"
+              }
             }
           ]
         }
@@ -88,6 +138,13 @@
             {
               "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "997985384352-1rpmqc97asd8gogs8flt3uo997s99mkb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sealstudios.simpleaac.uat"
+              }
             }
           ]
         }

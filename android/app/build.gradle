@@ -48,7 +48,7 @@ android {
         }
         prod {
             dimension "flavor-type"
-            applicationId "com.sealstudios.simpleaac.prod"
+            applicationId "com.sealstudios.simpleaac"
             resValue "string", "app_name", "Simple AAC"
         }
     }

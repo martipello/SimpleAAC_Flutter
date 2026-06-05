@@ -38,7 +38,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: '${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT_SECRET }}'
-          packageName: com.sealstudios.simpleaac.prod
+          packageName: com.sealstudios.simpleaac
           releaseFiles: build/app/outputs/bundle/prodRelease/app-prod-release.aab
           tracks: internal
           inAppUpdatePriority: 1

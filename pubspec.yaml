@@ -122,11 +122,11 @@ flavorizr:
       app:
         name: "Simple AAC"
       android:
-        applicationId: "com.sealstudios.simpleaac.prod"
+        applicationId: "com.sealstudios.simpleaac"
         firebase:
           config: "firebase/prod/google-services.json"
       ios:
-        bundleId: "com.sealstudios.simpleaac.prod"
+        bundleId: "com.sealstudios.simpleaac"
         firebase:
           config: "firebase/prod/GoogleService-Info.plist"
 
