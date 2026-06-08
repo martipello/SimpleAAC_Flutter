@@ -21,7 +21,7 @@ class ManageWordViewModel {
             text: '',
             type: WordType.things,
             subType: WordSubType.people,
-            imagePaths: const [],
+            imagePath: null,
             isCoreVocabulary: false,
           ),
     );
@@ -59,7 +59,7 @@ class ManageWordViewModel {
   void setImagePath(String path) {
     final word = wordStream.valueOrNull;
     if (word != null) {
-      wordStream.add(word.copyWith(imagePaths: [path, ...word.imagePaths.skip(1)]));
+      wordStream.add(word.copyWith(imagePath: path));
     }
   }
 
@@ -71,7 +71,7 @@ class ManageWordViewModel {
   }
 
   Stream<bool> get isValid => wordStream.map(
-        (word) => word != null && word.text.trim().isNotEmpty && word.imagePaths.isNotEmpty,
+        (word) => word != null && word.text.trim().isNotEmpty && (word.imagePath?.isNotEmpty ?? false),
       );
 
   Stream<List<Word>> get relatedWords =>

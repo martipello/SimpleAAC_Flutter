@@ -21,8 +21,10 @@ sealed class Word with _$Word {
     required WordType type,
     required WordSubType subType,
 
-    /// Asset paths (bundled) or local file paths (user-added images).
-    required List<String> imagePaths,
+    /// Filename only for core vocabulary (e.g. `bowl.png`), resolved to a
+    /// full Firebase Storage path at display time via [ImagePathService].
+    /// User-added words store the full path directly.
+    String? imagePath,
 
     /// False for user-created words.
     @Default(true) bool isCoreVocabulary,

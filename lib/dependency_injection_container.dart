@@ -12,6 +12,7 @@ import 'api/repositories/word_group_repository.dart';
 import 'api/repositories/word_usage_repository.dart';
 import 'services/ai_prediction_service.dart';
 import 'services/auth_service.dart';
+import 'services/image_path_service.dart';
 import 'services/language_service.dart';
 import 'services/navigation_service.dart';
 import 'services/shared_preferences_service.dart';
@@ -100,6 +101,7 @@ Future<void> init() async {
   );
   getIt.registerLazySingleton(() => const FlutterSecureStorage());
   getIt.registerLazySingleton(NavigationService.new);
+  getIt.registerLazySingleton(() => ImagePathService(getIt<SharedPreferencesService>()));
   getIt.registerLazySingleton(() => TtsService(getIt<SharedPreferencesService>(), getIt<FlutterSecureStorage>()));
   getIt.registerLazySingleton(() => AiPredictionService(getIt<FlutterSecureStorage>()));
   getIt.registerLazySingleton(ImagePicker.new);

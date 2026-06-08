@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../api/models/word.dart';
 import '../../dependency_injection_container.dart';
 import '../../extensions/iterable_extension.dart';
+import '../../services/image_path_service.dart';
 import '../../services/shared_preferences_service.dart';
 import '../shared_widgets/chip_group.dart';
 import '../shared_widgets/simple_aac_chip.dart';
@@ -78,7 +79,7 @@ class RelatedWordsWidget extends StatelessWidget {
   }
 
   Widget _buildWordImage(Word word) => WordImage(
-        imagePath: word.imagePaths.firstOrNull(),
+        imagePath: getIt<ImagePathService>().resolve(word),
         fit: BoxFit.cover,
         width: 24,
         height: 24,

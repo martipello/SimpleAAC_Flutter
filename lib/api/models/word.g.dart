@@ -12,9 +12,7 @@ _Word _$WordFromJson(Map<String, dynamic> json) => _Word(
   phoneticOverride: json['phoneticOverride'] as String?,
   type: $enumDecode(_$WordTypeEnumMap, json['type']),
   subType: $enumDecode(_$WordSubTypeEnumMap, json['subType']),
-  imagePaths: (json['imagePaths'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
+  imagePath: json['imagePath'] as String?,
   isCoreVocabulary: json['isCoreVocabulary'] as bool? ?? true,
   isFavourite: json['isFavourite'] as bool? ?? false,
   extraRelatedWordIds:
@@ -41,7 +39,7 @@ Map<String, dynamic> _$WordToJson(_Word instance) => <String, dynamic>{
   'phoneticOverride': instance.phoneticOverride,
   'type': _$WordTypeEnumMap[instance.type]!,
   'subType': _$WordSubTypeEnumMap[instance.subType]!,
-  'imagePaths': instance.imagePaths,
+  'imagePath': instance.imagePath,
   'isCoreVocabulary': instance.isCoreVocabulary,
   'isFavourite': instance.isFavourite,
   'extraRelatedWordIds': instance.extraRelatedWordIds,

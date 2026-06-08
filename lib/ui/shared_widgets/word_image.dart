@@ -1,13 +1,14 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 /// Displays a word image from any of four sources:
-///   - HTTP/HTTPS URL        → Image.network
+///   - HTTP/HTTPS URL        → CachedNetworkImage (disk-cached)
 ///   - Local file path       → Image.file
-///   - Firebase Storage path → resolves to download URL then Image.network
+///   - Firebase Storage path → resolves to download URL then CachedNetworkImage
 ///   - Local asset path      → Image.asset
 ///   - null / empty          → fallback placeholder
 class WordImage extends StatefulWidget {
@@ -83,7 +84,7 @@ class _WordImageState extends State<WordImage> {
     }
 
     if (path.startsWith('http')) {
-      return _network(path);
+      return _cached(path);
     }
 
     if (path.startsWith('/') || path.startsWith('file://')) {
@@ -95,7 +96,7 @@ class _WordImageState extends State<WordImage> {
         future: _storageFuture,
         initialData: WordImage._urlCache[path],
         builder: (context, snapshot) {
-          if (snapshot.hasData) return _network(snapshot.data!);
+          if (snapshot.hasData) return _cached(snapshot.data!);
           if (snapshot.hasError) return _asset(WordImage._fallbackAsset);
           return _shimmer();
         },
@@ -113,12 +114,13 @@ class _WordImageState extends State<WordImage> {
         errorBuilder: (_, __, ___) => _asset(WordImage._fallbackAsset),
       );
 
-  Widget _network(String url) => Image.network(
-        url,
+  Widget _cached(String url) => CachedNetworkImage(
+        imageUrl: url,
         fit: widget.fit,
         width: widget.width ?? double.infinity,
         height: widget.height ?? double.infinity,
-        errorBuilder: (_, __, ___) => _asset(WordImage._fallbackAsset),
+        placeholder: (_, __) => _shimmer(),
+        errorWidget: (_, __, ___) => _asset(WordImage._fallbackAsset),
       );
 
   Widget _asset(String assetPath) => Image.asset(

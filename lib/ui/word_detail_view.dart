@@ -4,6 +4,7 @@ import '../../extensions/build_context_extension.dart';
 import '../api/models/word.dart';
 import '../dependency_injection_container.dart';
 import '../extensions/iterable_extension.dart';
+import '../services/image_path_service.dart';
 import '../services/tts_service.dart';
 import '../view_models/words_view_model.dart';
 import '../extensions/string_extension.dart';
@@ -249,7 +250,7 @@ class _WordDetailViewState extends State<WordDetailView> {
         height: kImageHeight,
         width: double.infinity,
         child: WordImage(
-          imagePath: word.imagePaths.firstOrNull(),
+          imagePath: getIt<ImagePathService>().resolve(word),
           fit: BoxFit.cover,
         ),
       );

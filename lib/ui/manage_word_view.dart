@@ -5,6 +5,7 @@ import '../api/models/word.dart';
 import '../dependency_injection_container.dart';
 import '../extensions/build_context_extension.dart';
 import '../extensions/iterable_extension.dart';
+import '../services/image_path_service.dart';
 import '../services/tts_service.dart';
 import '../view_models/create_word/manage_word_view_model.dart';
 import 'dashboard/app_shell.dart';
@@ -307,7 +308,7 @@ class _ManageWordViewState extends State<ManageWordView> {
   Widget _buildCreateWordImage(
     Word? _word,
   ) {
-    final imageUri = _word?.imagePaths.firstOrNull() ?? '';
+    final imageUri = _word != null ? getIt<ImagePathService>().resolve(_word!) : null;
     return ClipRRect(
         borderRadius: const BorderRadius.all(
           Radius.circular(4),
@@ -322,7 +323,7 @@ class _ManageWordViewState extends State<ManageWordView> {
               final path = await PickImageDialog.show(context);
               if (path != null) _wordViewModel.setImagePath(path);
             },
-            child: imageUri.isNotEmpty
+            child: (imageUri?.isNotEmpty ?? false)
                 ? Hero(
                     tag: heroTag ?? '',
                     transitionOnUserGestures: true,

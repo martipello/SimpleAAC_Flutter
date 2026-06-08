@@ -9,6 +9,7 @@ import '../../api/models/word_type.dart';
 import '../../dependency_injection_container.dart';
 import '../../extensions/build_context_extension.dart';
 import '../../extensions/iterable_extension.dart';
+import '../../services/image_path_service.dart';
 import '../../extensions/string_extension.dart';
 import '../../flavors.dart';
 import '../../services/shared_preferences_service.dart';
@@ -209,7 +210,7 @@ class _AppShellState extends State<AppShell> {
                         label: word.text,
                         icon: ClipOval(
                           child: WordImage(
-                            imagePath: word.imagePaths.firstOrNull(),
+                            imagePath: getIt<ImagePathService>().resolve(word),
                             width: 24,
                             height: 24,
                             fit: BoxFit.cover,

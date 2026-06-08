@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../api/models/word.dart';
 import '../../api/models/word_group.dart';
+import '../../dependency_injection_container.dart';
 import '../../extensions/build_context_extension.dart';
 import '../../extensions/iterable_extension.dart';
+import '../../services/image_path_service.dart';
 import '../theme/simple_aac_text.dart';
 import 'simple_aac_tile.dart';
 import 'word_image.dart';
@@ -65,7 +67,7 @@ class WordGroupTile extends StatelessWidget {
   Widget _buildMosaic() {
     final paths = words
         .take(4)
-        .map((w) => w.imagePaths.firstOrNull())
+        .map((w) => getIt<ImagePathService>().resolve(w))
         .toList();
 
     if (paths.isEmpty) {

@@ -150,6 +150,13 @@ class SharedPreferencesService extends ChangeNotifier {
     notifyListeners();
   }
 
+  String get imageAlbum => sharedPreferences.getString(Constants.IMAGE_ALBUM) ?? 'core';
+
+  void setImageAlbum(String album) {
+    sharedPreferences.setString(Constants.IMAGE_ALBUM, album);
+    notifyListeners();
+  }
+
   static Future<bool> get firstTime => SharedPreferences.getInstance().then(
         (sharedPreferences) => sharedPreferences.getBool(Constants.FIRST_TIME) ?? true,
       );

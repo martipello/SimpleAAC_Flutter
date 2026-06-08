@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../api/models/extensions/word_type_extension.dart';
 import '../../api/models/word.dart';
+import '../../dependency_injection_container.dart';
 import '../../extensions/build_context_extension.dart';
 import '../../extensions/iterable_extension.dart';
+import '../../services/image_path_service.dart';
 import '../theme/simple_aac_text.dart';
 import '../word_detail_view.dart';
 import 'simple_aac_tile.dart';
@@ -122,7 +124,7 @@ class WordTile extends StatelessWidget {
       );
 
   Widget _buildImage() => WordImage(
-        imagePath: word.imagePaths.firstOrNull(),
+        imagePath: getIt<ImagePathService>().resolve(word),
         fit: BoxFit.cover,
       );
 }

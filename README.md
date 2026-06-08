@@ -33,3 +33,12 @@ ADD new colors for other themes https://m3.material.io/theme-builder#/custom
 ADD messaging and sign in
 
 
+
+
+////
+Generate images 
+run
+pip install openai requests
+then run 
+
+

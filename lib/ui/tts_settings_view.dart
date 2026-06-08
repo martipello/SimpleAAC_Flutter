@@ -264,76 +264,72 @@ class _TtsSettingsViewState extends State<TtsSettingsView> {
   // ── AI Voice ───────────────────────────────────────────────────────────────
 
   Widget _buildAiVoiceSection() {
-    if (!_hasKey) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              'Enter an OpenAI API key to use high-quality AI voices.',
-              style: SimpleAACText.body2Style,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _keyController,
-                    obscureText: _keyObscured,
-                    decoration: InputDecoration(
-                      hintText: 'sk-...',
-                      border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: Icon(_keyObscured
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                        onPressed: () =>
-                            setState(() => _keyObscured = !_keyObscured),
-                      ),
-                    ),
-                    style: SimpleAACText.body1Style,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                FilledButton(
-                  onPressed: _saveKey,
-                  child: const Text('Save'),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
-    }
-
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SwitchListTile(
-          value: _useAiVoice,
-          onChanged: (v) {
-            setState(() => _useAiVoice = v);
-            _prefs.setUseAiVoice(v);
-          },
-          title: const Text('Use AI voice', style: SimpleAACText.body1Style),
-          subtitle: const Text('OpenAI key active', style: SimpleAACText.body2Style),
-        ),
-        if (_useAiVoice) ...[
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(height: 1),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            _hasKey
+                ? 'Update your OpenAI API key below.'
+                : 'Enter an OpenAI API key to use high-quality AI voices.',
+            style: SimpleAACText.body2Style,
           ),
-          ..._openAiVoices.map(_buildOpenAiVoiceTile),
-        ],
-        ListTile(
-          dense: true,
-          title: const Text('Remove AI key', style: SimpleAACText.body2Style),
-          textColor: Theme.of(context).colorScheme.error,
-          onTap: _removeKey,
         ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _keyController,
+                  obscureText: _keyObscured,
+                  decoration: InputDecoration(
+                    hintText: 'sk-...',
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                          _keyObscured ? Icons.visibility : Icons.visibility_off),
+                      onPressed: () =>
+                          setState(() => _keyObscured = !_keyObscured),
+                    ),
+                  ),
+                  style: SimpleAACText.body1Style,
+                ),
+              ),
+              const SizedBox(width: 8),
+              FilledButton(
+                onPressed: _saveKey,
+                child: const Text('Save'),
+              ),
+            ],
+          ),
+        ),
+        if (_hasKey) ...[
+          const SizedBox(height: 4),
+          SwitchListTile(
+            value: _useAiVoice,
+            onChanged: (v) {
+              setState(() => _useAiVoice = v);
+              _prefs.setUseAiVoice(v);
+            },
+            title: const Text('Use AI voice', style: SimpleAACText.body1Style),
+          ),
+          if (_useAiVoice) ...[
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Divider(height: 1),
+            ),
+            ..._openAiVoices.map(_buildOpenAiVoiceTile),
+          ],
+          ListTile(
+            dense: true,
+            title: const Text('Remove AI key', style: SimpleAACText.body2Style),
+            textColor: Theme.of(context).colorScheme.error,
+            onTap: _removeKey,
+          ),
+        ],
       ],
     );
   }

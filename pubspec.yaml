@@ -55,6 +55,7 @@ dependencies:
   image_cropper: ^9.1.0
   flutter_image_compress: ^2.4.0
 
+  cached_network_image: ^3.4.1
   shimmer: ^3.0.0
 
   # TTS

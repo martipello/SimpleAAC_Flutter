@@ -26,4 +26,5 @@ class Constants {
   // AI predictions toggle
   static const AI_PREDICTIONS_ENABLED = 'aiPredictionsEnabled';
   static const AI_PREDICTION_PROVIDER = 'aiPredictionProvider';
+  static const IMAGE_ALBUM = 'imageAlbum';
 }
