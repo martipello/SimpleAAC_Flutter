@@ -96,9 +96,9 @@ class _WordImageState extends State<WordImage> {
         future: _storageFuture,
         initialData: WordImage._urlCache[path],
         builder: (context, snapshot) {
-          if (snapshot.hasData) return _cached(snapshot.data!);
           if (snapshot.hasError) return _asset(WordImage._fallbackAsset);
-          return _shimmer();
+          if (!snapshot.hasData) return _shimmer();
+          return _cached(snapshot.data!);
         },
       );
     }
@@ -119,7 +119,9 @@ class _WordImageState extends State<WordImage> {
         fit: widget.fit,
         width: widget.width ?? double.infinity,
         height: widget.height ?? double.infinity,
-        placeholder: (_, __) => _shimmer(),
+        fadeInDuration: Duration.zero,
+        fadeOutDuration: Duration.zero,
+        placeholder: (context, url) => _shimmer(),
         errorWidget: (_, __, ___) => _asset(WordImage._fallbackAsset),
       );
 
