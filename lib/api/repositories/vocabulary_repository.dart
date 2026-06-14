@@ -129,7 +129,10 @@ class VocabularyRepository {
       watchCustomWords(uid).map(
         (all) => all.where((w) => w.subType == subType).toList(),
       ),
-      (core, custom) => [...core, ...custom],
+      (core, custom) {
+        final customIds = custom.map((w) => w.wordId).toSet();
+        return [...core.where((w) => !customIds.contains(w.wordId)), ...custom];
+      },
     );
   }
 
@@ -146,7 +149,10 @@ class VocabularyRepository {
       watchCustomWords(uid).map(
         (all) => all.where((w) => w.type == type).toList(),
       ),
-      (core, custom) => [...core, ...custom],
+      (core, custom) {
+        final customIds = custom.map((w) => w.wordId).toSet();
+        return [...core.where((w) => !customIds.contains(w.wordId)), ...custom];
+      },
     );
   }
 }

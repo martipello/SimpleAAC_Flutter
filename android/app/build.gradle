@@ -31,24 +31,24 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.sealstudios.simpleaac"
+    namespace "com.sealstudios.simple_aac"
 
     flavorDimensions += "flavor-type"
 
     productFlavors {
         dev {
             dimension "flavor-type"
-            applicationId "com.sealstudios.simpleaac.dev"
+            applicationId "com.sealstudios.simple_aac.dev"
             resValue "string", "app_name", "Simple AAC DEV"
         }
         uat {
             dimension "flavor-type"
-            applicationId "com.sealstudios.simpleaac.uat"
+            applicationId "com.sealstudios.simple_aac.uat"
             resValue "string", "app_name", "Simple AAC UAT"
         }
         prod {
             dimension "flavor-type"
-            applicationId "com.sealstudios.simpleaac"
+            applicationId "com.sealstudios.simple_aac"
             resValue "string", "app_name", "Simple AAC"
         }
     }
@@ -70,7 +70,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.sealstudios.simpleaac"
+        applicationId "com.sealstudios.simple_aac"
         minSdkVersion flutter.minSdkVersion
         targetSdk 36
         multiDexEnabled true

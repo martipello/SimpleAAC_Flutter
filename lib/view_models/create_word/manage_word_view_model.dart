@@ -12,8 +12,10 @@ class ManageWordViewModel {
   final WordService wordService;
 
   final wordStream = BehaviorSubject<Word?>();
+  Word? _originalWord;
 
   void setWord(Word? word) {
+    _originalWord = word;
     wordStream.add(
       word ??
           Word(
@@ -82,7 +84,7 @@ class ManageWordViewModel {
   Future<void> saveWord() async {
     final word = wordStream.valueOrNull;
     if (word != null) {
-      await wordService.saveCustomWord(word);
+      await wordService.saveCustomWord(word, original: _originalWord);
     }
   }
 

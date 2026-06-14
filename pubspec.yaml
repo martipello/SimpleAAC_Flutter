@@ -23,8 +23,14 @@ dependencies:
   get_it: ^9.2.1
 
   # Database / sync
+  drift: ^2.21.0
+  drift_flutter: ^0.1.0
+  sqlite3_flutter_libs: ^0.5.28
   cloud_firestore: ^6.5.0
   firebase_auth: ^6.5.2
+  firebase_ui_auth: ^3.0.1
+  firebase_ui_oauth_google: ^2.0.1
+  google_sign_in: ^6.2.2
   path_provider: ^2.1.5
 
   # Models
@@ -76,6 +82,7 @@ dev_dependencies:
     sdk: flutter
 
   build_runner: ^2.15.0
+  drift_dev: ^2.21.0
   freezed: ^3.2.5
   json_serializable: ^6.14.0
 

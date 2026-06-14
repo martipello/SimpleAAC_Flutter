@@ -43,39 +43,45 @@ class WordSearchDelegate extends SearchDelegate<Word?> {
       );
     }
 
-    final words = _wordService.searchWords(trimmed);
-
-    if (words.isEmpty) {
-      return Center(
-        child: Text(
-          'No results for "$trimmed"',
-          style: const TextStyle(color: Colors.grey),
-        ),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.all(4),
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          crossAxisSpacing: 4,
-          mainAxisSpacing: 4,
-          childAspectRatio: 0.86,
-        ),
-        itemCount: words.length,
-        itemBuilder: (context, index) {
-          final word = words[index];
-          return WordTile(
-            key: ValueKey(word.wordId),
-            word: word,
-            wordTapCallBack: (w) {
-              _selectedWordsViewModel.addSelectedWord(w);
-              close(context, w);
-            },
+    return FutureBuilder<List<Word>>(
+      future: _wordService.searchWords(trimmed),
+      builder: (context, snapshot) {
+        final words = snapshot.data ?? [];
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (words.isEmpty) {
+          return Center(
+            child: Text(
+              'No results for "$trimmed"',
+              style: const TextStyle(color: Colors.grey),
+            ),
           );
-        },
-      ),
+        }
+        return Padding(
+          padding: const EdgeInsets.all(4),
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 4,
+              mainAxisSpacing: 4,
+              childAspectRatio: 0.86,
+            ),
+            itemCount: words.length,
+            itemBuilder: (context, index) {
+              final word = words[index];
+              return WordTile(
+                key: ValueKey(word.wordId),
+                word: word,
+                wordTapCallBack: (w) {
+                  _selectedWordsViewModel.addSelectedWord(w);
+                  close(context, w);
+                },
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

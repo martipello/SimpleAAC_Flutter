@@ -1,21 +1,19 @@
 import '../api/models/word_usage.dart';
-import '../api/repositories/word_usage_repository.dart';
-import 'auth_service.dart';
+import '../database/app_database.dart';
+import 'sync_mediator.dart';
 
 class WordUsageService {
-  WordUsageService(this._repository, this._auth);
+  WordUsageService(this._wordUsageDao, this._mediator);
 
-  final WordUsageRepository _repository;
-  final AuthService _auth;
-
-  String get _uid => _auth.currentUserId ?? 'anonymous';
+  final WordUsageDao _wordUsageDao;
+  final SyncMediator _mediator;
 
   /// Call whenever a word tile is tapped. Atomic, works offline.
-  Future<void> increment(String wordId) => _repository.increment(_uid, wordId);
+  Future<void> increment(String wordId) => _mediator.incrementWordUsage(wordId);
 
   /// Stream of the user's most-used words for AI predictions.
   Stream<List<WordUsage>> watchTopWords({int limit = 20}) =>
-      _repository.watchTopWords(_uid, limit: limit);
+      _wordUsageDao.watchTopWords(limit: limit);
 
-  Stream<List<WordUsage>> watchAll() => _repository.watchAll(_uid);
+  Stream<List<WordUsage>> watchAll() => _wordUsageDao.watchAll();
 }

@@ -7,9 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api/repositories/user_repository.dart';
-import 'api/repositories/vocabulary_repository.dart';
-import 'api/repositories/word_group_repository.dart';
-import 'api/repositories/word_usage_repository.dart';
+import 'database/app_database.dart';
 import 'services/ai_prediction_service.dart';
 import 'services/auth_service.dart';
 import 'services/image_path_service.dart';
@@ -20,6 +18,7 @@ import 'services/theme_service.dart';
 import 'services/tts_service.dart';
 import 'services/word_group_service.dart';
 import 'services/word_service.dart';
+import 'services/sync_mediator.dart';
 import 'services/word_usage_service.dart';
 import 'ui/theme/theme_controller.dart';
 import 'view_models/create_word/manage_word_view_model.dart';
@@ -54,18 +53,17 @@ Future<void> init() async {
   await getIt.isReady<SharedPreferences>();
   await getIt.isReady<PackageInfo>();
 
-  // Repositories
-  getIt.registerLazySingleton(
-    () => VocabularyRepository(getIt<FirebaseFirestore>()),
-  );
-  getIt.registerLazySingleton(
-    () => WordUsageRepository(getIt<FirebaseFirestore>()),
-  );
+  // Local database
+  final db = AppDatabase();
+  getIt.registerSingleton<AppDatabase>(db);
+  getIt.registerSingleton<WordsDao>(db.wordsDao);
+  getIt.registerSingleton<WordGroupsDao>(db.wordGroupsDao);
+  getIt.registerSingleton<WordUsageDao>(db.wordUsageDao);
+  getIt.registerSingleton<SyncDao>(db.syncDao);
+
+  // Repositories (legacy — only UserRepository remains; others replaced by Drift DAOs)
   getIt.registerLazySingleton(
     () => UserRepository(getIt<FirebaseFirestore>()),
-  );
-  getIt.registerLazySingleton(
-    () => WordGroupRepository(getIt<FirebaseFirestore>()),
   );
 
   // Services
@@ -74,29 +72,37 @@ Future<void> init() async {
     () => SharedPreferencesService(getIt<SharedPreferences>()),
   );
   getIt.registerLazySingleton(
-    () => LanguageService(
-      getIt<VocabularyRepository>(),
-      getIt<SharedPreferencesService>(),
-    ),
+    () => LanguageService(getIt<SharedPreferencesService>()),
   );
   getIt.registerLazySingleton(
     () => WordService(
-      getIt<VocabularyRepository>(),
-      getIt<AuthService>(),
+      getIt<WordsDao>(),
+      getIt<SyncMediator>(),
       getIt<LanguageService>(),
     ),
   );
   getIt.registerLazySingleton(
     () => WordUsageService(
-      getIt<WordUsageRepository>(),
-      getIt<AuthService>(),
+      getIt<WordUsageDao>(),
+      getIt<SyncMediator>(),
     ),
   );
   getIt.registerLazySingleton(
     () => WordGroupService(
-      getIt<WordGroupRepository>(),
-      getIt<AuthService>(),
+      getIt<WordGroupsDao>(),
+      getIt<SyncMediator>(),
       getIt<WordService>(),
+    ),
+  );
+  getIt.registerLazySingleton(
+    () => SyncMediator(
+      firestore: getIt<FirebaseFirestore>(),
+      auth: getIt<AuthService>(),
+      prefs: getIt<SharedPreferencesService>(),
+      wordsDao: getIt<WordsDao>(),
+      wordGroupsDao: getIt<WordGroupsDao>(),
+      wordUsageDao: getIt<WordUsageDao>(),
+      syncDao: getIt<SyncDao>(),
     ),
   );
   getIt.registerLazySingleton(() => const FlutterSecureStorage());

@@ -117,7 +117,7 @@ class SelectedWordsViewModel {
     aiPredictions.add(null); // signal loading
     print('AI predictions: fetching for sentence "${slots.map((s) => s.word.text).join(' ')}"');
     final words = slots.map((s) => s.word).toList();
-    final vocab = _wordService.getAllCoreWords();
+    final vocab = await _wordService.getAllWords();
     print('AI predictions: vocab size = ${vocab.length}');
     final provider = _prefs.aiPredictionProvider == 'openai'
         ? AiPredictionProvider.openai

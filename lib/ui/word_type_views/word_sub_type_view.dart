@@ -71,10 +71,9 @@ class _WordSubTypeViewState extends State<WordSubTypeView>
           _scrollToEnd();
         }
         _previousWordCount = words.length;
-        return Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: GridView.count(
+        return GridView.count(
             controller: _scrollController,
+            padding: const EdgeInsets.fromLTRB(4, 4, 4, 80),
             crossAxisCount: 4,
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
@@ -92,7 +91,6 @@ class _WordSubTypeViewState extends State<WordSubTypeView>
                   ),
                 )
                 .toList(),
-          ),
         );
       },
     );

@@ -239,7 +239,6 @@ class _Word implements Word {
 /// full Firebase Storage path at display time via [ImagePathService].
 /// User-added words store the full path directly.
 @override final  String? imagePath;
-
 /// False for user-created words.
 @override@JsonKey() final  bool isCoreVocabulary;
 @override@JsonKey() final  bool isFavourite;

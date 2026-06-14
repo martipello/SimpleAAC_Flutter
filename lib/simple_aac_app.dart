@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'dependency_injection_container.dart';
 import 'services/navigation_service.dart';
+import 'ui/auth/sign_in_view.dart';
 import 'ui/create_word_group_view.dart';
 import 'ui/dashboard/app_shell.dart';
 import 'ui/manage_word_view.dart';
@@ -87,6 +88,7 @@ class _SimpleAACAppState extends State<SimpleAACApp> {
             const WordGroupDetailView(),
         CreateWordGroupView.routeName: (context) =>
             const CreateWordGroupView(),
+        SignInView.routeName: (context) => const SignInView(),
       },
     );
   }

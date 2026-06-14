@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../dependency_injection_container.dart';
 import '../extensions/build_context_extension.dart';
 import '../services/ai_prediction_service.dart';
+import '../services/auth_service.dart';
 import '../services/shared_preferences_service.dart';
 import '../services/tts_service.dart';
+import 'auth/sign_in_view.dart';
 import 'theme/simple_aac_text.dart';
 import 'theme/theme_view.dart';
 import 'tts_settings_view.dart';
@@ -18,6 +20,7 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   final _sharedPreferenceService = getIt.get<SharedPreferencesService>();
+  final _authService = getIt.get<AuthService>();
   final _ttsService = getIt.get<TtsService>();
   final _aiService = getIt.get<AiPredictionService>();
   bool _hasAiKey = false;
@@ -63,6 +66,9 @@ class _SettingsViewState extends State<SettingsView> {
           ),
           body: ListView(
             children: [
+              _sectionHeader('Account'),
+              _buildAccountTile(context),
+              const Divider(),
               _sectionHeader('Speech'),
               ListTile(
                 title: const Text('Speech settings', style: SimpleAACText.body1Style),
@@ -230,6 +236,44 @@ class _SettingsViewState extends State<SettingsView> {
       _refreshKeyStatus();
     }
     controller.dispose();
+  }
+
+  Widget _buildAccountTile(BuildContext context) {
+    if (_authService.isSignedInWithGoogle) {
+      return ListTile(
+        leading: _authService.photoUrl != null
+            ? CircleAvatar(backgroundImage: NetworkImage(_authService.photoUrl!))
+            : const CircleAvatar(child: Icon(Icons.person)),
+        title: Text(
+          _authService.displayName ?? 'Signed in',
+          style: SimpleAACText.body1Style,
+        ),
+        subtitle: Text(
+          _authService.email ?? '',
+          style: SimpleAACText.body2Style,
+        ),
+        trailing: TextButton(
+          onPressed: () async {
+            await _authService.signOut();
+            if (context.mounted) setState(() {});
+          },
+          child: const Text('Sign out'),
+        ),
+      );
+    }
+    return ListTile(
+      leading: const CircleAvatar(child: Icon(Icons.person_outline)),
+      title: const Text('Not signed in', style: SimpleAACText.body1Style),
+      subtitle: const Text(
+        'Sign in to sync across devices',
+        style: SimpleAACText.body2Style,
+      ),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () async {
+        await Navigator.of(context).pushNamed(SignInView.routeName);
+        if (context.mounted) setState(() {});
+      },
+    );
   }
 
   Widget _sectionHeader(String title) {
