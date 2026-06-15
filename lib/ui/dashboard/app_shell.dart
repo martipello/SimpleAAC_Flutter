@@ -9,6 +9,7 @@ import '../../api/models/word_type.dart';
 import '../../dependency_injection_container.dart';
 import '../../extensions/build_context_extension.dart';
 import '../../extensions/iterable_extension.dart';
+import '../../extensions/media_query_extension.dart';
 import '../../services/image_path_service.dart';
 import '../../extensions/string_extension.dart';
 import '../../flavors.dart';
@@ -275,40 +276,47 @@ class _AppShellState extends State<AppShell> {
   }
 
   Widget _buildAddWordActionButton() {
-    return SpeedDial(
-      spaceBetweenChildren: 4,
-      buttonSize: const Size(48, 48),
-      childrenButtonSize: const Size(46, 46),
-      spacing: 4,
-      children: [
-        SpeedDialChild(
-          label: 'Add group',
-          child: const Icon(Icons.playlist_add),
-          onTap: () => Navigator.of(context).pushNamed(
-            CreateWordGroupView.routeName,
-            arguments: const CreateWordGroupViewArguments(),
+    final isWideScreen = context.isWideScreen;
+    final rightPadding = MediaQuery.of(context).minContentWidthInset;
+    return Padding(
+      padding: EdgeInsets.only(
+        right: isWideScreen ? rightPadding : 0,
+      ),
+      child: SpeedDial(
+        spaceBetweenChildren: 4,
+        buttonSize: const Size(48, 48),
+        childrenButtonSize: const Size(46, 46),
+        spacing: 4,
+        children: [
+          SpeedDialChild(
+            label: 'Add group',
+            child: const Icon(Icons.playlist_add),
+            onTap: () => Navigator.of(context).pushNamed(
+              CreateWordGroupView.routeName,
+              arguments: const CreateWordGroupViewArguments(),
+            ),
           ),
-        ),
-        SpeedDialChild(
-          label: 'Add word',
-          child: const Icon(Icons.add_photo_alternate_outlined),
-          onTap: () async {
-            final word = await Navigator.of(context).pushNamed(
-              ManageWordView.routeName,
-              arguments: ManageWordViewArguments(),
-            ) as Word?;
-            if (word != null && mounted) {
-              setState(() {
-                _selectedIndex = WordType.values.indexOf(word.type);
-                _pendingSubType = word.subType;
-              });
-            }
-          },
-        ),
-      ],
-      useRotationAnimation: true,
-      icon: Icons.add,
-      activeIcon: Icons.close,
+          SpeedDialChild(
+            label: 'Add word',
+            child: const Icon(Icons.add_photo_alternate_outlined),
+            onTap: () async {
+              final word = await Navigator.of(context).pushNamed(
+                ManageWordView.routeName,
+                arguments: ManageWordViewArguments(),
+              ) as Word?;
+              if (word != null && mounted) {
+                setState(() {
+                  _selectedIndex = WordType.values.indexOf(word.type);
+                  _pendingSubType = word.subType;
+                });
+              }
+            },
+          ),
+        ],
+        useRotationAnimation: true,
+        icon: Icons.add,
+        activeIcon: Icons.close,
+      ),
     );
   }
 

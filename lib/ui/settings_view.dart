@@ -7,6 +7,7 @@ import '../services/auth_service.dart';
 import '../services/shared_preferences_service.dart';
 import '../services/tts_service.dart';
 import 'auth/sign_in_view.dart';
+import 'shared_widgets/view_constraint.dart';
 import 'theme/simple_aac_text.dart';
 import 'theme/theme_view.dart';
 import 'tts_settings_view.dart';
@@ -64,7 +65,8 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
           ),
-          body: ListView(
+          body: ViewConstraint(
+            child: ListView(
             children: [
               _sectionHeader('Account'),
               _buildAccountTile(context),
@@ -174,6 +176,7 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
               ),
             ],
+          ),
           ),
         );
       },

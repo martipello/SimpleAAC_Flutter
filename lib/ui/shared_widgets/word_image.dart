@@ -1,7 +1,8 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -106,13 +107,23 @@ class _WordImageState extends State<WordImage> {
     return _asset(path);
   }
 
-  Widget _file(String path) => Image.file(
-        File(path),
-        fit: widget.fit,
-        width: widget.width ?? double.infinity,
-        height: widget.height ?? double.infinity,
-        errorBuilder: (_, __, ___) => _asset(WordImage._fallbackAsset),
-      );
+  Widget _file(String path) {
+    final cleanPath = path.replaceFirst('file://', '');
+    return FutureBuilder<Uint8List>(
+      future: XFile(cleanPath).readAsBytes(),
+      builder: (context, snap) {
+        if (snap.hasError) return _asset(WordImage._fallbackAsset);
+        if (!snap.hasData) return _shimmer();
+        return Image.memory(
+          snap.data!,
+          fit: widget.fit,
+          width: widget.width ?? double.infinity,
+          height: widget.height ?? double.infinity,
+          errorBuilder: (_, __, ___) => _asset(WordImage._fallbackAsset),
+        );
+      },
+    );
+  }
 
   Widget _cached(String url) => CachedNetworkImage(
         imageUrl: url,

@@ -13,6 +13,7 @@ import 'dashboard/related_words_widget.dart';
 import 'pick_image_dialog.dart';
 import 'word_picker_bottom_sheet.dart' show WordPickerView;
 import 'shared_widgets/app_bar.dart';
+import 'shared_widgets/view_constraint.dart';
 import 'shared_widgets/bottom_button_holder.dart';
 import 'shared_widgets/rounded_button.dart';
 import 'shared_widgets/simple_aac_text_field.dart';
@@ -114,22 +115,16 @@ class _ManageWordViewState extends State<ManageWordView> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildMediumMargin(),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-            ),
-            child: _buildPickerBar(
-              _word,
+          ViewConstraint(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: _buildPickerBar(_word),
             ),
           ),
-          const SizedBox(
-            height: 12,
-          ),
+          const SizedBox(height: 12),
           Expanded(
-            child: _buildSimpleAACTile(
-              context,
-              _word,
-            ),
+            child: _buildSimpleAACTile(context, _word),
           ),
         ],
       ),
@@ -167,22 +162,25 @@ class _ManageWordViewState extends State<ManageWordView> {
       padding: const EdgeInsets.symmetric(
         horizontal: 12.0,
       ),
-      child: Column(
-        children: [
-          SimpleAACTile(
-            border: RoundedRectangleBorder(
-              side: BorderSide(
-                color: _word?.type.getColor(context) ?? context.themeColors.primary,
-                width: 2,
+      child: ViewConstraint(
+        constraints: const BoxConstraints(maxWidth: 560),
+        child: Column(
+          children: [
+            SimpleAACTile(
+              border: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: _word?.type.getColor(context) ?? context.themeColors.primary,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(4),
               ),
-              borderRadius: BorderRadius.circular(4),
+              child: _buildWordTileContent(
+                _word,
+              ),
             ),
-            child: _buildWordTileContent(
-              _word,
-            ),
-          ),
-          _buildMediumMargin(),
-        ],
+            _buildMediumMargin(),
+          ],
+        ),
       ),
     );
   }
@@ -309,14 +307,12 @@ class _ManageWordViewState extends State<ManageWordView> {
     Word? _word,
   ) {
     final imageUri = _word != null ? getIt<ImagePathService>().resolve(_word!) : null;
-    return ClipRRect(
-        borderRadius: const BorderRadius.all(
-          Radius.circular(4),
-        ),
+    return SizedBox(
+      height: 240,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
         clipBehavior: Clip.hardEdge,
-        child: AspectRatio(
-          aspectRatio: 1.0 / 1.0,
-          child: Material(
+        child: Material(
           type: MaterialType.transparency,
           child: InkWell(
             onTap: () async {
@@ -330,18 +326,16 @@ class _ManageWordViewState extends State<ManageWordView> {
                     placeholderBuilder: (_, __, child) => child,
                     child: WordImage(imagePath: imageUri, fit: BoxFit.cover),
                   )
-                : FittedBox(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Icon(
-                        Icons.add_a_photo_outlined,
-                        color: context.themeColors.onBackground,
-                      ),
+                : Center(
+                    child: Icon(
+                      Icons.add_a_photo_outlined,
+                      size: 48,
+                      color: context.themeColors.onBackground,
                     ),
                   ),
           ),
         ),
-                ),
+      ),
     );
   }
 

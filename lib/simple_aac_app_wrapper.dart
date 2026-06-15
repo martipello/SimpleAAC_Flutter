@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import 'crash_reporting.dart';
+import 'firebase_options.dart';
 
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 
@@ -29,16 +31,14 @@ class SimpleAACAppWrapper extends StatefulWidget {
     runZonedGuarded<Future<void>>(
       () async {
         WidgetsFlutterBinding.ensureInitialized();
-        await Firebase.initializeApp();
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
         FirebaseUIAuth.configureProviders([
           GoogleProvider(clientId: '', iOSPreferPlist: true),
         ]);
 
-        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-        if (kDebugMode) {
-          await FirebaseCrashlytics.instance
-              .setCrashlyticsCollectionEnabled(false);
-        }
+        await setupCrashReporting();
 
         await di.init();
         await di.allReady();
@@ -66,11 +66,7 @@ class SimpleAACAppWrapper extends StatefulWidget {
 
         runApp(SimpleAACAppWrapper(themeViewModel: themeViewModel));
       },
-      (error, stack) => FirebaseCrashlytics.instance.recordError(
-        error,
-        stack,
-        reason: 'Zoned Error',
-      ),
+      (error, stack) => recordZonedError(error, stack),
     );
   }
 

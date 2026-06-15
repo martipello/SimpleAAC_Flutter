@@ -1,12 +1,14 @@
-import 'dart:io';
+import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../dependency_injection_container.dart';
+import '../utils/native_file_utils.dart';
 import 'shared_widgets/my_custom_painter.dart';
 
 class DrawWordView extends StatefulWidget {
@@ -30,7 +32,7 @@ class _DrawWordViewState extends State<DrawWordView> {
   final _picker = getIt.get<ImagePicker>();
   final List<List<Offset?>> _strokes = [];
   List<Offset?> _currentStroke = [];
-  File? _backgroundImage;
+  XFile? _backgroundImage;
 
   Color _selectedColor = Colors.black;
   double _strokeWidth = 4;
@@ -86,20 +88,23 @@ class _DrawWordViewState extends State<DrawWordView> {
 
   Future<void> _pickBackground(ImageSource source) async {
     final file = await _picker.pickImage(source: source, imageQuality: 100);
-    if (file != null) setState(() => _backgroundImage = File(file.path));
+    if (file != null) setState(() => _backgroundImage = file);
   }
 
   Future<void> _save() async {
     final boundary = _repaintKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
     final image = await boundary.toImage(pixelRatio: 3.0);
-    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-    if (bytes == null) return;
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    if (byteData == null) return;
+    final pngBytes = byteData.buffer.asUint8List();
 
-    final dir = await getTemporaryDirectory();
-    final file = File('${dir.path}/draw_${DateTime.now().millisecondsSinceEpoch}.png');
-    await file.writeAsBytes(bytes.buffer.asUint8List());
-
-    if (mounted) Navigator.of(context).pop(file.path);
+    if (kIsWeb) {
+      final dataUrl = 'data:image/png;base64,${base64Encode(pngBytes)}';
+      if (mounted) Navigator.of(context).pop(dataUrl);
+    } else {
+      final path = await savePngBytesToTemp(pngBytes);
+      if (mounted) Navigator.of(context).pop(path);
+    }
   }
 
   @override
@@ -130,7 +135,12 @@ class _DrawWordViewState extends State<DrawWordView> {
                   fit: StackFit.expand,
                   children: [
                     _backgroundImage != null
-                        ? Image.file(_backgroundImage!, fit: BoxFit.cover)
+                        ? FutureBuilder<Uint8List>(
+                            future: _backgroundImage!.readAsBytes(),
+                            builder: (_, snap) => snap.hasData
+                                ? Image.memory(snap.data!, fit: BoxFit.cover)
+                                : const ColoredBox(color: Colors.white),
+                          )
                         : const ColoredBox(color: Colors.white),
                     CustomPaint(
                       painter: MyCustomPainter(

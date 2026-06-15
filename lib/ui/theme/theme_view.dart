@@ -5,6 +5,7 @@ import '../../dependency_injection_container.dart';
 import '../../extensions/build_context_extension.dart';
 import '../../extensions/iterable_extension.dart';
 import '../../view_models/theme_view_model.dart';
+import '../shared_widgets/adaptive_position_floating_action_button.dart';
 import '../shared_widgets/app_bar.dart';
 import '../shared_widgets/bottom_button_holder.dart';
 import '../shared_widgets/rounded_button.dart';
@@ -81,19 +82,17 @@ class _ThemeViewState extends State<ThemeView> {
   }
 
   Widget _buildDarkSwitchButton() {
-    return FloatingActionButton(
+    return AdaptivePositionFloatingActionButton(
+      onPressed: () {
+        if (mounted) {
+          setState(() {
+            isDark = !isDark;
+          });
+        }
+      },
       child: Icon(
         isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
       ),
-      onPressed: () {
-        if (mounted) {
-          setState(
-            () {
-              isDark = !isDark;
-            },
-          );
-        }
-      },
     );
   }
 
@@ -108,6 +107,7 @@ class _ThemeViewState extends State<ThemeView> {
           context.themeViewModel.setTheme(
             _themePages().get(_themePageIndex).$2,
           );
+          Navigator.of(context).pop();
         },
       ),
     );

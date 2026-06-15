@@ -34,8 +34,12 @@ class _ThemePreviewState extends State<ThemePreview> {
   }
 
   Future<void> _init() async {
-    await widget.themeViewModel.init(doSetInitialTheme: false);
-    widget.themeViewModel.setTheme(widget.theme);
+    try {
+      await widget.themeViewModel.init(doSetInitialTheme: false);
+      widget.themeViewModel.setTheme(widget.theme);
+    } catch (e) {
+      debugPrint('ThemePreview._init error: $e');
+    }
     if (mounted) setState(() => _isInitialized = true);
   }
 

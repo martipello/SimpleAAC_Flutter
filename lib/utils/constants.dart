@@ -1,3 +1,6 @@
+const double kMaxScreenWidth = 960;
+const double kMinScreenWidth = 720;
+
 class Constants {
   // ignore_for_file: constant_identifier_names
   static const USER_TOKEN_KEY = 'user_key';

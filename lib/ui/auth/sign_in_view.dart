@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../dependency_injection_container.dart';
 import '../../extensions/build_context_extension.dart';
 import '../../services/auth_service.dart';
+import '../shared_widgets/view_constraint.dart';
 import '../theme/simple_aac_text.dart';
 
 class SignInView extends StatefulWidget {
@@ -91,7 +92,8 @@ class _SignInViewState extends State<SignInView> {
         ),
       ),
       body: SafeArea(
-        child: Padding(
+        child: ViewConstraint(
+          child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -156,6 +158,7 @@ class _SignInViewState extends State<SignInView> {
               ),
               const SizedBox(height: 32),
             ],
+          ),
           ),
         ),
       ),

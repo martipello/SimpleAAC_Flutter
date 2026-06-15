@@ -152,5 +152,8 @@ flutter:
     - family: Antipasto
       fonts:
         - asset: assets/fonts/antipasto_regular.ttf
+          weight: 400
         - asset: assets/fonts/antipasto_extralight.ttf
+          weight: 300
         - asset: assets/fonts/antipasto_extrabold.ttf
+          weight: 700

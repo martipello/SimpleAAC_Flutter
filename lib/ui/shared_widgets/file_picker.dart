@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -179,11 +179,17 @@ class _FilePickerState extends State<FilePicker> {
     return ClipRRect(
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       clipBehavior: Clip.hardEdge,
-      child: Image.file(
-        File(imageFile.path),
-        height: 70,
-        width: 70,
-        fit: BoxFit.cover,
+      child: FutureBuilder<Uint8List>(
+        future: imageFile.readAsBytes(),
+        builder: (_, snap) {
+          if (!snap.hasData) return const SizedBox(width: 70, height: 70);
+          return Image.memory(
+            snap.data!,
+            height: 70,
+            width: 70,
+            fit: BoxFit.cover,
+          );
+        },
       ),
     );
   }

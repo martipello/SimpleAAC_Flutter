@@ -71,10 +71,13 @@ class _WordSubTypeViewState extends State<WordSubTypeView>
           _scrollToEnd();
         }
         _previousWordCount = words.length;
-        return GridView.count(
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final crossAxisCount = (constraints.maxWidth / 120).floor().clamp(4, 12);
+            return GridView.count(
             controller: _scrollController,
             padding: const EdgeInsets.fromLTRB(4, 4, 4, 80),
-            crossAxisCount: 4,
+            crossAxisCount: crossAxisCount,
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
             childAspectRatio: 0.86,
@@ -91,6 +94,8 @@ class _WordSubTypeViewState extends State<WordSubTypeView>
                   ),
                 )
                 .toList(),
+            );
+          },
         );
       },
     );

@@ -109,6 +109,7 @@ class _SentenceWidgetState extends State<SentenceWidget> {
   Widget _buildListView(List<WordSlot> slots, Set<int> highlightedIds) {
     return ReorderableListView.builder(
       scrollDirection: Axis.horizontal,
+      buildDefaultDragHandles: false,
       proxyDecorator: _proxyDecorator,
       itemCount: slots.length,
       onReorder: _viewModel.updatePositionSelectedWordList,

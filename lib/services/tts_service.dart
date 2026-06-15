@@ -1,13 +1,14 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_openai/dart_openai.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
+
+import '../utils/native_file_utils.dart';
 
 import '../services/shared_preferences_service.dart';
 import '../ui/dashboard/sentence_builder.dart';
@@ -108,7 +109,7 @@ class TtsService {
 
   Future<void> _init() async {
     try {
-      if (Platform.isIOS) {
+      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
         await _tts.setSharedInstance(true);
         await _tts.setIosAudioCategory(
           IosTextToSpeechAudioCategory.playback,
@@ -288,23 +289,21 @@ class TtsService {
   Future<void> _speakWithOpenAi(String text, String apiKey, {SentencePlan? plan}) async {
     try {
       final speed = (_prefs.ttsSpeechRate / 0.44).clamp(0.25, 4.0);
-      final tempDir = await getTemporaryDirectory();
+      final path = await createOpenAiSpeechFile(text, _prefs.ttsOpenAiVoice, speed);
 
-      final file = await OpenAI.instance.audio.createSpeech(
-        model: 'tts-1-hd',
-        input: text,
-        voice: _prefs.ttsOpenAiVoice,
-        outputDirectory: tempDir,
-        outputFileName: 'tts_${DateTime.now().millisecondsSinceEpoch}',
-        speed: speed,
-      );
+      if (path == null) {
+        // Web or unsupported platform — fall back to platform TTS.
+        _usingAiVoice = false;
+        await _tts.speak(text);
+        return;
+      }
 
       // Start estimated highlighting now that we know playback is about to begin.
       if (plan != null && _prefs.highlightWordsEnabled) {
         _startEstimatedHighlighting(plan);
       }
 
-      await _audioPlayer.play(DeviceFileSource(file.path));
+      await _audioPlayer.play(DeviceFileSource(path));
     } catch (_) {
       // API error or no connectivity — fall back to platform TTS silently.
       _usingAiVoice = false;

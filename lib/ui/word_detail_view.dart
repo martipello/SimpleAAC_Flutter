@@ -12,6 +12,7 @@ import 'dashboard/app_shell.dart';
 import 'dashboard/related_words_widget.dart';
 import 'manage_word_view.dart';
 import 'shared_widgets/simple_aac_dialog.dart';
+import 'shared_widgets/view_constraint.dart';
 import 'shared_widgets/simple_aac_table.dart';
 import 'shared_widgets/word_image.dart';
 import 'theme/simple_aac_text.dart';
@@ -93,7 +94,8 @@ class _WordDetailViewState extends State<WordDetailView> {
                 _buildSpeechActionButton(),
               ],
             ),
-            Padding(
+            ViewConstraint(
+              child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -149,6 +151,7 @@ class _WordDetailViewState extends State<WordDetailView> {
                   ),
                 ],
               ),
+            ),
             ),
           ],
         ),

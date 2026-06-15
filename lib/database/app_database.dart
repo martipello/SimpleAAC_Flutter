@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:flutter/foundation.dart';
 
 import '../api/models/word_sub_type.dart';
 import '../api/models/word_type.dart';
@@ -33,7 +34,15 @@ part 'app_database.g.dart';
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(driftDatabase(name: 'simple_aac'));
+  AppDatabase() : super(driftDatabase(
+    name: 'simple_aac',
+    web: kIsWeb
+        ? DriftWebOptions(
+            sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+            driftWorker: Uri.parse('drift_worker.js'),
+          )
+        : null,
+  ));
 
   /// Only used in tests — accepts an in-memory executor.
   AppDatabase.forTesting(super.executor);

@@ -4,6 +4,7 @@ import '../dependency_injection_container.dart';
 import '../services/shared_preferences_service.dart';
 import '../services/tts_service.dart';
 import 'shared_widgets/app_bar.dart';
+import 'shared_widgets/view_constraint.dart';
 import 'theme/simple_aac_text.dart';
 
 const _openAiVoices = [
@@ -74,7 +75,8 @@ class _TtsSettingsViewState extends State<TtsSettingsView> {
       appBar: SimpleAACAppBar(label: 'Speech Settings'),
       body: _keyLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView(
+          : ViewConstraint(
+            child: ListView(
               padding: const EdgeInsets.symmetric(vertical: 8),
               children: [
                 _sectionHeader('Device Voice'),
@@ -132,6 +134,7 @@ class _TtsSettingsViewState extends State<TtsSettingsView> {
                 ),
               ],
             ),
+          ),
     );
   }
 

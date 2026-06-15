@@ -12,6 +12,7 @@ import '../extensions/string_extension.dart';
 import '../services/word_group_service.dart';
 import '../view_models/word_group_view_model.dart';
 import 'shared_widgets/app_bar.dart';
+import 'shared_widgets/view_constraint.dart';
 import 'shared_widgets/word_tile.dart';
 import 'word_type_views/word_type_view.dart';
 
@@ -161,7 +162,8 @@ class _CreateWordGroupViewState extends State<CreateWordGroupView> {
   }
 
   Widget _buildTitleField() {
-    return Padding(
+    return ViewConstraint(
+      child: Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: TextField(
         controller: _titleController,
@@ -176,6 +178,7 @@ class _CreateWordGroupViewState extends State<CreateWordGroupView> {
           isDense: true,
         ),
         onChanged: (_) => setState(() {}),
+      ),
       ),
     );
   }
@@ -193,9 +196,10 @@ class _CreateWordGroupViewState extends State<CreateWordGroupView> {
       );
     }
     return SizedBox(
-      height: 112,
+      height: 160,
       child: ReorderableListView.builder(
         scrollDirection: Axis.horizontal,
+        buildDefaultDragHandles: false,
         proxyDecorator: _proxyDecorator,
         scrollController: _scrollController,
         padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),

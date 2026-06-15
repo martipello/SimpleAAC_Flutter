@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../dependency_injection_container.dart';
 import '../view_models/word_group_view_model.dart';
 import 'create_word_group_view.dart';
+import 'shared_widgets/adaptive_position_floating_action_button.dart';
 import 'shared_widgets/app_bar.dart';
+import 'shared_widgets/view_constraint.dart';
 import 'shared_widgets/word_group_tile.dart';
 import 'word_group_detail_view.dart';
 
@@ -35,17 +37,19 @@ class _WordGroupsViewState extends State<WordGroupsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SimpleAACAppBar(label: 'Groups'),
-      body: StreamBuilder(
-        stream: _viewModel.resolvedGroups,
-        builder: (context, snapshot) {
-          final groups = snapshot.data ?? [];
-          if (groups.isEmpty) {
-            return _buildEmptyState();
-          }
-          return _buildGrid(groups);
-        },
+      body: ViewConstraint(
+        child: StreamBuilder(
+          stream: _viewModel.resolvedGroups,
+          builder: (context, snapshot) {
+            final groups = snapshot.data ?? [];
+            if (groups.isEmpty) {
+              return _buildEmptyState();
+            }
+            return _buildGrid(groups);
+          },
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: AdaptivePositionFloatingActionButton(
         onPressed: _createGroup,
         child: const Icon(Icons.add),
       ),
@@ -75,10 +79,13 @@ class _WordGroupsViewState extends State<WordGroupsView> {
   }
 
   Widget _buildGrid(List resolvedGroups) {
-    return GridView.builder(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final crossAxisCount = (constraints.maxWidth / 200).floor().clamp(2, 6);
+        return GridView.builder(
       padding: const EdgeInsets.all(8),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
         childAspectRatio: 1 / 1.3,
@@ -94,6 +101,8 @@ class _WordGroupsViewState extends State<WordGroupsView> {
             WordGroupDetailView.routeName,
             arguments: WordGroupDetailViewArguments(group: group),
           ),
+        );
+      },
         );
       },
     );
