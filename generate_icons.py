@@ -3,6 +3,7 @@ import json
 import os
 import re
 import base64
+import time
 from openai import OpenAI
 
 # ----------------------------------------------------
@@ -10,7 +11,7 @@ from openai import OpenAI
 # ----------------------------------------------------
 API_TOKEN = os.environ.get("OPENAI_API_KEY", "")
 OUTPUT_DIR = "temp3/aac_images"
-MAX_WORKERS = 5
+MAX_WORKERS = 1
 
 client = OpenAI(api_key=API_TOKEN)
 
@@ -561,9 +562,9 @@ def get_explicit_scene_description(word, item_type, sub_type):
 
     if sub_type == "suffix":
         return (
-            f"A massive, bold, simple comic-book style depiction of the letters '{w}'. The text characters are drawn with "
-            f"thick black outlines, a solid flat white fill, and minimal action dash marks around them inside a clean speech bubble. "
-            f"No human characters."
+            f"A single cartoon stick figure character holding up a large clean speech bubble. "
+            f"Inside the bubble is a simple visual symbol representing the concept of adding '{w}' to a word — "
+            f"shown as an arrow pointing to an extended shape or a sequence of two simple shapes joined together. No text or letters."
         )
 
     exceptions = {
@@ -641,39 +642,48 @@ def generate_and_save_image(word_obj):
         "Every single line must have a perfectly consistent, uniform weight throughout the image. "
         "CRITICAL COMPOSITION LAW: Absolutely NO background boxes, NO border frames, NO floor surface lines, "
         "and NO enclosure lines around characters or objects. The subject must float entirely on a clear white space. "
-        "TEXT EXCEPTION RULE: Text characters are strictly prohibited EXCEPT when rendering suffixes or color words, "
-        "where bold comic-style block letters are explicitly required as part of the composition. "
+        "STRICTLY NO TEXT, labels, letters, or words of any kind anywhere in the image. "
         "CRITICAL ANTHROPOMORPHISM LAW: Faces and expressions are ONLY allowed on standalone living characters, animals, "
         "vehicles, or integrated containers (like yogurt cups). Things like clothes, buildings, colors, and landscapes "
         "must remain completely blank structural objects with absolutely NO eyes, mouths, or faces. "
         "Visual style details: Heads are flat, plain, perfect white circles with NO nose, NO ears, NO hair, and NO eyebrows. "
         "Eyes are simple solid black circles, and mouths are clean cheerful smile lines. Hands feature simple tubular shapes. "
         "Absolutely NO gradients, NO shading, NO sketchy overlapping lines, and NO perspective depth. "
+        "Any arrows must be a single clean stroke line with a simple open V-shaped arrowhead — rounded line caps, no filled or outlined arrow shapes. "
         "Clear, unshaded symbolic single-item line-art for: "
     )
 
     prompt = f"{style_description} {scene_context}"
 
-    try:
-        response = client.images.generate(
-            model="gpt-image-1-mini",
-            prompt=prompt,
-            n=1,
-            size="1024x1024",
-            quality="low",
-        )
+    for attempt in range(5):
+        try:
+            response = client.images.generate(
+                model="gpt-image-1",
+                prompt=prompt,
+                n=1,
+                size="1024x1024",
+                quality="low",
+                background="opaque",
+            )
 
-        b64_data = response.data[0].b64_json
-        if not b64_data:
+            b64_data = response.data[0].b64_json
+            if not b64_data:
+                return
+
+            img_bytes = base64.b64decode(b64_data)
+            with open(filename, "wb") as handler:
+                handler.write(img_bytes)
+            print(f"Successfully generated clean single-icon for: '{word}'")
             return
 
-        img_bytes = base64.b64decode(b64_data)
-        with open(filename, "wb") as handler:
-            handler.write(img_bytes)
-        print(f"Successfully generated clean single-icon for: '{word}'")
-
-    except Exception as e:
-        print(f"Failed configuration handling for '{word}': {e}")
+        except Exception as e:
+            if "429" in str(e):
+                wait = 15 * (attempt + 1)
+                print(f"Rate limited on '{word}', retrying in {wait}s...")
+                time.sleep(wait)
+            else:
+                print(f"Failed for '{word}': {e}")
+                return
 
 
 def main():
@@ -681,7 +691,7 @@ def main():
         os.makedirs(OUTPUT_DIR)
 
     data = json.loads(FULL_DATA_JSON)
-    word_objects = data["languages"][0]["words"]
+    word_objects = data["languages"][0]["words"][20:30]
     print(f"Loaded all {len(word_objects)} entries seamlessly.")
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
