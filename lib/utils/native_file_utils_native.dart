@@ -29,3 +29,12 @@ Future<String?> createOpenAiSpeechFile(
   );
   return file.path;
 }
+
+/// Not used on native — always returns null; use [createOpenAiSpeechFile].
+Future<Uint8List?> createOpenAiSpeechBytes(
+  String text,
+  String voice,
+  double speed,
+  String apiKey,
+) async =>
+    null;

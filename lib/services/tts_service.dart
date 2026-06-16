@@ -289,16 +289,32 @@ class TtsService {
   Future<void> _speakWithOpenAi(String text, String apiKey, {SentencePlan? plan}) async {
     try {
       final speed = (_prefs.ttsSpeechRate / 0.44).clamp(0.25, 4.0);
-      final path = await createOpenAiSpeechFile(text, _prefs.ttsOpenAiVoice, speed);
 
-      if (path == null) {
-        // Web or unsupported platform — fall back to platform TTS.
+      if (kIsWeb) {
+        final bytes = await createOpenAiSpeechBytes(
+          text, _prefs.ttsOpenAiVoice, speed, apiKey,
+        );
+        if (bytes != null) {
+          if (plan != null && _prefs.highlightWordsEnabled) {
+            _startEstimatedHighlighting(plan);
+          }
+          await _audioPlayer.play(BytesSource(bytes));
+          return;
+        }
+        // API unavailable — fall back to platform TTS.
         _usingAiVoice = false;
         await _tts.speak(text);
         return;
       }
 
-      // Start estimated highlighting now that we know playback is about to begin.
+      final path = await createOpenAiSpeechFile(text, _prefs.ttsOpenAiVoice, speed);
+
+      if (path == null) {
+        _usingAiVoice = false;
+        await _tts.speak(text);
+        return;
+      }
+
       if (plan != null && _prefs.highlightWordsEnabled) {
         _startEstimatedHighlighting(plan);
       }

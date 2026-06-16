@@ -7,6 +7,7 @@ import '../services/auth_service.dart';
 import '../services/shared_preferences_service.dart';
 import '../services/tts_service.dart';
 import 'auth/sign_in_view.dart';
+import 'dashboard/app_shell.dart';
 import 'shared_widgets/view_constraint.dart';
 import 'theme/simple_aac_text.dart';
 import 'theme/theme_view.dart';
@@ -57,7 +58,17 @@ class _SettingsViewState extends State<SettingsView> {
 
         return Scaffold(
           appBar: AppBar(
-            automaticallyImplyLeading: true,
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                if (Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                } else {
+                  Navigator.of(context).pushReplacementNamed(AppShell.routeName);
+                }
+              },
+            ),
             title: Text(
               'Settings',
               style: SimpleAACText.subtitle2Style.copyWith(

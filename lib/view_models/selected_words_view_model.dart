@@ -56,12 +56,23 @@ class SelectedWordsViewModel {
 
   Future<void> addSelectedWord(Word word) async {
     final slot = (slotId: _nextSlotId++, word: word);
-    selectedWords.add([...selectedWords.value, slot]);
+    final updatedSlots = [...selectedWords.value, slot];
+    selectedWords.add(updatedSlots);
     // Fire-and-forget: increment usage count in Firestore.
     _usageService.increment(word.wordId);
-    // Update related words suggestion.
-    final related = await _wordService.getRelatedWords(word);
-    relatedWords.add(related);
+    // Update related words using the full sentence for context-aware AI suggestions.
+    if (_prefs.aiPredictionsEnabled) {
+      final allWords = updatedSlots.map((s) => s.word).toList();
+      final vocab = await _wordService.getAllWords();
+      final provider = _prefs.aiPredictionProvider == 'openai'
+          ? AiPredictionProvider.openai
+          : AiPredictionProvider.gemini;
+      final suggestions = await _aiService.getPredictions(allWords, vocab, provider);
+      if (!relatedWords.isClosed) relatedWords.add(suggestions);
+    } else {
+      final related = await _wordService.getRelatedWords(word);
+      relatedWords.add(related);
+    }
   }
 
   void addAllWords(List<Word> words) {

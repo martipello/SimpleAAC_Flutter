@@ -124,7 +124,12 @@ class _AppShellState extends State<AppShell> {
           child: Align(
             alignment: Alignment.bottomRight,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.only(
+                right: context.isWideScreen
+                    ? MediaQuery.of(context).minContentWidthInset + 16
+                    : 16,
+                bottom: 16,
+              ),
               child: _buildPlaySentenceActionButton(),
             ),
           ),

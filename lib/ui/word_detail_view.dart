@@ -61,6 +61,7 @@ class _WordDetailViewState extends State<WordDetailView> {
         title: Text(_word.text.toTitleCase()),
         actions: [
           PopupMenuButton<_DetailAction>(
+            iconColor: Colors.white,
             onSelected: (action) => _handleAction(action, _word),
             itemBuilder: (_) => const [
               PopupMenuItem(

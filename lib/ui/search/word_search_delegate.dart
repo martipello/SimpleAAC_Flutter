@@ -35,6 +35,12 @@ class WordSearchDelegate extends SearchDelegate<Word?> {
   @override
   Widget buildSuggestions(BuildContext context) => _buildGrid(context);
 
+  int _crossAxisCount(double width) {
+    if (width > 1200) return 8;
+    if (width > 800) return 6;
+    return 4;
+  }
+
   Widget _buildGrid(BuildContext context) {
     final trimmed = query.trim();
     if (trimmed.isEmpty) {
@@ -61,8 +67,8 @@ class WordSearchDelegate extends SearchDelegate<Word?> {
         return Padding(
           padding: const EdgeInsets.all(4),
           child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: _crossAxisCount(MediaQuery.of(context).size.width),
               crossAxisSpacing: 4,
               mainAxisSpacing: 4,
               childAspectRatio: 0.86,

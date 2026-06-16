@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -58,6 +59,7 @@ class _WordImageState extends State<WordImage> {
     if (path == null ||
         path.isEmpty ||
         path.startsWith('http') ||
+        path.startsWith('data:') ||
         path.startsWith('/') ||
         path.startsWith('file://') ||
         path.startsWith('assets/')) {
@@ -88,6 +90,10 @@ class _WordImageState extends State<WordImage> {
       return _cached(path);
     }
 
+    if (path.startsWith('data:')) {
+      return _dataUrl(path);
+    }
+
     if (path.startsWith('/') || path.startsWith('file://')) {
       return _file(path.replaceFirst('file://', ''));
     }
@@ -105,6 +111,22 @@ class _WordImageState extends State<WordImage> {
     }
 
     return _asset(path);
+  }
+
+  Widget _dataUrl(String dataUrl) {
+    try {
+      final base64Str = dataUrl.split(',').last;
+      final bytes = base64Decode(base64Str);
+      return Image.memory(
+        bytes,
+        fit: widget.fit,
+        width: widget.width ?? double.infinity,
+        height: widget.height ?? double.infinity,
+        errorBuilder: (_, __, ___) => _asset(WordImage._fallbackAsset),
+      );
+    } catch (_) {
+      return _asset(WordImage._fallbackAsset);
+    }
   }
 
   Widget _file(String path) {

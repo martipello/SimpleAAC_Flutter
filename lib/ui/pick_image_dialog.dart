@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -50,6 +51,11 @@ class _PickImageDialogState extends State<PickImageDialog> {
   }
 
   Future<void> _cropAndReturn(String sourcePath) async {
+    if (kIsWeb) {
+      // image_cropper doesn't support web; return the image path as-is.
+      if (mounted) Navigator.of(context).pop(sourcePath);
+      return;
+    }
     final cropped = await _cropper.cropImage(
       sourcePath: sourcePath,
       aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
