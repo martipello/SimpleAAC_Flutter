@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../api/models/word.dart';
 import '../utils/constants.dart';
@@ -35,6 +37,39 @@ class AiPredictionService {
 
   Future<bool> hasOpenAiKey() async =>
       ((await getOpenAiKey())?.isNotEmpty) == true;
+
+  // ── Image generation ────────────────────────────────────────────────────────
+
+  /// Generates an image for [prompt] using DALL-E 3 (OpenAI key required).
+  /// Returns a local file path on success, null on failure.
+  Future<String?> generateImage(String prompt) async {
+    final key = await getOpenAiKey();
+    if (key == null || key.isEmpty) return null;
+
+    try {
+      OpenAI.apiKey = key;
+      final response = await OpenAI.instance.image.create(
+        prompt: 'AAC communication symbol for: $prompt. '
+            'Simple, clear, flat illustration style, suitable for children, white background.',
+        model: 'dall-e-3',
+        n: 1,
+        size: OpenAIImageSize.size1024,
+        responseFormat: OpenAIImageResponseFormat.b64Json,
+      );
+      final b64 = response.data.first.b64Json;
+      if (b64 == null) return null;
+      final bytes = base64Decode(b64);
+      final tempDir = await getTemporaryDirectory();
+      final file = File(
+        '${tempDir.path}/ai_image_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
+      await file.writeAsBytes(bytes);
+      return file.path;
+    } catch (e) {
+      print('AI image generation error: $e');
+      return null;
+    }
+  }
 
   // ── Predictions ─────────────────────────────────────────────────────────────
 

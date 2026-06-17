@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -31,38 +32,11 @@ class _SignInViewState extends State<SignInView> {
     });
 
     try {
-      final googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        // User cancelled.
-        setState(() => _isLoading = false);
-        return;
-      }
-
-      final googleAuth = await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null && currentUser.isAnonymous) {
-        // Link the Google credential so the anonymous UID and all existing
-        // data (overrides, groups, usage) are preserved.
-        try {
-          await currentUser.linkWithCredential(credential);
-        } on FirebaseAuthException catch (e) {
-          if (e.code == 'credential-already-in-use') {
-            // This Google account already has a Firebase user — sign in
-            // directly. The anonymous session is abandoned.
-            await FirebaseAuth.instance.signInWithCredential(credential);
-          } else {
-            rethrow;
-          }
-        }
+      if (kIsWeb) {
+        await _signInWithGoogleWeb();
       } else {
-        await FirebaseAuth.instance.signInWithCredential(credential);
+        await _signInWithGoogleNative();
       }
-
       if (mounted) Navigator.of(context).pop();
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -74,6 +48,57 @@ class _SignInViewState extends State<SignInView> {
         _isLoading = false;
         _errorMessage = e.toString();
       });
+    }
+  }
+
+  /// Web: Firebase's popup flow handles everything natively in the browser.
+  Future<void> _signInWithGoogleWeb() async {
+    final provider = GoogleAuthProvider();
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null && currentUser.isAnonymous) {
+      try {
+        await currentUser.linkWithPopup(provider);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'credential-already-in-use') {
+          await FirebaseAuth.instance.signInWithPopup(provider);
+        } else {
+          rethrow;
+        }
+      }
+    } else {
+      await FirebaseAuth.instance.signInWithPopup(provider);
+    }
+  }
+
+  /// Mobile: use the google_sign_in package to get a credential then hand it
+  /// to Firebase Auth, linking to the existing anonymous account if present.
+  Future<void> _signInWithGoogleNative() async {
+    final googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) {
+      // User cancelled.
+      setState(() => _isLoading = false);
+      return;
+    }
+
+    final googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null && currentUser.isAnonymous) {
+      try {
+        await currentUser.linkWithCredential(credential);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'credential-already-in-use') {
+          await FirebaseAuth.instance.signInWithCredential(credential);
+        } else {
+          rethrow;
+        }
+      }
+    } else {
+      await FirebaseAuth.instance.signInWithCredential(credential);
     }
   }
 

@@ -47,6 +47,7 @@ class _ManageWordViewState extends State<ManageWordView> {
   final _formKey = GlobalKey<FormState>();
   final _wordWordController = TextEditingController();
   final _wordSoundController = TextEditingController();
+  bool _isGeneratingAiImage = false;
 
   @override
   void initState() {
@@ -247,26 +248,42 @@ class _ManageWordViewState extends State<ManageWordView> {
           type: MaterialType.transparency,
           child: InkWell(
             onTap: () async {
-              final path = await PickImageDialog.show(context);
+              final path = await PickImageDialog.show(
+                context,
+                wordText: word?.text,
+                onAiGenerating: (future) async {
+                  setState(() => _isGeneratingAiImage = true);
+                  final generated = await future;
+                  if (!mounted) return;
+                  setState(() => _isGeneratingAiImage = false);
+                  if (generated != null) _wordViewModel.setImagePath(generated);
+                },
+              );
               if (path != null) _wordViewModel.setImagePath(path);
             },
-            child: hasImage && heroTag != null
-                ? Hero(
-                    tag: heroTag,
-                    transitionOnUserGestures: true,
-                    // Empty placeholder so the image doesn't show twice during transition
-                    placeholderBuilder: (_, __, ___) => const SizedBox.shrink(),
-                    child: WordImage(imagePath: imageUri, fit: BoxFit.cover),
+            child: _isGeneratingAiImage
+                ? Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(color: Colors.grey.shade300),
                   )
-                : hasImage
-                    ? WordImage(imagePath: imageUri, fit: BoxFit.cover)
-                    : Center(
-                        child: Icon(
-                          Icons.add_a_photo_outlined,
-                          size: 48,
-                          color: context.themeColors.onSurface,
-                        ),
-                      ),
+                : hasImage && heroTag != null
+                    ? Hero(
+                        tag: heroTag,
+                        transitionOnUserGestures: true,
+                        // Empty placeholder so the image doesn't show twice during transition
+                        placeholderBuilder: (_, __, ___) => const SizedBox.shrink(),
+                        child: WordImage(imagePath: imageUri, fit: BoxFit.cover),
+                      )
+                    : hasImage
+                        ? WordImage(imagePath: imageUri, fit: BoxFit.cover)
+                        : Center(
+                            child: Icon(
+                              Icons.add_a_photo_outlined,
+                              size: 48,
+                              color: context.themeColors.onSurface,
+                            ),
+                          ),
           ),
         ),
       ),

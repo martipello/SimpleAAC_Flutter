@@ -48,6 +48,7 @@ class DefaultFirebaseOptions {
     authDomain: 'simpleaac-460e6.firebaseapp.com',
     databaseURL: 'https://simpleaac-460e6.firebaseio.com',
     storageBucket: 'simpleaac-460e6.appspot.com',
+    clientId: '997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com',
   );
 
   // ─── iOS ────────────────────────────────────────────────────────────────────
