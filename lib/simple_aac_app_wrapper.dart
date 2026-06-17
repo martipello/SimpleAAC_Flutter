@@ -35,7 +35,7 @@ class SimpleAACAppWrapper extends StatefulWidget {
           options: DefaultFirebaseOptions.currentPlatform,
         );
         FirebaseUIAuth.configureProviders([
-          GoogleProvider(clientId: '', iOSPreferPlist: true),
+          GoogleProvider(clientId: '997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com', iOSPreferPlist: true),
         ]);
 
         await setupCrashReporting();

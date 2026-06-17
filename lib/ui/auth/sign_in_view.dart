@@ -167,7 +167,7 @@ class _SignInViewState extends State<SignInView> {
                 const SizedBox(height: 16),
               ],
               GoogleSignInButton(
-                clientId: '',
+                clientId: '997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com',
                 loadingIndicator: const CircularProgressIndicator.adaptive(),
                 isLoading: _isLoading,
                 overrideDefaultTapAction: true,
