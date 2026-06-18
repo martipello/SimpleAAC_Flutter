@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../dependency_injection_container.dart';
+import '../dashboard/app_shell.dart';
 import '../../extensions/build_context_extension.dart';
 import '../../services/auth_service.dart';
 import '../shared_widgets/view_constraint.dart';
@@ -37,7 +38,13 @@ class _SignInViewState extends State<SignInView> {
       } else {
         await _signInWithGoogleNative();
       }
-      if (mounted) Navigator.of(context).pop();
+      if (mounted) {
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        } else {
+          Navigator.of(context).pushReplacementNamed(AppShell.routeName);
+        }
+      }
     } on FirebaseAuthException catch (e) {
       setState(() {
         _isLoading = false;
