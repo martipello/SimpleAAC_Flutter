@@ -1,7 +1,14 @@
-flutter_icons:
+flutter_launcher_icons:
   android: true
-  ios: true
+  ios: "prodAppIcon"
+  remove_alpha_ios: true
+  adaptive_icon_foreground_inset: 22
   adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: "assets/images/simple_aac_launcher_foreground.png"
   image_path_android: "assets/images/simple_aac_launcher_foreground.png"
   image_path_ios: "assets/images/simple_aac_white_background.png"
+  web:
+    generate: true
+    image_path: "assets/images/simple_aac_white_background.png"
+    background_color: "#FFFFFF"
+    theme_color: "#FFFFFF"

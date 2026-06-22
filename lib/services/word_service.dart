@@ -1,71 +1,71 @@
-import 'package:built_collection/built_collection.dart';
-import 'package:simple_aac/ui/dashboard/related_words_widget.dart';
-
 import '../api/models/word.dart';
 import '../api/models/word_sub_type.dart';
+import '../api/models/word_type.dart';
+import '../database/app_database.dart';
 import 'language_service.dart';
+import 'sync_mediator.dart';
 
 class WordService {
-  WordService(this.languageService);
+  WordService(this._wordsDao, this._mediator, this._language);
 
-  final LanguageService languageService;
+  final WordsDao _wordsDao;
+  final SyncMediator _mediator;
+  final LanguageService _language;
 
-  Future<BuiltList<Word>> getAllForType(WordSubType wordSubType) async {
-    final currentLanguage = await languageService.getCurrentLanguage();
-    final words = currentLanguage.words;
-    return words.where((w) => w.subType == wordSubType).toBuiltList();
+  String get _languageId => _language.currentLanguageId;
+
+  Stream<List<Word>> watchSubType(WordSubType subType) =>
+      _wordsDao.watchWordsForSubType(_languageId, subType);
+
+  Stream<List<Word>> watchType(WordType type) =>
+      _wordsDao.watchWordsForType(_languageId, type);
+
+  Stream<List<Word>> watchFavourites() =>
+      _wordsDao.watchFavourites(_languageId);
+
+  Future<List<Word>> getWordsForIds(List<String> ids) {
+    if (ids.isEmpty) return Future.value([]);
+    return _wordsDao.getByIds(_languageId, ids);
   }
 
-  Future<BuiltList<Word>> getExtraRelatedWords(Word word) async {
-    final currentLanguage = await languageService.getCurrentLanguage();
-    return currentLanguage.words
-        .where(
-          (lw) => word.extraRelatedWordIds.any(
-            (w) => w == lw.wordId,
-          ),
-        )
-        .toBuiltList();
+  Future<List<Word>> getRelatedWords(Word word) {
+    final ids = {...word.extraRelatedWordIds, ...word.aiSuggestedFollowUps}.toList();
+    if (ids.isEmpty) return Future.value([]);
+    return getWordsForIds(ids);
   }
 
-  Future<BuiltList<Word>> getRelatedWords(Word word) async {
-    final currentLanguage = await languageService.getCurrentLanguage();
-    final words = currentLanguage.words;
-    final extraRelatedWords = await getExtraRelatedWords(word);
-    //TODO make this actually get related words not just the related words on the word
-    final relatedWords = words.where(
-      (lw) => word.extraRelatedWordIds.any(
-        (w) => w == lw.wordId,
-      ),
-    );
-    return <Word>{...extraRelatedWords, ...relatedWords}.toBuiltList();
+  Future<void> saveCustomWord(Word word, {Word? original}) {
+    if (word.isCoreVocabulary && original != null) {
+      // Only send fields that actually changed relative to the original.
+      return _mediator.applyWordOverride(
+        word.wordId,
+        wordText: word.text != original.text ? word.text : SyncMediator.absent,
+        phoneticOverride: word.phoneticOverride != original.phoneticOverride
+            ? word.phoneticOverride
+            : SyncMediator.absent,
+        type: word.type != original.type ? word.type.name : SyncMediator.absent,
+        subType: word.subType != original.subType ? word.subType.name : SyncMediator.absent,
+        imagePath: word.imagePath != original.imagePath ? word.imagePath : SyncMediator.absent,
+      );
+    }
+    // Brand-new user-created word — full upsert.
+    return _mediator.saveWord(word, _languageId);
   }
 
-  Future<BuiltList<Word>> getWordsForIds(BuiltList<String> wordIds) async {
-    final currentLanguage = await languageService.getCurrentLanguage();
-    return currentLanguage.words
-        .where(
-          (word) => wordIds.any(
-            (id) => word.wordId == id,
-          ),
-        )
-        .toBuiltList();
+  Future<Word> toggleFavourite(Word word) async {
+    final toggled = !word.isFavourite;
+    await _mediator.setWordFavourite(word.wordId, isFavourite: toggled);
+    return word.copyWith(isFavourite: toggled);
   }
 
-  void addListener(WordListCallBack wordListCallBack) {
-    languageService.addListener(
-      _getWordListCallbackWrapper(wordListCallBack),
-    );
+  Future<void> deleteCustomWord(String wordId) =>
+      _mediator.deleteWord(wordId);
+
+  Future<List<Word>> searchWords(String query) {
+    if (query.isEmpty) return Future.value([]);
+    return _wordsDao.searchWords(_languageId, query);
   }
 
-  void removeListener(WordListCallBack wordListCallBack) {
-    languageService.removeListener(
-      _getWordListCallbackWrapper(wordListCallBack),
-    );
-  }
-
-  LanguageCallBack _getWordListCallbackWrapper(WordListCallBack wordListCallBack) {
-    return (language) {
-      wordListCallBack.call(language.words);
-    };
-  }
+  Future<List<Word>> getAllWords() =>
+      _wordsDao.watchAll(_languageId).first;
 }

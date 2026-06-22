@@ -25,17 +25,27 @@ class ThemePreview extends StatefulWidget {
 }
 
 class _ThemePreviewState extends State<ThemePreview> {
+  bool _isInitialized = false;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    _init();
+  }
+
+  Future<void> _init() async {
+    try {
       await widget.themeViewModel.init(doSetInitialTheme: false);
       widget.themeViewModel.setTheme(widget.theme);
-    });
+    } catch (e) {
+      debugPrint('ThemePreview._init error: $e');
+    }
+    if (mounted) setState(() => _isInitialized = true);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_isInitialized) return const SizedBox.shrink();
     return _buildConstrainedSizeAppWrapper(
       widget.themeViewModel,
       widget.theme,

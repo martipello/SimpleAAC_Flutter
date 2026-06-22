@@ -32,7 +32,6 @@
 /build/
 
 # Web related
-lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
@@ -44,3 +43,21 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Secrets
+serviceAccountKey.json
+
+# Node
+node_modules/
+package-lock.json
+package.json
+
+# Generated / temp
+aac_images/
+temp/
+temp2/
+output.zip
+
+# Claude
+.claude/
+

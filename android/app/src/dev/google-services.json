@@ -8,12 +8,28 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:997985384352:android:747f808f59bc2f61e956c5",
+        "mobilesdk_app_id": "1:997985384352:android:f8276f74d6d710cae956c5",
         "android_client_info": {
-          "package_name": "com.sealstudios.simpleaac.dev"
+          "package_name": "com.sealstudios.simple_aac"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "997985384352-ak53r6arua833dvji3t8sbn8opp6vq2n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sealstudios.simple_aac",
+            "certificate_hash": "11b18e27d28dc55ac58ba2cc6dbac796457a8a26"
+          }
+        },
+        {
+          "client_id": "997985384352-ok3i8fgqnja4glpf9huaukgku55kr4s5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sealstudios.simple_aac",
+            "certificate_hash": "f56c13e30f5a60ed34a302698f5916b86e2fdfc8"
+          }
+        },
         {
           "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
           "client_type": 3
@@ -30,6 +46,101 @@
             {
               "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "997985384352-1rpmqc97asd8gogs8flt3uo997s99mkb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sealstudios.simpleaac.uat"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997985384352:android:7e3c2549044f4cb7e956c5",
+        "android_client_info": {
+          "package_name": "com.sealstudios.simple_aac.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997985384352-c73tlap0othqh17oq7v3vqm4fpv0d6l6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sealstudios.simple_aac.dev",
+            "certificate_hash": "11b18e27d28dc55ac58ba2cc6dbac796457a8a26"
+          }
+        },
+        {
+          "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmCr6eOqqXt41McT1I3g447yybMNCRSOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "997985384352-1rpmqc97asd8gogs8flt3uo997s99mkb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sealstudios.simpleaac.uat"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997985384352:android:3e6cb26322d31457e956c5",
+        "android_client_info": {
+          "package_name": "com.sealstudios.simple_aac.uat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997985384352-rju5gidl440q3v26vdinj1v9vg4s9on7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sealstudios.simple_aac.uat",
+            "certificate_hash": "11b18e27d28dc55ac58ba2cc6dbac796457a8a26"
+          }
+        },
+        {
+          "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmCr6eOqqXt41McT1I3g447yybMNCRSOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997985384352-02mb3cdet5u3uoljhr4jmj7i9al610sd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "997985384352-1rpmqc97asd8gogs8flt3uo997s99mkb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sealstudios.simpleaac.uat"
+              }
             }
           ]
         }

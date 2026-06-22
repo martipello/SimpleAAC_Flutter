@@ -1,10 +1,11 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 import '../ui/theme/theme_builder_widget.dart';
 import '../view_models/theme_view_model.dart';
+import 'media_query_extension.dart';
 
 extension BuildContextExt on BuildContext {
   double get screenWidth => MediaQuery.of(this).size.width;
@@ -25,6 +26,8 @@ extension BuildContextExt on BuildContext {
   TextTheme get textStyles => Theme.of(this).textTheme;
 
   bool get isDark => Theme.of(this).colorScheme.brightness == Brightness.dark;
+
+  bool get isWideScreen => MediaQuery.of(this).isWideScreen;
 
   ThemeViewModel get themeViewModel => ThemeBuilderWidget.of(this).themeViewModel;
 

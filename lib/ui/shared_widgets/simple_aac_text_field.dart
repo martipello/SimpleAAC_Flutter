@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../extensions/build_context_extension.dart';
-import '../theme/simple_aac_text.dart';
 import 'simple_aac_loading_widget.dart';
 
 typedef Validator = String? Function(dynamic value);
@@ -41,7 +40,7 @@ class SimpleAACTextField extends StatelessWidget {
     return TextFormField(
       controller: textController,
       maxLines: maxLines,
-      style: textStyle ?? SimpleAACText.body1Style,
+      style: textStyle,
       textInputAction: textInputAction,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       keyboardType: textInputType,
@@ -65,7 +64,6 @@ class SimpleAACTextField extends StatelessWidget {
   InputDecoration _buildInputDecoration(BuildContext context) {
     return InputDecoration(
       labelText: labelText,
-      labelStyle: SimpleAACText.body1Style,
       floatingLabelBehavior: FloatingLabelBehavior.never,
       enabled: isEnabled,
       isDense: isDense,

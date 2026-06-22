@@ -4,19 +4,25 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class MyCustomPainter extends CustomPainter {
-  MyCustomPainter(this.points);
+  MyCustomPainter(this.points, {this.color = Colors.black, this.strokeWidth = 4, this.hasBackground = false});
 
   final List<Offset?> points;
+  final Color color;
+  final double strokeWidth;
+  final bool hasBackground;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final background = Paint()..color = Colors.white;
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    canvas.drawRect(rect, background);
+    if (!hasBackground) {
+      canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height),
+        Paint()..color = Colors.white,
+      );
+    }
 
     final brush = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 2
+      ..color = color
+      ..strokeWidth = strokeWidth
       ..isAntiAlias = true
       ..strokeCap = StrokeCap.round;
 

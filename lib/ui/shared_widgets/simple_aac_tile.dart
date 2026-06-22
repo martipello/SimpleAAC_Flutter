@@ -9,20 +9,24 @@ class SimpleAACTile extends StatelessWidget {
     this.border,
     required this.child,
     this.isSelected = false,
+    this.isHighlighted = false,
     this.closeButtonOnTap,
     this.closeButtonOnLongPress,
     this.hasReOrderButton = false,
+    this.reorderIndex,
     this.tapCallBack,
     this.longTapCallBack,
   }) : super(key: key);
 
   final Widget child;
   final bool isSelected;
+  final bool isHighlighted;
   final VoidCallback? closeButtonOnTap;
   final VoidCallback? closeButtonOnLongPress;
   final VoidCallback? tapCallBack;
   final VoidCallback? longTapCallBack;
   final bool hasReOrderButton;
+  final int? reorderIndex;
   final RoundedRectangleBorder? border;
 
   @override
@@ -31,7 +35,15 @@ class SimpleAACTile extends StatelessWidget {
       key: key,
       elevation: isSelected ? 0 : 2,
       color: isSelected ? context.themeColors.surfaceVariant : null,
-      shape: border ?? defaultBorder,
+      shape: isHighlighted
+          ? RoundedRectangleBorder(
+              side: BorderSide(
+                color: context.themeColors.primary.withOpacity(0.5),
+                width: 1.5,
+              ),
+              borderRadius: BorderRadius.circular(4),
+            )
+          : (border ?? defaultBorder),
       clipBehavior: Clip.hardEdge,
       child: Material(
         type: MaterialType.transparency,
@@ -41,11 +53,40 @@ class SimpleAACTile extends StatelessWidget {
           child: Stack(
             children: [
               child,
+              if (isHighlighted)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: ColoredBox(
+                      color: context.themeColors.primary.withOpacity(0.08),
+                    ),
+                  ),
+                ),
+              if (isSelected)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: ColoredBox(
+                      color: context.themeColors.primary.withOpacity(0.18),
+                    ),
+                  ),
+                ),
+              if (isSelected)
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: IgnorePointer(
+                      child: Icon(
+                        Icons.check_circle,
+                        color: context.themeColors.primary,
+                        size: 28,
+                      ),
+                    ),
+                  ),
+                ),
               if (closeButtonOnTap != null)
                 buildCloseButton(
                   closeButtonOnLongPress,
                 ),
-              if (hasReOrderButton) buildReOrderButton(),
+              if (hasReOrderButton) buildReOrderButton(reorderIndex),
             ],
           ),
         ),
@@ -64,11 +105,25 @@ class SimpleAACTile extends StatelessWidget {
     );
   }
 
-  Widget buildReOrderButton() {
-    return _buildTileOverlapButton(
-      alignment: Alignment.topLeft,
+  Widget buildReOrderButton(int? index) {
+    Widget button = OverlayButton(
       iconData: Icons.menu,
-      onTap: () {},
+      onTap: null,
+    );
+    if (index != null) {
+      button = ReorderableDragStartListener(
+        index: index,
+        child: button,
+      );
+    }
+    return Positioned.fill(
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: button,
+        ),
+      ),
     );
   }
 

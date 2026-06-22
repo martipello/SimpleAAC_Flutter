@@ -1,4 +1,3 @@
-import 'package:change_notifier_builder/change_notifier_builder.dart';
 import 'package:flutter/material.dart';
 
 import '../../view_models/theme_view_model.dart';
@@ -12,13 +11,9 @@ class ThemeBuilderWidget extends InheritedWidget {
     required this.themeViewModel,
     super.key,
   }) : super(
-          child: ChangeNotifierBuilder(
-            notifier: themeViewModel.themeController,
-            builder: (context, _, child) {
-              return themeBuilder.call(
-                themeViewModel.themeController,
-              );
-            },
+          child: ListenableBuilder(
+            listenable: themeViewModel.themeController,
+            builder: (context, _) => themeBuilder(themeViewModel.themeController),
           ),
         );
 
@@ -33,8 +28,5 @@ class ThemeBuilderWidget extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(ThemeBuilderWidget old) {
-    return false;
-  }
+  bool updateShouldNotify(ThemeBuilderWidget old) => false;
 }
-

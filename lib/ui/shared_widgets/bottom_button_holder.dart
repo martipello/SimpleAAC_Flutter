@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../extensions/build_context_extension.dart';
+import 'view_constraint.dart';
 
 class BottomButtonHolder extends StatelessWidget {
   const BottomButtonHolder({
@@ -35,7 +36,7 @@ class BottomButtonHolder extends StatelessWidget {
                   blurRadius: 6,
                 ),
               ],
-              color: color ?? context.themeColors.background,
+              color: color ?? context.themeColors.surfaceContainerLow,
             )
           : null,
       child: Material(
@@ -53,7 +54,7 @@ class BottomButtonHolder extends StatelessWidget {
                 left: padding?.left ?? 16,
                 top: padding?.top ?? 14,
               ),
-              child: child,
+              child: ViewConstraint(child: child),
             ),
           ),
         ),

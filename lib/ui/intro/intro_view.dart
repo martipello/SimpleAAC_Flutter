@@ -66,7 +66,6 @@ class IntroView extends StatelessWidget {
                     width: 200,
                     child: RoundedButton(
                       label: actionButtonLabel ?? '',
-                      fillColor: actionButtonFillColor,
                       onPressed: actionButtonCallback,
                     ),
                   ),

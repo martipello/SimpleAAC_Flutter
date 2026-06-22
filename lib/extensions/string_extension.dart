@@ -17,6 +17,11 @@ extension StringExtension on String? {
     }
   }
 
+  String toTitleCase() {
+    if (this == null || this!.isEmpty) return '';
+    return this!.split(' ').map((w) => w.isEmpty ? '' : '${w[0].toUpperCase()}${w.substring(1).toLowerCase()}').join(' ');
+  }
+
   String removeLastCharacter() {
     if (this != null && this!.isNotEmpty) {
       return this!.substring(0, this!.length - 1);

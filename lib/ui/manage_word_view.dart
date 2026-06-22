@@ -1,20 +1,23 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../api/models/extensions/word_type_extension.dart';
 import '../api/models/word.dart';
 import '../dependency_injection_container.dart';
 import '../extensions/build_context_extension.dart';
-import '../extensions/iterable_extension.dart';
+import '../services/image_path_service.dart';
+import '../services/tts_service.dart';
 import '../view_models/create_word/manage_word_view_model.dart';
 import 'dashboard/app_shell.dart';
 import 'dashboard/related_words_widget.dart';
 import 'pick_image_dialog.dart';
+import 'word_picker_bottom_sheet.dart' show WordPickerView;
 import 'shared_widgets/app_bar.dart';
 import 'shared_widgets/bottom_button_holder.dart';
 import 'shared_widgets/rounded_button.dart';
 import 'shared_widgets/simple_aac_text_field.dart';
 import 'shared_widgets/simple_aac_tile.dart';
+import 'shared_widgets/word_image.dart';
 import 'shared_widgets/word_sub_type_picker.dart';
 import 'shared_widgets/word_type_picker.dart';
 
@@ -36,27 +39,32 @@ class ManageWordView extends StatefulWidget {
 }
 
 class _ManageWordViewState extends State<ManageWordView> {
-  ManageWordViewArguments get _createWordViewArguments => context.routeArguments as ManageWordViewArguments;
+  ManageWordViewArguments get _args =>
+      (context.routeArguments as ManageWordViewArguments?) ?? ManageWordViewArguments();
 
-  String? get heroTag => _createWordViewArguments.heroTag;
-
-  bool get isEditing => _createWordViewArguments.word != null;
-
+  late final _wordViewModel = getIt.get<ManageWordViewModel>();
+  final _ttsService = getIt.get<TtsService>();
   final _formKey = GlobalKey<FormState>();
-  final _wordViewModel = getIt.get<ManageWordViewModel>();
-
   final _wordWordController = TextEditingController();
   final _wordSoundController = TextEditingController();
+  bool _isGeneratingAiImage = false;
 
   @override
   void initState() {
     super.initState();
-    _addTextListeners();
-    Future.delayed(Duration.zero).then(
-      (value) => _wordViewModel.setWord(
-        _createWordViewArguments.word,
-      ),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final args = _args;
+      _wordWordController.text = args.word?.text ?? '';
+      _wordSoundController.text = args.word?.phoneticOverride ?? '';
+      _wordWordController.addListener(
+        () => _wordViewModel.setWordText(_wordWordController.text),
+      );
+      _wordSoundController.addListener(
+        () => _wordViewModel.setPhoneticOverride(_wordSoundController.text),
+      );
+      _wordViewModel.setWord(args.word);
+    });
   }
 
   @override
@@ -67,219 +75,256 @@ class _ManageWordViewState extends State<ManageWordView> {
     super.dispose();
   }
 
-  void _addTextListeners() {
-    Future.delayed(Duration.zero).then(
-      (value) {
-        _wordWordController.text = _createWordViewArguments.word?.word ?? '';
-        _wordSoundController.text = _createWordViewArguments.word?.sound ?? '';
-        _wordWordController.addListener(
-          () {
-            _wordViewModel.setWordWord(
-              _wordWordController.text,
-            );
-          },
-        );
-        _wordSoundController.addListener(
-          () {
-            _wordViewModel.setWordSound(
-              _wordSoundController.text,
-            );
-          },
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final args = _args;
     return StreamBuilder<Word?>(
       stream: _wordViewModel.wordStream,
       builder: (context, snapshot) {
-        final _word = snapshot.data;
+        final word = snapshot.data;
+        final isLoading = !snapshot.hasData;
         return Scaffold(
           appBar: SimpleAACAppBar(
-            label: isEditing ? 'Edit ${_word?.word ?? ''}' : 'Create',
+            label: args.word != null ? 'Edit ${word?.text ?? ''}' : 'Create Word',
           ),
-          body: _buildCreateWordViewBody(
-            _word,
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 480),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                      child: isLoading
+                          ? _buildPickerShimmer(context)
+                          : _buildPickerBar(word),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 480),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                          child: Form(
+                            key: _formKey,
+                            child: SimpleAACTile(
+                              border: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  color: word?.type.getColor(context) ??
+                                      context.themeColors.primary,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: _buildWordTileContent(word, args.heroTag),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          bottomNavigationBar: _buildBottomButtonBar(),
+          bottomNavigationBar: _buildBottomButtonBar(
+            isLoading: isLoading,
+            args: args,
+          ),
         );
       },
     );
   }
 
-  Widget _buildCreateWordViewBody(
-    Word? _word,
-  ) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildMediumMargin(),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-            ),
-            child: _buildPickerBar(
-              _word,
-            ),
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          Expanded(
-            child: _buildSimpleAACTile(
-              context,
-              _word,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPickerBar(
-    Word? _word,
-  ) {
+  Widget _buildPickerBar(Word? word) {
     return Row(
       children: [
         Expanded(
           child: WordTypePicker(
             wordTypePickerCallBack: _wordViewModel.setWordType,
-            wordType: _word?.type,
+            wordType: word?.type,
           ),
         ),
-        _buildMediumMargin(),
+        const SizedBox(width: 16),
         Expanded(
           child: WordSubTypePicker(
             wordSubTypePickerCallBack: _wordViewModel.setWordSubType,
-            wordType: _word?.type,
-            wordSubType: _word?.subType,
+            wordType: word?.type,
+            wordSubType: word?.subType,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildSimpleAACTile(
-    BuildContext context,
-    Word? _word,
-  ) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12.0,
-      ),
-      child: Column(
+  Widget _buildPickerShimmer(BuildContext context) {
+    final base = context.themeColors.surfaceContainerHighest;
+    final highlight = context.themeColors.surfaceContainerLow;
+    return Shimmer.fromColors(
+      baseColor: base,
+      highlightColor: highlight,
+      child: Row(
         children: [
-          SimpleAACTile(
-            border: RoundedRectangleBorder(
-              side: BorderSide(
-                color: _word?.type.getColor(context) ?? context.themeColors.primary,
-                width: 2,
+          Expanded(
+            child: Container(
+              height: 56,
+              decoration: BoxDecoration(
+                color: base,
+                borderRadius: BorderRadius.circular(4),
               ),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: _buildWordTileContent(
-              _word,
             ),
           ),
-          _buildMediumMargin(),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Container(
+              height: 56,
+              decoration: BoxDecoration(
+                color: base,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildWordTileContent(Word? _word) {
+  Widget _buildWordTileContent(Word? word, String? heroTag) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildImageAndButtonStack(_word),
-          _buildCreateWordWordLabel(_word),
-          _buildCreateWordWordSound(_word),
-          _buildMediumMargin(),
-          _buildExtraRelatedWords(_word),
+          _buildImageAndButtonStack(word, heroTag),
+          const SizedBox(height: 16),
+          _buildCreateWordWordLabel(),
+          const SizedBox(height: 16),
+          _buildCreateWordWordSound(),
+          const SizedBox(height: 16),
+          _buildExtraRelatedWords(word),
         ],
       ),
     );
   }
 
-  Widget _buildImageAndButtonStack(
-    Word? _word,
-  ) {
+  Widget _buildImageAndButtonStack(Word? word, String? heroTag) {
     return Stack(
       children: [
         Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildCreateWordImage(
-              _word,
-            ),
-            const SizedBox(
-              height: 24,
-            ),
+            _buildCreateWordImage(word, heroTag),
+            const SizedBox(height: 24),
           ],
         ),
         Positioned(
           bottom: 0,
           right: 0,
-          child: _buildSpeechButton(),
+          child: _buildSpeechButton(word),
         ),
       ],
     );
   }
 
-  Widget _buildSpeechButton() {
-    return Hero(
-      tag: kPlayButtonHeroTag,
-      transitionOnUserGestures: true,
-      child: FloatingActionButton(
-        heroTag: null,
-        onPressed: () {},
-        child: const Icon(
-          Icons.play_arrow,
+  Widget _buildCreateWordImage(Word? word, String? heroTag) {
+    final imageUri = word != null ? getIt<ImagePathService>().resolve(word) : null;
+    final hasImage = imageUri?.isNotEmpty ?? false;
+    return AspectRatio(
+      aspectRatio: 1 / 1.3,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
+        clipBehavior: Clip.hardEdge,
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            onTap: () async {
+              final path = await PickImageDialog.show(
+                context,
+                wordText: word?.text,
+                onAiGenerating: (future) async {
+                  setState(() => _isGeneratingAiImage = true);
+                  final generated = await future;
+                  if (!mounted) return;
+                  setState(() => _isGeneratingAiImage = false);
+                  if (generated != null) _wordViewModel.setImagePath(generated);
+                },
+              );
+              if (path != null) _wordViewModel.setImagePath(path);
+            },
+            child: _isGeneratingAiImage
+                ? Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(color: Colors.grey.shade300),
+                  )
+                : hasImage && heroTag != null
+                    ? Hero(
+                        tag: heroTag,
+                        transitionOnUserGestures: true,
+                        // Empty placeholder so the image doesn't show twice during transition
+                        placeholderBuilder: (_, __, ___) => const SizedBox.shrink(),
+                        child: WordImage(imagePath: imageUri, fit: BoxFit.cover),
+                      )
+                    : hasImage
+                        ? WordImage(imagePath: imageUri, fit: BoxFit.cover)
+                        : Center(
+                            child: Icon(
+                              Icons.add_a_photo_outlined,
+                              size: 48,
+                              color: context.themeColors.onSurface,
+                            ),
+                          ),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildMediumMargin() {
-    return const SizedBox(
-      height: 16,
-      width: 16,
+  Widget _buildSpeechButton(Word? word) {
+    return StreamBuilder<bool>(
+      stream: _ttsService.isSpeaking,
+      builder: (context, snapshot) {
+        final speaking = snapshot.data ?? false;
+        return FloatingActionButton(
+          heroTag: null,
+          onPressed: word == null
+              ? null
+              : () {
+                  if (speaking) {
+                    _ttsService.stop();
+                  } else {
+                    _ttsService.speakWord(
+                      word.phoneticOverride ?? word.text,
+                    );
+                  }
+                },
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: Icon(
+              speaking ? Icons.stop_rounded : Icons.play_arrow_rounded,
+              key: ValueKey(speaking),
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildCreateWordWordSound(
-    Word? _word,
-  ) {
+  Widget _buildCreateWordWordLabel() {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 4.0,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
       child: SimpleAACTextField(
-        labelText: _word?.sound ?? 'Word Sound',
-        textController: _wordSoundController,
-        validatorMessage: 'Please input a valid word sound.',
-        maxLines: 1,
-      ),
-    );
-  }
-
-  Widget _buildCreateWordWordLabel(
-    Word? _word,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 4.0,
-      ),
-      child: SimpleAACTextField(
-        labelText: _word?.word ?? 'Word Label',
+        labelText: 'Word Label',
         textController: _wordWordController,
         validatorMessage: 'Please input a valid word',
         maxLines: 1,
@@ -287,127 +332,114 @@ class _ManageWordViewState extends State<ManageWordView> {
     );
   }
 
-  Widget _buildCreateWordImage(
-    Word? _word,
-  ) {
-    final imageUri = _word?.imageList.firstOrNull() ?? '';
-    return Flexible(
-      child: ClipRRect(
-        borderRadius: const BorderRadius.all(
-          Radius.circular(4),
-        ),
-        clipBehavior: Clip.hardEdge,
-        child: AspectRatio(
-          aspectRatio: 1.0 / 1.0,
-          child: Material(
-            type: MaterialType.transparency,
-            child: InkWell(
-              onTap: () {
-                PickImageDialog.show(context);
-              },
-              child: imageUri.isNotEmpty
-                  ? Hero(
-                      tag: heroTag ?? '',
-                      transitionOnUserGestures: true,
-                      child: Image.asset(
-                        imageUri,
-                        fit: BoxFit.contain,
-                      ),
-                    )
-                  : FittedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Icon(
-                          Icons.add_a_photo_outlined,
-                          color: context.themeColors.onBackground,
-                        ),
-                      ),
-                    ),
-            ),
-          ),
-        ),
+  Widget _buildCreateWordWordSound() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: SimpleAACTextField(
+        labelText: 'Phonetic Override',
+        textController: _wordSoundController,
+        validatorMessage: 'Please input a valid word sound.',
+        maxLines: 1,
       ),
     );
   }
 
-  Widget _buildExtraRelatedWords(
-    Word? word,
-  ) {
-    return StreamBuilder<BuiltList<Word>>(
+  Widget _buildExtraRelatedWords(Word? word) {
+    return StreamBuilder<List<Word>>(
       stream: _wordViewModel.relatedWords,
       builder: (context, snapshot) {
-        final relatedWords = snapshot.data ?? BuiltList<Word>();
-        return Stack(
+        final relatedWords = snapshot.data ?? [];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 8.0,
+            if (word?.extraRelatedWordIds.isNotEmpty == true)
+              RelatedWordsWidget(
+                relatedWords: relatedWords,
+                onRelatedWordSelected: (_) {},
+                onRelatedWordIdsChanged: _wordViewModel.setExtraRelatedWords,
+                isExpanded: true,
               ),
-              child: SizedBox(
-                height: 32,
-                child: word?.extraRelatedWordIds.isNotEmpty == true
-                    ? RelatedWordsWidget(
-                        relatedWords: relatedWords,
-                        onRelatedWordSelected: (_){},
-                        onRelatedWordIdsChanged: _wordViewModel.setExtraRelatedWords,
-                        isExpanded: true,
-                      )
-                    : null,
+            TextButton.icon(
+              onPressed: () async {
+                final current =
+                    _wordViewModel.wordStream.valueOrNull?.extraRelatedWordIds ?? [];
+                final result =
+                    await WordPickerView.show(context, existingWordIds: current);
+                if (result != null) _wordViewModel.setExtraRelatedWords(result);
+              },
+              icon: const Icon(Icons.add, size: 18),
+              label: const Text('Add prediction'),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
               ),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: _buildAddPredictionButton(),
             ),
           ],
         );
-      }
-    );
-  }
-
-  Widget _buildAddPredictionButton() {
-    return FloatingActionButton.small(
-      heroTag: null,
-      onPressed: () {},
-      child: const Icon(Icons.add),
-    );
-  }
-
-  Widget _buildBottomButtonBar() {
-    return BottomButtonHolder(
-      hasShadow: true,
-      child: Row(
-        children: [
-          Expanded(
-            child: _buildCancelButton(context),
-          ),
-          const SizedBox(
-            width: 16,
-          ),
-          Expanded(
-            child: _buildSaveButton(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSaveButton() {
-    return RoundedButton(
-      label: 'SAVE',
-      onPressed: () {},
-    );
-  }
-
-  Widget _buildCancelButton(
-    BuildContext context,
-  ) {
-    return RoundedButton(
-      label: 'Cancel',
-      fillColor: context.themeColors.secondary,
-      onPressed: () {
-        Navigator.of(context).pop();
       },
+    );
+  }
+
+  Widget _buildBottomButtonBar({
+    required bool isLoading,
+    required ManageWordViewArguments args,
+  }) {
+    final isEditing = args.word != null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        BottomButtonHolder(
+          hasShadow: true,
+          child: Row(
+            children: [
+              Expanded(
+                child: RoundedButton(
+                  label: 'Cancel',
+                  isFilled: false,
+                  onPressed: () {
+                    if (isEditing) {
+                      Navigator.of(context).popUntil(
+                        (route) => route.settings.name == AppShell.routeName,
+                      );
+                    } else {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: isLoading
+                    ? const RoundedButton(label: 'Save', onPressed: null)
+                    : StreamBuilder<bool>(
+                        stream: _wordViewModel.isValid,
+                        builder: (context, snapshot) {
+                          final valid = snapshot.data ?? false;
+                          return RoundedButton(
+                            label: 'Save',
+                            onPressed: valid
+                                ? () async {
+                                    await _wordViewModel.saveWord();
+                                    if (!context.mounted) return;
+                                    if (isEditing) {
+                                      Navigator.of(context).popUntil(
+                                        (route) =>
+                                            route.settings.name == AppShell.routeName,
+                                      );
+                                    } else {
+                                      Navigator.of(context)
+                                          .pop(_wordViewModel.wordStream.valueOrNull);
+                                    }
+                                  }
+                                : null,
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

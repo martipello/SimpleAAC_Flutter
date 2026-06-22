@@ -1,6 +1,6 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../api/models/extensions/word_type_extension.dart';
 import '../../api/models/word.dart';
 import '../../api/models/word_sub_type.dart';
 import '../../api/models/word_type.dart';
@@ -12,102 +12,81 @@ class ManageWordViewModel {
   final WordService wordService;
 
   final wordStream = BehaviorSubject<Word?>();
+  Word? _originalWord;
 
   void setWord(Word? word) {
-    wordStream.add(word);
+    _originalWord = word;
+    wordStream.add(
+      word ??
+          Word(
+            wordId: DateTime.now().millisecondsSinceEpoch.toString(),
+            text: '',
+            type: WordType.things,
+            subType: WordSubType.people,
+            imagePath: null,
+            isCoreVocabulary: false,
+          ),
+    );
   }
 
-  void setWordSubType(WordSubType? wordSubType) {
-    final word = wordStream.value;
-    if (word != null) {
-      wordStream.add(
-        word.rebuild((p0) => p0.subType = wordSubType),
-      );
-    } else {
-      wordStream.add(
-        Word((p0) => p0.subType = wordSubType),
-      );
-    }
-  }
-
-  void setWordType(WordType? wordType) {
+  void setWordSubType(WordSubType? subType) {
     final word = wordStream.valueOrNull;
     if (word != null) {
-      wordStream.add(
-        word.rebuild((p0) => p0.type = wordType),
-      );
-    } else {
-      wordStream.add(
-        Word((p0) => p0.type = wordType),
-      );
+      wordStream.add(word.copyWith(subType: subType ?? word.subType));
     }
   }
 
-  void setWordWord(String? wordWord) {
+  void setWordType(WordType? type) {
+    final word = wordStream.valueOrNull;
+    if (word == null || type == null) return;
+    final subTypes = type.getSubTypes();
+    final subType = subTypes.isNotEmpty ? subTypes.first : word.subType;
+    wordStream.add(word.copyWith(type: type, subType: subType));
+  }
+
+  void setWordText(String text) {
     final word = wordStream.valueOrNull;
     if (word != null) {
-      wordStream.add(
-        word.rebuild((p0) => p0.word = wordWord),
-      );
-    } else {
-      wordStream.add(
-        Word((p0) => p0.word = wordWord),
-      );
+      wordStream.add(word.copyWith(text: text));
     }
   }
 
-  void setWordDescription(String? wordWord) {
+  void setPhoneticOverride(String? phonetic) {
     final word = wordStream.valueOrNull;
     if (word != null) {
-      wordStream.add(
-        word.rebuild((p0) => p0.word = wordWord),
-      );
-    } else {
-      wordStream.add(
-        Word((p0) => p0.word = wordWord),
-      );
+      wordStream.add(word.copyWith(phoneticOverride: phonetic));
     }
   }
 
-  void setWordSound(String? sound) {
+  void setImagePath(String path) {
     final word = wordStream.valueOrNull;
     if (word != null) {
-      wordStream.add(
-        word.rebuild((p0) => p0.sound = sound),
-      );
-    } else {
-      wordStream.add(
-        Word((p0) => p0.sound = sound),
-      );
+      wordStream.add(word.copyWith(imagePath: path));
     }
   }
 
-  void setExtraRelatedWords(BuiltList<String> relatedWordIds) {
+  void setExtraRelatedWords(List<String> relatedWordIds) {
     final word = wordStream.valueOrNull;
     if (word != null) {
-      wordStream.add(
-        word.rebuild(
-          (p0) => p0.extraRelatedWordIds.replace(relatedWordIds),
-        ),
-      );
-    } else {
-      wordStream.add(
-        Word(
-          (p0) => p0.extraRelatedWordIds.replace(relatedWordIds),
-        ),
-      );
+      wordStream.add(word.copyWith(extraRelatedWordIds: relatedWordIds));
     }
   }
 
-  Stream<BuiltList<Word>> get relatedWords => wordStream.whereType<Word>().switchMap((word) {
-    return wordService.getRelatedWords(word).asStream();
-  });
+  Stream<bool> get isValid => wordStream.map(
+        (word) => word != null && word.text.trim().isNotEmpty && (word.imagePath?.isNotEmpty ?? false),
+      );
 
-  Stream<BuiltList<Word>> get extraRelatedWords => wordStream.whereType<Word>().switchMap((word) {
-    return wordService.getExtraRelatedWords(word).asStream();
-  });
+  Stream<List<Word>> get relatedWords =>
+      wordStream.whereType<Word>().switchMap(
+            (word) => wordService.getRelatedWords(word).asStream(),
+          );
 
-  void dispose() {
-    wordStream.close();
+  Future<void> saveWord() async {
+    final word = wordStream.valueOrNull;
+    if (word != null) {
+      await wordService.saveCustomWord(word, original: _originalWord);
+    }
   }
+
+  void dispose() => wordStream.close();
 }

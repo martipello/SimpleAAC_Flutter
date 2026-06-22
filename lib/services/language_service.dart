@@ -1,87 +1,41 @@
-import 'dart:async';
+import 'dart:convert';
 
-import 'package:built_collection/built_collection.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
-import '../api/hive_client.dart';
 import '../api/models/language.dart';
+import '../api/models/language_response.dart';
 import 'shared_preferences_service.dart';
 
-const kLanguageBox = 'language';
-
-typedef LanguageCallBack = void Function(Language language);
+const kDefaultLanguageId = 'en';
 
 class LanguageService {
-  LanguageService(
-    this.hiveClient,
-    this.sharedPreferencesService,
-  );
+  LanguageService(this._prefs);
 
-  final HiveClient hiveClient;
-  final SharedPreferencesService sharedPreferencesService;
+  final SharedPreferencesService _prefs;
 
-  String currentLanguageId() {
-    return sharedPreferencesService.currentLanguageId;
-  }
+  List<Language> _languages = [];
 
-  Future<void> put(Language language) {
-    return hiveClient.put(
-      language.id,
-      language,
+  String get currentLanguageId => _prefs.currentLanguageId;
+
+  /// Load language metadata from the bundled asset. Call once at startup.
+  Future<void> init() async {
+    if (_languages.isNotEmpty) return;
+    final raw = await rootBundle.loadString('assets/json/initial_word_data.json');
+    final response = LanguageResponse.fromJson(
+      jsonDecode(raw) as Map<String, dynamic>,
     );
+    // Keep only a preview slice of words — the full list lives in Drift.
+    _languages = response.languages
+        .map((l) => l.copyWith(words: l.words.take(10).toList()))
+        .toList();
   }
 
-  Future<void> putAll(BuiltList<Language> languages) async {
-    for (var language in languages) {
-      await hiveClient.put(
-        language.id,
-        language,
-      );
-    }
-  }
+  Language? getCurrentLanguage() =>
+      _languages.where((l) => l.id == currentLanguageId).firstOrNull;
 
-  Future<void> delete(Language language) {
-    return hiveClient.delete(language.id);
-  }
-
-  Future<Language> getCurrentLanguage() async {
-    final languageId = sharedPreferencesService.currentLanguageId;
-    final language = await hiveClient.get<Language>(languageId);
-    return language!;
-  }
+  List<Language> getAllLanguages() => _languages;
 
   void setCurrentLanguage(Language language) {
-    sharedPreferencesService.setLanguageId(language.id);
-  }
-
-  Future<Language?> get(String languageId) {
-    return hiveClient.get(languageId);
-  }
-
-  Future<BuiltList<Language>> getAll() async {
-    return hiveClient.getAll();
-  }
-
-  void addListener(LanguageCallBack callBack) {
-    sharedPreferencesService.addListener(
-      _getLanguageCallbackWrapper(callBack),
-    );
-  }
-
-  void removeListener(LanguageCallBack callBack) {
-    sharedPreferencesService.removeListener(
-      _getLanguageCallbackWrapper(callBack),
-    );
-  }
-
-  AsyncCallback _getLanguageCallbackWrapper(LanguageCallBack callBack) {
-    return () async {
-      final currentLanguage = await getCurrentLanguage();
-      callBack.call(currentLanguage);
-    };
-  }
-
-  void dispose() {
-    hiveClient.dispose();
+    _prefs.setLanguageId(language.id);
   }
 }

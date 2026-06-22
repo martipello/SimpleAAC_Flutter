@@ -1,14 +1,18 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/constants.dart';
 
-const defaultLanguageId = 'l1';
+const defaultLanguageId = 'en';
 
 class SharedPreferencesService extends ChangeNotifier {
   SharedPreferencesService(this.sharedPreferences);
 
   final SharedPreferences sharedPreferences;
+
+  /// Exposed for ThemeService JSON storage.
+  SharedPreferences get preferences => sharedPreferences;
 
   bool get isFirstTime => sharedPreferences.getBool(Constants.FIRST_TIME) ?? true;
 
@@ -22,9 +26,36 @@ class SharedPreferencesService extends ChangeNotifier {
 
   String get themeName => sharedPreferences.getString(Constants.THEME_NAME) ?? 'red';
 
+  ThemeMode get themeMode {
+    final stored = sharedPreferences.getString(Constants.THEME_MODE);
+    return ThemeMode.values.firstWhere(
+      (m) => m.name == stored,
+      orElse: () => ThemeMode.system,
+    );
+  }
+
   String get currentLanguageId => sharedPreferences.getString(Constants.LANGUAGE_ID) ?? defaultLanguageId;
 
   bool get useBiometrics => sharedPreferences.getBool(Constants.BIOMETRIC_KEY) == true;
+
+  double get ttsPitch => sharedPreferences.getDouble(Constants.TTS_PITCH) ?? 1.05;
+
+  double get ttsSpeechRate => sharedPreferences.getDouble(Constants.TTS_SPEECH_RATE) ?? 0.44;
+
+  String? get ttsVoiceName => sharedPreferences.getString(Constants.TTS_VOICE_NAME);
+
+  String? get ttsVoiceLocale => sharedPreferences.getString(Constants.TTS_VOICE_LOCALE);
+
+  String get ttsOpenAiVoice => sharedPreferences.getString(Constants.TTS_OPENAI_VOICE) ?? 'nova';
+
+  bool get highlightWordsEnabled => sharedPreferences.getBool(Constants.TTS_HIGHLIGHT_WORDS) ?? true;
+
+  bool get useAiVoice => sharedPreferences.getBool(Constants.TTS_USE_AI_VOICE) ?? true;
+
+  bool get aiPredictionsEnabled => sharedPreferences.getBool(Constants.AI_PREDICTIONS_ENABLED) ?? false;
+
+  String get aiPredictionProvider =>
+      sharedPreferences.getString(Constants.AI_PREDICTION_PROVIDER) ?? 'gemini';
 
   void setFirstTime({required bool isFirstTime}) {
     sharedPreferences.setBool(Constants.FIRST_TIME, isFirstTime);
@@ -62,8 +93,67 @@ class SharedPreferencesService extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setThemeMode(ThemeMode mode) {
+    sharedPreferences.setString(Constants.THEME_MODE, mode.name);
+    notifyListeners();
+  }
+
   void setLanguageId(String languageId) {
     sharedPreferences.setString(Constants.LANGUAGE_ID, languageId);
+    notifyListeners();
+  }
+
+  void setTtsPitch(double pitch) {
+    sharedPreferences.setDouble(Constants.TTS_PITCH, pitch);
+    notifyListeners();
+  }
+
+  void setTtsSpeechRate(double rate) {
+    sharedPreferences.setDouble(Constants.TTS_SPEECH_RATE, rate);
+    notifyListeners();
+  }
+
+  void setTtsVoice(String name, String locale) {
+    sharedPreferences.setString(Constants.TTS_VOICE_NAME, name);
+    sharedPreferences.setString(Constants.TTS_VOICE_LOCALE, locale);
+    notifyListeners();
+  }
+
+  void clearTtsVoice() {
+    sharedPreferences.remove(Constants.TTS_VOICE_NAME);
+    sharedPreferences.remove(Constants.TTS_VOICE_LOCALE);
+    notifyListeners();
+  }
+
+  void setTtsOpenAiVoice(String voice) {
+    sharedPreferences.setString(Constants.TTS_OPENAI_VOICE, voice);
+    notifyListeners();
+  }
+
+  void setHighlightWordsEnabled(bool value) {
+    sharedPreferences.setBool(Constants.TTS_HIGHLIGHT_WORDS, value);
+    notifyListeners();
+  }
+
+  void setUseAiVoice(bool value) {
+    sharedPreferences.setBool(Constants.TTS_USE_AI_VOICE, value);
+    notifyListeners();
+  }
+
+  void setAiPredictionsEnabled(bool value) {
+    sharedPreferences.setBool(Constants.AI_PREDICTIONS_ENABLED, value);
+    notifyListeners();
+  }
+
+  void setAiPredictionProvider(String provider) {
+    sharedPreferences.setString(Constants.AI_PREDICTION_PROVIDER, provider);
+    notifyListeners();
+  }
+
+  String get imageAlbum => sharedPreferences.getString(Constants.IMAGE_ALBUM) ?? 'core';
+
+  void setImageAlbum(String album) {
+    sharedPreferences.setString(Constants.IMAGE_ALBUM, album);
     notifyListeners();
   }
 
